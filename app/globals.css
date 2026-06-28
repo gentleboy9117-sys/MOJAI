@@ -1,0 +1,121 @@
+/* =====================================================================
+ * KRDS(Korea Design System) 기반 디자인 토큰
+ * 출처: https://v04.krds.go.kr/guide/style/style_02.html (색상)
+ *       style_03(서체) / style_04(형태) / style_05(배치)
+ * 앱 메인 컬러: Navy(KRDS Secondary) 50 = #003675
+ * tailwind.config.ts 가 동일 값을 미러링한다(드리프트 주의).
+ * ===================================================================== */
+
+/* 본문 글꼴: Pretendard GOV 권장. 내부망/오프라인에서는 시스템 폰트로 자연 폴백된다.
+ * 운영(내부망)에서는 CDN 대신 Pretendard GOV 를 self-host 해야 한다. */
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ===== KRDS Primitive Palette ===== */
+    /* Navy = 앱 Primary(메인). KRDS Secondary scale. Base 50 = #003675 */
+    --krds-navy-0: #ffffff;  --krds-navy-5: #edf1f5;  --krds-navy-10: #cdd7e4;
+    --krds-navy-20: #b4c4d6; --krds-navy-30: #99b0cb; --krds-navy-40: #2a5c96;
+    --krds-navy-50: #003675; --krds-navy-60: #002b5e; --krds-navy-70: #002046;
+    --krds-navy-80: #00162f; --krds-navy-90: #000b17; --krds-navy-100: #000000;
+
+    /* KRDS Primary Blue = 보조 인터랙션(링크/포커스). Base 50 = #246BEB */
+    --krds-blue-0: #ffffff;  --krds-blue-5: #eff5ff;  --krds-blue-10: #d3e1fb;
+    --krds-blue-20: #a7c4f7; --krds-blue-30: #7ca6f3; --krds-blue-40: #5089ef;
+    --krds-blue-50: #246beb; --krds-blue-60: #1d56bc; --krds-blue-70: #16408d;
+    --krds-blue-80: #0e2b5e; --krds-blue-90: #07152f; --krds-blue-100: #000000;
+
+    /* Grayscale */
+    --krds-gray-0: #ffffff;  --krds-gray-5: #f8f8f8;  --krds-gray-10: #f0f0f0;
+    --krds-gray-20: #e4e4e4; --krds-gray-30: #d8d8d8; --krds-gray-40: #c6c6c6;
+    --krds-gray-50: #8e8e8e; --krds-gray-60: #717171; --krds-gray-70: #555555;
+    --krds-gray-80: #2d2d2d; --krds-gray-90: #1d1d1d; --krds-gray-100: #000000;
+
+    /* Point (Red) */
+    --krds-point-0: #ffffff;  --krds-point-5: #fdf2f3;  --krds-point-10: #fbd6d8;
+    --krds-point-20: #f5a3a8; --krds-point-30: #f1747c; --krds-point-40: #ec4651;
+    --krds-point-50: #e71825; --krds-point-60: #b9131e; --krds-point-70: #8b0e16;
+    --krds-point-80: #5c0a0f; --krds-point-90: #2e0507; --krds-point-100: #000000;
+
+    /* System colors */
+    --krds-danger: #eb003b;      --krds-danger-bg: #fdf2f3;
+    --krds-warning: #ffb724;     --krds-warning-bg: #fff7e6;
+    --krds-success: #008a1e;     --krds-success-bg: #e7f6ea;
+    --krds-information: #2768ff; --krds-information-bg: #eff5ff;
+
+    /* ===== Semantic ===== */
+    --krds-brand: var(--krds-navy-50);        /* #003675 */
+    --krds-brand-hover: var(--krds-navy-60);
+    --krds-brand-active: var(--krds-navy-70);
+    --krds-on-brand: #ffffff;
+    --krds-link: var(--krds-blue-50);
+    --krds-focus: var(--krds-blue-50);
+
+    --krds-bg: var(--krds-gray-0);            /* page white */
+    --krds-surface: var(--krds-gray-5);       /* app shell #F8F8F8 */
+    --krds-surface-2: var(--krds-gray-10);
+    --krds-border: var(--krds-gray-20);       /* subtle #E4E4E4 */
+    --krds-border-strong: var(--krds-gray-40);/* #C6C6C6 */
+    --krds-text-title: var(--krds-gray-90);   /* #1D1D1D */
+    --krds-text-body: var(--krds-gray-70);    /* #555555 */
+    --krds-text-disabled: var(--krds-gray-50);/* #8E8E8E */
+
+    /* ===== Radius (정부상징 로고 사용 기관: 최대 12px) ===== */
+    --krds-radius-0: 0px;  --krds-radius-xs: 2px; --krds-radius-sm: 4px;
+    --krds-radius-md: 6px; --krds-radius-lg: 8px; --krds-radius-xl: 12px;
+
+    /* ===== Spacing (8pt grid + 4px) ===== */
+    --krds-space-1: 2px;  --krds-space-2: 4px;  --krds-space-3: 8px;
+    --krds-space-4: 12px; --krds-space-5: 16px; --krds-space-6: 20px;
+    --krds-space-7: 24px; --krds-space-8: 32px; --krds-space-9: 40px; --krds-space-10: 48px;
+
+    /* ===== Layout ===== */
+    --krds-content-max: 1280px;
+
+    /* ===== Typography ===== */
+    --krds-font-sans: "Pretendard GOV", "Pretendard", -apple-system, BlinkMacSystemFont,
+      "Apple SD Gothic Neo", "Malgun Gothic", system-ui, Roboto, "Helvetica Neue", sans-serif;
+  }
+
+  * {
+    border-color: var(--krds-border);
+  }
+  html,
+  body {
+    height: 100%;
+  }
+  body {
+    background-color: var(--krds-surface);
+    color: var(--krds-text-body);
+    font-family: var(--krds-font-sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    word-break: keep-all; /* 한글 단어 단위 줄바꿈 */
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--krds-text-title);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  /* 접근성: KRDS 포커스 링(키보드 탐색) */
+  :where(a, button, input, select, textarea, [tabindex]):focus-visible {
+    outline: 2px solid var(--krds-focus);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb { border-radius: 8px; background: var(--krds-gray-30); }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+  /* 모니터링 상황판: 텍스트 2줄/3줄 말줄임 */
+  .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+}

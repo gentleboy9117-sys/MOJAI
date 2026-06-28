@@ -1,0 +1,173 @@
+{
+  "_meta": {
+    "notice": "데모용 샘플/합성 기사 데이터. 실제 언론 기사 원문이 아니며, 검찰청 공식 보도자료 형식을 모사한 합성 텍스트입니다. publishedAt 은 seed 실행 시각 기준 daysAgo/hoursAgo 로 환산됩니다.",
+    "sourceTypes": "OFFICIAL_PRESS=공식 보도자료, WEB_NEWS=샘플 언론(합성), LICENSED_NEWS=라이선스(표시 제한 데모)"
+  },
+  "articles": [
+    {
+      "title": "서울남부지검, 투자리딩방 운영 일당 자본시장법 위반 혐의 기소",
+      "sourceName": "서울남부지방검찰청", "sourceType": "OFFICIAL_PRESS", "licenseType": "PUBLIC_PRESS",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 5,
+      "originalUrl": "https://www.spo.go.kr/sample/seoulnambu/press/1",
+      "summary": "서울남부지검이 투자리딩방을 운영하며 투자금을 편취한 일당을 기소했다고 밝혔다.",
+      "fullText": "서울남부지방검찰청은 카카오톡 투자리딩방을 운영하며 투자금을 받아 가로챈 혐의로 운영자 등을 불구속 기소했다고 밝혔다. 보도에 따르면 피해자는 수백 명, 피해액은 수십억 원으로 조사됐다. 검찰은 자본시장법 위반 및 사기 혐의를 적용했다.",
+      "copyrightNotice": "검찰청 공식 보도자료(재사용 가능)"
+    },
+    {
+      "title": "‘투자리딩방’ 사기 일당 재판에…피해자 수백 명 추산",
+      "sourceName": "샘플뉴스A", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 4,
+      "originalUrl": "https://example-news.invalid/a/101",
+      "summary": "투자리딩방 투자사기 사건으로 일당이 재판에 넘겨졌다.",
+      "fullText": "리딩방을 통해 투자금을 모은 뒤 가로챈 혐의를 받는 일당이 재판에 넘겨졌다. 보도에 따르면 피해자 다수가 고령층으로, 피해 규모가 큰 것으로 알려졌다. 서울남부지검이 수사를 진행했다."
+    },
+    {
+      "title": "리딩방 투자사기 피해액 수십억…검찰 수사 확대",
+      "sourceName": "샘플뉴스B", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 3,
+      "originalUrl": "https://example-news.invalid/b/102",
+      "summary": "리딩방 투자사기 피해가 확대되며 검찰 수사가 이어지고 있다.",
+      "fullText": "투자리딩방 사기 사건의 피해 규모가 수십억 원대로 늘었다는 보도가 나왔다. 투자금, 피해자, 편취 정황이 쟁점이다. 서울남부지검이 추가 피해 사례를 확인 중인 것으로 알려졌다."
+    },
+    {
+      "title": "리딩방 사기 추가 피해자 진술 잇따라",
+      "sourceName": "샘플뉴스C", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 0, "hoursAgo": 6,
+      "originalUrl": "https://example-news.invalid/c/103",
+      "summary": "투자리딩방 사기 사건 관련 추가 피해자 진술이 이어지고 있다.",
+      "fullText": "투자리딩방 사기 사건과 관련해 추가 피해자들의 진술이 잇따르고 있다는 후속 보도가 나왔다. 보도에 따르면 피해자 모임이 꾸려졌다. 서울남부지검 수사 결과가 주목된다."
+    },
+
+    {
+      "title": "서울동부지검, 보이스피싱 인출책 구속기소",
+      "sourceName": "서울동부지방검찰청", "sourceType": "OFFICIAL_PRESS", "licenseType": "PUBLIC_PRESS",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 0, "hoursAgo": 5,
+      "originalUrl": "https://www.spo.go.kr/sample/seouldongbu/press/2",
+      "summary": "서울동부지검이 보이스피싱 현금 인출책을 구속기소했다.",
+      "fullText": "서울동부지방검찰청은 전화금융사기 조직의 현금 인출책을 구속기소했다고 밝혔다. 대포통장과 수거책이 동원된 것으로 조사됐다. 검찰은 추가 가담자를 수사 중이다.",
+      "copyrightNotice": "검찰청 공식 보도자료(재사용 가능)"
+    },
+    {
+      "title": "전화금융사기 조직 검거…인천서 무더기 적발",
+      "sourceName": "샘플뉴스D", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 0, "hoursAgo": 9,
+      "originalUrl": "https://example-news.invalid/d/201",
+      "summary": "인천 지역에서 보이스피싱 조직원이 무더기로 적발됐다.",
+      "fullText": "인천 지역에서 전화금융사기(보이스피싱) 조직원들이 무더기로 검거됐다는 보도가 나왔다. 보도에 따르면 인출책과 수거책이 포함됐다. 인천지검이 관련 수사를 지휘했다."
+    },
+    {
+      "title": "보이스피싱 콜센터 적발…대구지검 수사 지휘",
+      "sourceName": "샘플뉴스E", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 1,
+      "originalUrl": "https://example-news.invalid/e/202",
+      "summary": "대구 지역 보이스피싱 콜센터가 적발됐다.",
+      "fullText": "대구 지역에서 보이스피싱 콜센터가 적발됐다는 보도가 나왔다. 전화금융사기 피해가 잇따른 것으로 알려졌다. 대구지검이 수사를 지휘하고 있다."
+    },
+
+    {
+      "title": "인천지검, 필로폰 밀반입 조직 적발…마약류관리법 위반",
+      "sourceName": "인천지방검찰청", "sourceType": "OFFICIAL_PRESS", "licenseType": "PUBLIC_PRESS",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 2,
+      "originalUrl": "https://www.spo.go.kr/sample/incheon/press/3",
+      "summary": "인천지검이 필로폰을 밀반입한 마약 조직을 적발했다.",
+      "fullText": "인천지방검찰청은 국제우편을 이용해 필로폰을 밀반입한 마약 조직을 적발해 기소했다고 밝혔다. 마약류관리법 위반 혐의가 적용됐다. 인천공항을 통한 반입 정황이 확인됐다.",
+      "copyrightNotice": "검찰청 공식 보도자료(재사용 가능)"
+    },
+    {
+      "title": "공항 통한 마약 밀반입 적발…인천",
+      "sourceName": "샘플뉴스F", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 2,
+      "originalUrl": "https://example-news.invalid/f/301",
+      "summary": "인천공항을 통한 마약 밀반입이 적발됐다.",
+      "fullText": "인천공항을 통해 필로폰 등 마약을 밀반입하려던 조직이 적발됐다는 보도가 나왔다. 보도에 따르면 던지기 수법이 동원됐다. 인천지검이 수사 중이다."
+    },
+    {
+      "title": "마약 유통 조직 추가 검거",
+      "sourceName": "샘플뉴스G", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 1,
+      "originalUrl": "https://example-news.invalid/g/302",
+      "summary": "마약 유통 조직원이 추가로 검거됐다.",
+      "fullText": "마약 밀반입·유통 조직과 관련해 추가 검거가 이뤄졌다는 후속 보도가 나왔다. 투약 및 유통 정황이 조사됐다. 인천지검이 관련 수사를 확대하고 있다."
+    },
+
+    {
+      "title": "창원지검, 중대재해처벌법 위반 원청 대표 기소",
+      "sourceName": "창원지방검찰청", "sourceType": "OFFICIAL_PRESS", "licenseType": "PUBLIC_PRESS",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 1,
+      "originalUrl": "https://www.spo.go.kr/sample/changwon/press/4",
+      "summary": "창원지검이 산업재해 사망사고와 관련해 원청 대표를 기소했다.",
+      "fullText": "창원지방검찰청은 건설현장 추락 사망사고와 관련해 안전조치 의무를 위반한 원청 대표를 중대재해처벌법 위반 혐의로 기소했다고 밝혔다. 산업재해 사망사고에 대한 책임 규명 차원이다.",
+      "copyrightNotice": "검찰청 공식 보도자료(재사용 가능)"
+    },
+    {
+      "title": "건설현장 추락 사망…중대재해처벌법 적용 주목",
+      "sourceName": "샘플뉴스H", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 0, "hoursAgo": 12,
+      "originalUrl": "https://example-news.invalid/h/401",
+      "summary": "건설현장 추락 사망사고에 중대재해처벌법 적용 여부가 주목된다.",
+      "fullText": "건설현장에서 발생한 추락 사망사고와 관련해 중대재해처벌법 적용 여부가 주목된다는 보도가 나왔다. 안전조치 미비가 쟁점이다. 창원지검이 수사하고 있다."
+    },
+
+    {
+      "title": "서울중앙지검, 금품수수 혐의 전 고위공직자 기소",
+      "sourceName": "서울중앙지방검찰청", "sourceType": "OFFICIAL_PRESS", "licenseType": "PUBLIC_PRESS",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 3,
+      "originalUrl": "https://www.spo.go.kr/sample/seoul/press/5",
+      "summary": "서울중앙지검이 금품수수 혐의로 전 고위공직자를 기소했다.",
+      "fullText": "서울중앙지방검찰청은 직무 관련 금품을 수수한 혐의로 전 고위공직자를 불구속 기소했다고 밝혔다. 뇌물 및 청탁금지법 위반 혐의가 적용됐다. 검찰은 관련 절차에 따라 수사했다.",
+      "copyrightNotice": "검찰청 공식 보도자료(재사용 가능)"
+    },
+    {
+      "title": "전 차관 뇌물 의혹 재판行",
+      "sourceName": "샘플뉴스I", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 2,
+      "originalUrl": "https://example-news.invalid/i/501",
+      "summary": "전 차관의 뇌물 의혹 사건이 재판에 넘겨졌다.",
+      "fullText": "전직 차관이 직무와 관련해 금품을 받은 의혹으로 재판에 넘겨졌다는 보도가 나왔다. 보도에 따르면 뇌물 혐의가 쟁점이다. 서울중앙지검이 수사했다."
+    },
+
+    {
+      "title": "서울북부지검, 딥페이크 성착취물 제작 일당 기소",
+      "sourceName": "서울북부지방검찰청", "sourceType": "OFFICIAL_PRESS", "licenseType": "PUBLIC_PRESS",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 2,
+      "originalUrl": "https://www.spo.go.kr/sample/seoulbukbu/press/6",
+      "summary": "서울북부지검이 딥페이크 성착취물 제작·유포 일당을 기소했다.",
+      "fullText": "서울북부지방검찰청은 딥페이크 기술로 불법 합성물을 제작·유포한 일당을 기소했다고 밝혔다. 디지털성범죄 및 성착취물 관련 혐의가 적용됐다. 미성년 피해 여부도 확인 중이다.",
+      "copyrightNotice": "검찰청 공식 보도자료(재사용 가능)"
+    },
+    {
+      "title": "상습 음주운전 사범 구속…대구",
+      "sourceName": "샘플뉴스J", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 4,
+      "originalUrl": "https://example-news.invalid/j/601",
+      "summary": "상습 음주운전 사범이 구속됐다.",
+      "fullText": "상습적으로 음주운전을 한 사범이 구속됐다는 보도가 나왔다. 도로교통법 위반 혐의다. 대구지검이 관련 사건을 처리했다."
+    },
+    {
+      "title": "역외탈세 혐의 법인 압수수색",
+      "sourceName": "서울중앙지방검찰청", "sourceType": "OFFICIAL_PRESS", "licenseType": "PUBLIC_PRESS",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 6,
+      "originalUrl": "https://www.spo.go.kr/sample/seoul/press/7",
+      "summary": "서울중앙지검이 역외탈세 혐의 법인을 압수수색했다.",
+      "fullText": "서울중앙지방검찰청은 역외탈세 혐의를 받는 법인에 대해 압수수색을 진행했다고 밝혔다. 조세포탈 혐의가 쟁점이다. 검찰은 자금 흐름을 분석 중이다.",
+      "copyrightNotice": "검찰청 공식 보도자료(재사용 가능)"
+    },
+    {
+      "title": "불법 폐기물 투기 업체 적발…전주",
+      "sourceName": "샘플뉴스K", "sourceType": "WEB_NEWS", "licenseType": "MANUAL",
+      "canStoreFullText": true, "canDisplayFullText": true, "daysAgo": 5,
+      "originalUrl": "https://example-news.invalid/k/701",
+      "summary": "불법 폐기물 투기 업체가 적발됐다.",
+      "fullText": "전주 지역에서 불법으로 폐기물을 투기한 업체가 적발됐다는 보도가 나왔다. 폐기물관리법 위반 혐의다. 전주지검이 수사하고 있다."
+    },
+    {
+      "title": "[라이선스 기사] 금융권 대규모 사기 관련 보도",
+      "sourceName": "라이선스 뉴스 공급원", "sourceType": "LICENSED_NEWS", "licenseType": "LICENSED_API",
+      "canStoreFullText": false, "canDisplayFullText": false, "daysAgo": 1,
+      "originalUrl": "https://example-licensed-news.invalid/article/900",
+      "summary": "금융권 관련 대규모 사기 의혹이 보도됐다. (라이선스 미연결 — 원문 표시 제한)",
+      "fullText": "라이선스 계약이 필요한 언론 기사입니다. 원문 본문은 표시되지 않습니다.",
+      "copyrightNotice": "라이선스 미연결 — 제목/요약/링크만 표시 가능"
+    }
+  ]
+}

@@ -1,0 +1,510 @@
+// =====================================================================
+// AI 기반 검찰 기획업무 자동화 플랫폼 (Prosecution Planning AI Workbench)
+// Prisma schema (MVP: SQLite) — 운영 확장 시 postgresql 로 교체.
+// SQLite 제약: enum 미지원 → String. 배열/객체 → String(JSON 문자열).
+//
+// 업무 영역 분리:
+//   [A] 오전 이슈 모니터링/브리핑 — Article/IssueCluster/Report 계열
+//   [C] 사건 처리 후 발표자료 초안 — PressRelease* 계열
+//   두 영역은 데이터로 자동 연결되지 않는다.
+// =====================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ============================ 공통 기반 ===============================
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  role      String   @default("VIEWER") // VIEWER | ANALYST | ADMIN
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  reports          Report[]
+  auditLogs        AuditLog[]
+  reviewedArticles Article[] @relation("ArticleReviewer")
+}
+
+model ProsecutionOffice {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  type             String   // 대검찰청 | 고등검찰청 | 지방검찰청 | 지청
+  region           String
+  parentId         String?
+  parent           ProsecutionOffice?  @relation("OfficeHierarchy", fields: [parentId], references: [id])
+  children         ProsecutionOffice[] @relation("OfficeHierarchy")
+  address          String?
+  phone            String?
+  homepageUrl      String?
+  jurisdictionText String?
+  policeStations   String?  // JSON string[]
+  searchKeywords   String?  // JSON string[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  classifications  ArticleClassification[]
+
+  @@index([type])
+  @@index([region])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  action       String
+  targetType   String?
+  targetId     String?
+  metadataJson String?  // JSON
+  ipAddress    String?
+  createdAt    DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([action])
+  @@index([userId])
+}
+
+model SourceConfig {
+  id                 String   @id @default(cuid())
+  name               String
+  providerType       String   // PUBLIC_PRESS_RELEASE | LICENSED_NEWS | DEV_CRAWLER | RSS | FIRECRAWL_SPO
+  sourceType         String   @default("OFFICIAL_PRESS")
+  baseUrl            String?
+  rssUrl             String?
+  isEnabled          Boolean  @default(true)
+  licenseType        String   @default("PUBLIC_PRESS")
+  canStoreFullText   Boolean  @default(false)
+  canDisplayFullText Boolean  @default(false)
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+// ==================== [A] 이슈 모니터링/브리핑 =========================
+
+model Article {
+  id                 String   @id @default(cuid())
+  title              String
+  sourceName         String
+  publishedAt        DateTime
+  collectedAt        DateTime @default(now())
+  originalUrl        String
+
+  rawHtml            String?
+  fullText           String?
+  summary            String?
+
+  licenseType        String   @default("PUBLIC_PRESS") // PUBLIC_PRESS | LICENSED_API | DEV_CRAWL | MANUAL
+  sourceType         String   @default("OFFICIAL_PRESS") // OFFICIAL_PRESS | MOJ_SPO_OFFICIAL | LICENSED_NEWS | WEB_NEWS | MANUAL | SAMPLE
+  canStoreFullText   Boolean  @default(false)
+  canDisplayFullText Boolean  @default(false)
+  copyrightNotice    String?
+
+  primaryOfficeId    String?
+  primaryRegion      String?
+  crimeType          String?
+  crimeSubtype       String?
+  classifyConfidence Float?
+  officeConfidence   Float?
+  officeMatchType    String?  // DIRECT_MENTION | REGION_INFERRED | POLICE_INFERRED | PRESS_SOURCE | LLM_ASSIST | MANUAL
+
+  issueScore         Float?   // 보도 파급도(='범죄 위험도' 아님)
+  issueLevel         String?  // low | medium | high | critical
+
+  needsHumanReview   Boolean  @default(true)
+  reviewReasons      String?  // JSON string[]
+  reviewedByUserId   String?
+  reviewedBy         User?    @relation("ArticleReviewer", fields: [reviewedByUserId], references: [id])
+  reviewedAt         DateTime?
+  includeInReport    Boolean  @default(true)
+
+  issueClusterId     String?
+  issueCluster       IssueCluster? @relation(fields: [issueClusterId], references: [id], onDelete: SetNull)
+  clusterSignature   String?
+
+  contentHash        String   @unique
+  keywords           String?  // JSON string[]
+
+  // [공안] 집회·시위 보도 본문 기반 발생지 관할(별도 분류 — 일반 primaryOffice 와 구분)
+  assemblyOfficeId     String?
+  assemblyOfficeName   String?  // 대표(첫번째) 관할
+  assemblyOffices      String?  // JSON: 발생장소 복수 관할 [{officeId,officeName,hint}]
+  assemblyLocationHint String?  // 본문에서 매칭된 발생 장소(예: 국회, 전남도청)
+  resolvedUrl          String?   // 구글뉴스 리다이렉트 → 실제 언론사 원문 URL(링크용)
+  bodyEnrichedAt       DateTime? // 본문 수집·분류 시도 시각(중복 처리 방지)
+
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  classifications    ArticleClassification[]
+  entities           ArticleEntity[]
+  legalMatches       LegalKeywordMatch[]
+  timelineEvents     IssueTimelineEvent[]
+
+  @@index([publishedAt])
+  @@index([crimeType])
+  @@index([primaryOfficeId])
+  @@index([issueClusterId])
+  @@index([needsHumanReview])
+}
+
+model ArticleClassification {
+  id                  String   @id @default(cuid())
+  articleId           String
+  article             Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  prosecutionOfficeId String?
+  prosecutionOffice   ProsecutionOffice? @relation(fields: [prosecutionOfficeId], references: [id])
+  crimeType           String?
+  crimeSubtype        String?
+  confidence          Float    @default(0)
+  reason              String?
+  evidenceKeywords    String?  // JSON string[]
+  officeMatchType     String?
+  needsHumanReview    Boolean  @default(false)
+  reviewReason        String?
+  method              String   @default("keyword") // keyword | llm | human
+  isPrimary           Boolean  @default(false)
+  editedByUserId      String?
+  createdAt           DateTime @default(now())
+
+  @@index([articleId])
+  @@index([prosecutionOfficeId])
+  @@index([crimeType])
+}
+
+model IssueCluster {
+  id                      String   @id @default(cuid())
+  title                   String
+  representativeArticleId String?
+  summary                 String?
+  mainOfficeId            String?
+  mainOfficeName          String?
+  mainCrimeType           String?
+  mainRegion              String?
+  issueScore              Float    @default(0)
+  issueLevel              String   @default("low") // low | medium | high | critical
+  scoreReasons            String?  // JSON string[]
+  spreadStatus            String   @default("NEW") // NEW | OBSERVING | SPREADING | HIGH_SPREAD | STABLE
+  firstPublishedAt        DateTime
+  lastPublishedAt         DateTime
+  articleCount            Int      @default(0)
+  sourceCount             Int      @default(0)
+  recent24hCount          Int      @default(0)
+  hasOfficialPress        Boolean  @default(false)
+  hasMediaCoverage        Boolean  @default(false)
+  crossOffice             Boolean  @default(false)
+  signature               String?  @unique
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  articles                Article[]
+  timelineEvents          IssueTimelineEvent[]
+
+  @@index([issueScore])
+  @@index([mainCrimeType])
+  @@index([lastPublishedAt])
+}
+
+model IssueTimelineEvent {
+  id             String   @id @default(cuid())
+  issueClusterId String
+  issueCluster   IssueCluster @relation(fields: [issueClusterId], references: [id], onDelete: Cascade)
+  articleId      String?
+  article        Article? @relation(fields: [articleId], references: [id], onDelete: SetNull)
+  eventDate      DateTime
+  eventTitle     String
+  eventSummary   String?
+  sourceType     String?
+  confidence     Float    @default(0)
+  createdAt      DateTime @default(now())
+
+  @@index([issueClusterId])
+  @@index([eventDate])
+}
+
+model ArticleEntity {
+  id             String   @id @default(cuid())
+  articleId      String
+  article        Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  entityType     String   // PROSECUTION|COURT|POLICE|GOV|COMPANY|SCHOOL|FINANCE|LOCATION|PERSON|LAW|CRIME_KEYWORD|ORG
+  entityText     String
+  normalizedText String?
+  confidence     Float    @default(0)
+  createdAt      DateTime @default(now())
+
+  @@index([articleId])
+  @@index([entityType])
+}
+
+model LegalKeywordMatch {
+  id           String   @id @default(cuid())
+  articleId    String
+  article      Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  keyword      String
+  category     String   // 법률 | 죄명 | 형법조항
+  confidence   Float    @default(0)
+  evidenceText String?
+  createdAt    DateTime @default(now())
+
+  @@index([articleId])
+}
+
+model TrendAlert {
+  id            String   @id @default(cuid())
+  crimeType     String?
+  region        String?
+  officeId      String?
+  recentCount   Int      @default(0)
+  baselineAvg   Float    @default(0)
+  increaseRatio Float    @default(0)
+  severity      String   @default("info") // info | watch | elevated
+  sampleOffices String?  // JSON string[]
+  windowLabel   String?
+  createdAt     DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([crimeType])
+}
+
+model Report {
+  id              String   @id @default(cuid())
+  title           String
+  reportType      String   @default("ANALYST_DETAIL") // EXEC_SUMMARY | ANALYST_DETAIL | POLICY_TREND | MEDIA_RESPONSE | MEETING_BULLET
+  periodStart     DateTime
+  periodEnd       DateTime
+  filtersJson     String?
+  markdownContent String
+  safetyCheckJson String?  // 문장 리스크 점검 결과
+  sourceCount     Int      @default(0)
+  issueCount      Int      @default(0)
+  createdById     String?
+  createdBy       User?    @relation(fields: [createdById], references: [id])
+  createdAt       DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model BriefingRun {
+  id                String   @id @default(cuid())
+  runAt             DateTime @default(now())
+  status            String   @default("SUCCESS") // SUCCESS | PARTIAL | FAILED | RUNNING
+  articleCount      Int      @default(0)
+  issueCount        Int      @default(0)
+  reviewNeededCount Int      @default(0)
+  topIssueIds       String?  // JSON string[]
+  reportId          String?
+  message           String?
+  createdAt         DateTime @default(now())
+
+  @@index([runAt])
+}
+
+// ============== [C] 검찰발표자료 레퍼런스/보도자료 초안 ===============
+
+model PressReleaseReference {
+  id                      String   @id @default(cuid())
+  title                   String
+  officeName              String?
+  publishedAt             DateTime?
+  collectedAt             DateTime @default(now())
+  sourceUrl               String
+  listPageUrl             String?
+  viewCount               Int?
+  rawHtml                 String?
+  markdownContent         String?
+  plainText               String?
+  attachmentUrls          String?  // JSON string[]
+  attachmentTypes         String?  // JSON string[]
+  extractedAttachmentText String?
+  contentHash             String   @unique
+  titlePatternType        String?  // 성과발표형 | 수사결과발표형 | ...
+  isUsableForStyleReference Boolean @default(true)
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([publishedAt])
+  @@index([titlePatternType])
+}
+
+model PressReleaseStylePattern {
+  id                       String   @id @default(cuid())
+  patternName              String
+  description              String?
+  examplesJson             String?  // JSON
+  structureJson            String?  // JSON
+  toneRulesJson            String?  // JSON
+  forbiddenExpressionsJson String?  // JSON string[]
+  preferredExpressionsJson String?  // JSON string[]
+  titlePatternType         String?
+  createdAt                DateTime @default(now())
+}
+
+model GeneratedPressRelease {
+  id                   String   @id @default(cuid())
+  title                String
+  inputFactsJson       String?  // JSON (사용자 입력 사실)
+  targetOfficeName     String?
+  releaseType          String?
+  crimeType            String?
+  caseStage            String?
+  dispositionResult    String?
+  publicScope          String?
+  anonymizationRules   String?
+  draftMarkdown        String
+  safetyCheckedMarkdown String?
+  riskCheckJson        String?  // 문장 리스크 점검 결과
+  referenceIds         String?  // JSON string[] 참고 레퍼런스
+  createdById          String?  // 역정규화(FK 아님)
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  inputFacts           PressReleaseInputFact[]
+
+  @@index([createdAt])
+}
+
+model PressReleaseInputFact {
+  id                      String   @id @default(cuid())
+  generatedPressReleaseId String
+  generated               GeneratedPressRelease @relation(fields: [generatedPressReleaseId], references: [id], onDelete: Cascade)
+  officeName              String?
+  releaseType             String?
+  crimeType               String?
+  caseSummary             String?
+  charges                 String?
+  legalKeywords           String?  // JSON string[]
+  damageScale             String?
+  suspectDescription      String?
+  victimDescription       String?
+  investigationResult     String?
+  dispositionResult       String?
+  futurePlan              String?
+  publicScope             String?
+  anonymizationRules      String?
+  createdAt               DateTime @default(now())
+
+  @@index([generatedPressReleaseId])
+}
+
+// ==================== [공안] 집회·시위 공개정보 모니터링 =================
+// 집회·시위는 헌법상 기본권 행사일 수 있으므로 범죄로 단정하지 않는다.
+// '공개 일정 정보' + '관련 보도 발생' 만 다룬다.
+
+model AssemblyEvent {
+  id                  String   @id @default(cuid())
+  eventDate           DateTime
+  startTime           String?
+  endTime             String?
+  title               String
+  locationName        String
+  address             String?
+  district            String?  // 행정구
+  policeStationName   String?
+  organizerName       String?  // 공개자료에 명시된 경우만
+  expectedParticipants String? // 공개자료에 명시된 경우만(예: 약 100명)
+  marchRoute          String?
+  topicSummary        String?  // 공개자료 명시 범위 내 요약
+  sourceName          String   @default("서울경찰청")
+  sourceUrl           String?
+  sourcePostTitle     String?
+  sourcePublishedAt   DateTime?
+  collectedAt         DateTime @default(now())
+  rawText             String?
+  attachmentUrls      String?  // JSON string[]
+  contentHash         String   @unique
+
+  // 검찰청 관할(추정) — 불확실하면 needsHumanReview
+  prosecutionOfficeId String?  // ProsecutionOffice.id (역정규화)
+  prosecutionOfficeName String?
+  jurisdictionConfidence Float?
+  jurisdictionReason  String?
+  jurisdictionMethod  String?  // ADDRESS | DISTRICT | POLICE | OFFICE_TABLE | LLM_ASSIST | MANUAL
+  needsHumanReview    Boolean  @default(true)
+  reviewReason        String?
+  reviewedByUserId    String?
+  reviewedAt          DateTime?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  articleLinks        AssemblyArticleLink[]
+
+  @@index([eventDate])
+  @@index([prosecutionOfficeId])
+  @@index([district])
+}
+
+model AssemblyArticleLink {
+  id                String   @id @default(cuid())
+  assemblyEventId   String
+  assemblyEvent     AssemblyEvent @relation(fields: [assemblyEventId], references: [id], onDelete: Cascade)
+  articleId         String   // Article.id (역정규화)
+  relationType      String   @default("same_day_report") // same_day_report | next_day_report | follow_up_report | legal_issue_report | unrelated_or_low_confidence
+  relationConfidence Float   @default(0)
+  relationReason    String?
+  matchedKeywords   String?  // JSON string[]
+  matchedLocation   Boolean  @default(false)
+  matchedDate       Boolean  @default(false)
+  hasLegalIssueMention Boolean @default(false) // '법적 이슈 가능성 언급'(확정 아님)
+  legalIssueKeywords String? // JSON string[]
+  needsHumanReview  Boolean  @default(false)
+  createdAt         DateTime @default(now())
+
+  @@index([assemblyEventId])
+  @@index([articleId])
+}
+
+model PublicSafetyBriefing {
+  id              String   @id @default(cuid())
+  title           String
+  briefingType    String   @default("DAILY") // DAILY | WEEKLY | BY_OFFICE | LEGAL_ISSUE_REVIEW
+  periodStart     DateTime
+  periodEnd       DateTime
+  prosecutionOfficeId String?
+  filtersJson     String?
+  markdownContent String
+  safetyCheckJson String?
+  createdById     String?
+  createdAt       DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model AssemblyJurisdictionCorrection {
+  id              String   @id @default(cuid())
+  assemblyEventId String
+  previousOfficeId String?
+  correctedOfficeId String?
+  reason          String?
+  correctedBy     String?
+  createdAt       DateTime @default(now())
+
+  @@index([assemblyEventId])
+}
+
+// [공안] 지방경찰청 집회 게시판 출처별 수집 현황 — '정보 반영 시각' 표시용.
+//  * 각 지방청 게시판을 마지막으로 언제 수집했고, 어디까지(최신 공지/집회일) 반영됐는지.
+model AssemblySourceStatus {
+  id              String   @id @default(cuid())
+  sourceKey       String   @unique // 내부 키(예: "seoul")
+  sourceName      String           // 표시명(예: "서울경찰청")
+  region          String?          // 시·도(예: "서울")
+  listUrl         String
+  supported       Boolean  @default(true) // 정적 크롤 지원 여부
+  lastCollectedAt DateTime?        // 마지막 수집 시도 시각
+  lastSuccess     Boolean  @default(false)
+  collectedCount  Int      @default(0) // 이번 수집에서 파싱된 게시물 수
+  latestPostDate  DateTime?        // 게시판 최신 글 작성일
+  latestEventDate DateTime?        // 반영된 가장 최근 집회 예정일
+  message         String?          // 실패 사유/비고
+  updatedAt       DateTime @updatedAt
+
+  @@index([region])
+}
