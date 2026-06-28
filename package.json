@@ -5,6 +5,7 @@
   "description": "AI 기반 검찰 기획업무 자동화 플랫폼 — 오전 이슈 모니터링·브리핑 + 사건 처리 후 검찰발표자료 초안 생성 (MVP)",
   "scripts": {
     "dev": "next dev",
+    "prebuild": "node scripts/netlify-prisma.mjs",
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",

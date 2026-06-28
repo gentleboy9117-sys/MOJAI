@@ -141,11 +141,14 @@ export async function runAutoCollect(now = new Date()) {
   };
 }
 
-// --- 로컬/스케줄러 직접 실행 ---
-runAutoCollect()
-  .then((r) => console.log(`✔ 자동수집 완료 — ${JSON.stringify(r)}`))
-  .catch((e) => {
-    console.error("[X] 자동수집 실패:", e);
-    process.exit(1);
-  })
-  .finally(() => prisma.$disconnect());
+// --- 로컬/스케줄러 직접 실행(CLI 전용) ---
+//  Netlify Scheduled Function 등에서 import 할 때는 자동 실행되지 않도록 가드.
+if (process.argv[1] && process.argv[1].includes("auto-collect")) {
+  runAutoCollect()
+    .then((r) => console.log(`✔ 자동수집 완료 — ${JSON.stringify(r)}`))
+    .catch((e) => {
+      console.error("[X] 자동수집 실패:", e);
+      process.exit(1);
+    })
+    .finally(() => prisma.$disconnect());
+}
