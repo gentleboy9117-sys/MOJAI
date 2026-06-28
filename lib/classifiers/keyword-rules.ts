@@ -92,20 +92,8 @@ export function classifyCrime(input: ClassifyInput, opts: { skipTitleTrial?: boo
     };
   }
 
-  // 공판: '제목'에 재판 결과(선고)가 드러난 기사만 — 즉 그날(당일/전일) 선고를 보도한 기사.
-  //  (본문에 과거 재판이 언급될 뿐인 연예·기타 기사는 제외)
-  const title = input.title ?? "";
-  const isTrial = !opts.skipTitleTrial && (STRONG_VERDICT_RE.test(title) || (COURT_RE.test(title) && VERDICT_RE.test(title)));
-  if (isTrial) {
-    const ev = (title.match(STRONG_VERDICT_RE) || title.match(VERDICT_RE) || [""])[0];
-    return {
-      crimeType: "공판",
-      crimeSubtype: underlying?.cat ?? "기타",
-      confidence: 0.9,
-      evidenceKeywords: [ev],
-      reason: `제목의 법원 선고 표현('${ev}') → '공판'(기저: ${underlying?.cat ?? "기타"})`,
-    };
-  }
+  // 공판 판정은 제목이 아니라 '본문 + 선고일(어제/오늘)' 기준으로만 한다(detectFreshVerdict).
+  //  → 여기서는 공판으로 분류하지 않고, scripts/reclassify-trial.ts(본문 크롤)가 결정한다.
 
   if (!underlying) {
     return {
