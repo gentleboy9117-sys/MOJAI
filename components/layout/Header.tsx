@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { UserChip } from "./UserChip";
 import { SearchBar } from "./SearchBar";
 
@@ -14,9 +15,11 @@ export function Header() {
           <p className="text-detail text-ink-muted">Prosecution Planning AI Workbench · 주최 법무부</p>
         </div>
       </div>
-      {/* 상단 가운데 키워드 검색 */}
+      {/* 상단 가운데 키워드 검색 (useSearchParams → Suspense 필수: 빌드 프리렌더 대응) */}
       <div className="flex flex-1 justify-center px-2">
-        <SearchBar />
+        <Suspense fallback={<div className="h-9 w-full max-w-xl rounded-full border border-line bg-paper" />}>
+          <SearchBar />
+        </Suspense>
       </div>
       <div className="flex shrink-0 items-center gap-3">
         <div className="hidden items-center gap-1.5 md:flex" title="검찰">

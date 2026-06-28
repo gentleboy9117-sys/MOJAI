@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
 
@@ -11,7 +12,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko">
       <body>
-        <AppShell>{children}</AppShell>
+        <AppShell>
+          <Suspense fallback={null}>{children}</Suspense>
+        </AppShell>
       </body>
     </html>
   );
