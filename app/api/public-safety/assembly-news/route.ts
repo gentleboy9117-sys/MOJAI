@@ -7,6 +7,7 @@ import {
   OFFICE_ORDER,
   OFFICE_TO_HIGH,
 } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
+import { appToday } from "@/lib/appToday";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -84,7 +85,7 @@ export async function GET(req: NextRequest) {
       .sort((x, y) => (x.date < y.date ? 1 : -1));
 
     // 선택 날짜: 지정값 > 오늘 > 가장 최근 보유일
-    const today = dayKey(new Date());
+    const today = dayKey(appToday());
     let selectedDate = dateParam || today;
     if (!dateCounts.has(selectedDate)) {
       // 오늘 기사가 없으면 빈 결과를 주되, 선택값은 유지(프론트에서 안내)

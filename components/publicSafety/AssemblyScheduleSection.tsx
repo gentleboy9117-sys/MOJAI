@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { appToday } from "@/lib/appToday";
 import { AssemblyByOfficeView } from "./AssemblyByOfficeView";
 import { AssemblySchedulePageClient } from "./AssemblySchedulePageClient";
 
@@ -22,9 +23,9 @@ function label(dateStr: string): string {
 
 /** [공안] 집회·시위 일정 섹션 — 날짜(오늘/내일/모레 + 임의) 선택을 검찰청별·개요가 공유 */
 export function AssemblyScheduleSection() {
-  const today = useMemo(() => fmt(new Date()), []);
+  const today = useMemo(() => fmt(appToday()), []);
   const quick = useMemo(() => {
-    const base = new Date();
+    const base = appToday();
     return [
       { v: fmt(base), label: `오늘 ${label(fmt(base))}` },
       { v: fmt(addDays(base, 1)), label: `내일 ${label(fmt(addDays(base, 1)))}` },

@@ -15,6 +15,19 @@ export function isOpinionColumn(title: string): boolean {
   return COLUMN_RE.test(title || "");
 }
 
+// 연예/가십성 표현(근황·타투·미모 등). 단, 법률·수사·재판 용어가 함께 있으면 사건기사로 보고 유지.
+const GOSSIP_RE = /근황|뼈말라|타투|문신|미모|몸매|복근|볼륨|각선미|눈길|열애|결별|이혼설|재결합|핑크빛|♥|웨딩|허니문|데이트|공항패션|일상룩|셀카|비키니|수영복|애견|반려견|일상\s*공개|심경고백|복귀\s*소감|화보\s*공개/;
+const LEGAL_CONTEXT_RE = /검찰|검사|경찰|법원|지검|고검|대검|공수처|기소|구속|불구속|송치|선고|판결|징역|집행유예|벌금|혐의|수사|재판|피의자|피고인|체포|영장|입건|고소|고발|압수수색|범죄|사기|마약|폭행|살인|성범죄|뇌물|횡령|배임|음주운전|보이스피싱/;
+
+/** 연예 가십 기사면 true → 수집 제외.
+ *  제목에 가십 표현이 있고 제목에 법률/수사/재판 용어가 없으면 가십으로 본다.
+ *  (본문에 과거 사건이 언급돼도 제목이 가십이면 제외 — 예: "박유천 '뼈말라' 근황…타투") */
+export function isCelebGossip(title: string, _summary?: string | null): boolean {
+  const t = title || "";
+  if (!GOSSIP_RE.test(t)) return false;
+  return !LEGAL_CONTEXT_RE.test(t);
+}
+
 // 한국 관할 단서(한국 지명·기관·한국인 등). 하나라도 있으면 국내/한국인 관련 사건으로 간주.
 //  ※ 한국인이 외국에서 일으킨 사건은 '한국/한국인/한인/국적' 등 단서가 있어 포함됨.
 const KOREA_NEXUS_RE = new RegExp(
