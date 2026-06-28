@@ -1,11 +1,18 @@
 "use client";
-import { Suspense } from "react";
-import { Menu } from "lucide-react";
+import { Suspense, useState } from "react";
+import { Menu, RefreshCw } from "lucide-react";
 import { UserChip } from "./UserChip";
 import { SearchBar } from "./SearchBar";
+import { refreshApiCache } from "@/lib/client/useApi";
 
 // 주최: 법무부 → 법무부 로고를 메인으로, 검찰 엠블럼은 보조 식별자로 배치
 export function Header({ onMenu }: { onMenu?: () => void }) {
+  const [spinning, setSpinning] = useState(false);
+  const onRefresh = () => {
+    setSpinning(true);
+    refreshApiCache(); // 전역 캐시 비우고 현재 화면 데이터 새로고침
+    setTimeout(() => setSpinning(false), 800);
+  };
   return (
     <header className="flex items-center gap-2 border-b border-line bg-white px-3 py-2.5 shadow-header sm:gap-4 sm:px-4">
       {/* 모바일 햄버거 — 사이드 메뉴 열기 */}
@@ -31,7 +38,15 @@ export function Header({ onMenu }: { onMenu?: () => void }) {
           <SearchBar />
         </Suspense>
       </div>
-      <div className="flex shrink-0 items-center gap-3">
+      <div className="flex shrink-0 items-center gap-2 sm:gap-3">
+        <button
+          onClick={onRefresh}
+          aria-label="새로고침"
+          title="새로고침(최신 데이터 불러오기)"
+          className="rounded-md p-1.5 text-ink-body hover:bg-gray-5"
+        >
+          <RefreshCw className={`h-4 w-4 ${spinning ? "animate-spin" : ""}`} />
+        </button>
         <div className="hidden items-center gap-1.5 md:flex" title="검찰">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src="/logo/prosecution-flag.svg" alt="검찰" className="h-6 w-auto" />
