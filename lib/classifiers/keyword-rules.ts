@@ -58,19 +58,26 @@ function scoreCrimeCategory(text: string): { cat: string; sub: string; hits: str
 //  (과거 재판을 단순 언급한 기사는 제외; 법원+선고 표현 + 선고일이 기사일/전일과 일치)
 export function detectFreshVerdict(text: string, publishedAt: Date): boolean {
   if (!COURT_RE.test(text)) return false;
-  if (!VERDICT_RE.test(text)) return false;
-  const pubDay = publishedAt.getDate();
-  const prevDay = new Date(publishedAt.getTime() - 86400000).getDate();
-  // 동일/전일을 가리키는 표현 + 선고
-  if (/(이날|오늘|금일|당일)[^.\n]{0,30}(선고|판결|법정구속|확정|징역|집행유예|무죄|유죄)/.test(text)) return true;
-  if (/(선고|판결|법정구속|확정)[^.\n]{0,15}(이날|오늘|금일|당일)/.test(text)) return true;
-  if (/(어제|전날|하루\s*전)[^.\n]{0,30}(선고|판결|법정구속|확정|징역|집행유예)/.test(text)) return true;
-  // "N일 … 선고" / "선고 … N일" 의 일자가 기사일·전일과 일치
-  const re = /(\d{1,2})일[^.\n]{0,25}(선고|판결|법정구속|징역|집행유예|확정|기각|파기)|(선고|판결|법정구속|확정|징역|집행유예)[^.\n]{0,20}?(\d{1,2})일/g;
+  // (1) '이미 선고됨'(과거완료) 표현이 있어야 한다 — '7월 24일 선고 예정' 같은 미래 announcement 제외
+  const PAST = /선고했|선고받|선고됐|선고를\s*내렸|선고가\s*내려|내려졌|법정구속(했|됐|돼|을)|실형을?\s*선고(?!\s*(예정|할|한다|될|공판|앞))|무죄를?\s*선고(?!\s*(예정|할|한다|될|공판))|유죄를?\s*선고(?!\s*(예정|할|한다|될))|징역[^.\n]{0,12}선고(?!\s*(예정|할|한다|될|공판|앞))|집행유예[^.\n]{0,10}선고(?!\s*(예정|할|한다|될))|벌금[^.\n]{0,10}선고(?!\s*(예정|할|한다|될))|파기환송(했|됐)|원심을?\s*(확정|파기)|형을?\s*확정/;
+  if (!PAST.test(text)) return false;
+  const pm = publishedAt.getMonth() + 1, pd = publishedAt.getDate();
+  const pv = new Date(publishedAt.getTime() - 86400000);
+  const vm = pv.getMonth() + 1, vd = pv.getDate();
+  // (2) 어제/오늘을 가리키는 표현
+  if (/이날|오늘|금일|당일|어제|전날|하루\s*전/.test(text)) return true;
+  // (3) 'M월 D일'(월·일) 이 기사일/전일과 일치
   let m: RegExpExecArray | null;
-  while ((m = re.exec(text))) {
-    const d = Number(m[1] ?? m[4]);
-    if (d === pubDay || d === prevDay) return true;
+  const reMD = /(\d{1,2})\s*월\s*(\d{1,2})\s*일/g;
+  while ((m = reMD.exec(text))) {
+    const mo = Number(m[1]), d = Number(m[2]);
+    if ((mo === pm && d === pd) || (mo === vm && d === vd)) return true;
+  }
+  // (4) 월 없는 'D일' — 기사 발행 월 기준으로 기사일/전일과 일치
+  const reD = /(\d{1,2})\s*일/g;
+  while ((m = reD.exec(text))) {
+    const d = Number(m[1]);
+    if (d === pd || (vm === pm && d === vd)) return true;
   }
   return false;
 }

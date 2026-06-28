@@ -28,8 +28,9 @@ async function main() {
     where: { publishedAt: { gte: since } },
     select: { id: true, title: true, summary: true, crimeType: true, crimeSubtype: true, publishedAt: true, originalUrl: true, resolvedUrl: true, sourceType: true, sourceName: true },
   });
-  // 후보: 현재 공판이거나 제목/요약에 판결 관련 표현
-  const cand = all.filter((a) => a.crimeType === "공판" || VERDICT_HINT.test(`${a.title} ${a.summary ?? ""}`));
+  // 후보: 현재 공판이거나 제목/요약에 판결 관련 표현. TRIAL_ONLY=1 이면 현재 공판만 재점검(가볍게).
+  const trialOnly = process.env.TRIAL_ONLY === "1";
+  const cand = all.filter((a) => a.crimeType === "공판" || (!trialOnly && VERDICT_HINT.test(`${a.title} ${a.summary ?? ""}`)));
   console.log(`공판 후보 ${cand.length}건 재판정 시작`);
 
   let done = 0, toTrial = 0, fromTrial = 0, changed = 0;
