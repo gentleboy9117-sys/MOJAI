@@ -69,10 +69,8 @@ export default function TrialMonitoringPage() {
   return (
     <div className="mx-auto max-w-content space-y-5 p-5">
       <div>
-        <h1 className="flex items-center gap-2 text-heading-m text-ink-title">
-          <Gavel className="h-5 w-5 text-primary" /> 공판 모니터링
-        </h1>
-        <p className="text-body-s text-ink-muted">공판(선고) 보도 현황 요약 (공개 보도 기준)</p>
+        <h1 className="text-heading-m text-ink-title">공판 모니터링</h1>
+        <p className="text-body-s text-ink-muted">공판 관련 언론보도를 정리한 화면입니다.</p>
       </div>
       <TrialSubNav />
 
