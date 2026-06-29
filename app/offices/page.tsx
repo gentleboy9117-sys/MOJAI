@@ -107,7 +107,6 @@ export default function OfficesPage() {
         <span className="flex min-w-0 items-center gap-1.5">
           <ChevronRight className="h-3 w-3 shrink-0 text-ink-disabled" />
           <span className="truncate text-body-s text-ink-title">{o.name}</span>
-          <span className="shrink-0 text-detail text-ink-disabled">{o.region}</span>
         </span>
         <Counts heat={heatById.get(o.id)} />
       </Link>
