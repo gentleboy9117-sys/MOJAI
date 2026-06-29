@@ -15,7 +15,7 @@ import { ReportViewer, type ReportData } from "./ReportViewer";
 type Period = "today" | "7d" | "30d" | "all";
 const PERIOD_LABEL: Record<Period, string> = { today: "오늘", "7d": "최근 7일", "30d": "최근 30일", all: "전체 기간" };
 
-export function ReportGenerator() {
+export function ReportGenerator({ fixedCrimeType }: { fixedCrimeType?: string } = {}) {
   const params = useSearchParams();
   const reportId = params.get("report");
 
@@ -23,7 +23,7 @@ export function ReportGenerator() {
   const [period, setPeriod] = useState<Period>("7d");
   const [office, setOffice] = useState("");
   const [region, setRegion] = useState("");
-  const [crimeType, setCrimeType] = useState("");
+  const [crimeType, setCrimeType] = useState(fixedCrimeType ?? "");
 
   const [report, setReport] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -113,17 +113,19 @@ export function ReportGenerator() {
               <Label htmlFor="rpt-region">지역 (선택)</Label>
               <Input id="rpt-region" value={region} onChange={(e) => setRegion(e.target.value)} placeholder="예: 서울" />
             </div>
-            <div>
-              <Label htmlFor="rpt-crime">범죄유형 (선택)</Label>
-              <Select id="rpt-crime" value={crimeType} onChange={(e) => setCrimeType(e.target.value)}>
-                <option value="">전체</option>
-                {ALL_CRIME_TYPES.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </Select>
-            </div>
+            {!fixedCrimeType && (
+              <div>
+                <Label htmlFor="rpt-crime">범죄유형 (선택)</Label>
+                <Select id="rpt-crime" value={crimeType} onChange={(e) => setCrimeType(e.target.value)}>
+                  <option value="">전체</option>
+                  {ALL_CRIME_TYPES.map((c) => (
+                    <option key={c} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </Select>
+              </div>
+            )}
             <Button className="w-full" onClick={generate} disabled={loading}>
               {loading ? <Spinner className="border-white/40 border-t-white" /> : null}
               {loading ? "생성 중…" : "보고서 생성"}
