@@ -61,7 +61,6 @@ export function AssemblyScheduleTable({
             <th className="px-3 py-2 font-medium">예상 인원</th>
             <th className="px-3 py-2 font-medium">관할</th>
             <th className="px-3 py-2 text-right font-medium">관련 보도</th>
-            <th className="px-3 py-2 font-medium">상태</th>
           </tr>
         </thead>
         <tbody className="divide-y divide-line">
@@ -99,13 +98,6 @@ export function AssemblyScheduleTable({
                   </Badge>
                 ) : (
                   <span className="text-detail text-ink-disabled">-</span>
-                )}
-              </td>
-              <td className="px-3 py-2">
-                {r.needsHumanReview ? (
-                  <Badge tone="danger">검토 필요</Badge>
-                ) : (
-                  <Badge tone="outline">확인</Badge>
                 )}
               </td>
             </tr>

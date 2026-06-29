@@ -38,7 +38,7 @@ const POLICY_RE = /보완수사권|검찰\s*개혁|공소청|기소청|수사청
 const OVERRIDE_ONLY_TYPES = new Set(["공판", "형사사법제도/정책", "기타"]);
 
 /** 키워드 스코어로 (기저) 범죄유형 1개 선택 — 공판/정책/기타 제외 */
-function scoreCrimeCategory(text: string): { cat: string; sub: string; hits: string[]; score: number } | null {
+export function scoreCrimeCategory(text: string): { cat: string; sub: string; hits: string[]; score: number } | null {
   let best: { cat: string; sub: string; hits: string[]; score: number } | null = null;
   for (const cat of CRIME_TAXONOMY) {
     if (OVERRIDE_ONLY_TYPES.has(cat.type)) continue;

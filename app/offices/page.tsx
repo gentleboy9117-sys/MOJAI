@@ -140,7 +140,7 @@ export default function OfficesPage() {
               <CardTitle className="flex items-center gap-1.5">
                 <Building2 className="h-4 w-4 text-primary" /> 조직도
               </CardTitle>
-              <span className="text-detail text-ink-muted">클릭 시 해당 검찰청 이슈로 이동</span>
+              <span className="text-detail text-ink-muted">클릭 시 해당 검찰청 이슈 관련 기사로 이동</span>
             </CardHeader>
             <CardContent className="space-y-1">
               {!offices?.length ? (

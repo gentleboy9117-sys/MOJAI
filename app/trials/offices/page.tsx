@@ -31,8 +31,8 @@ export default function TrialOfficesPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const loading = lo || la;
 
-  // 검찰청별 공판 보도(중복 제거) 건수
-  const countByOffice = useMemo(() => {
+  // 검찰청별 공판 보도(중복 제거) 건수 + 주요 범죄유형 Top2
+  const statsByOffice = useMemo(() => {
     const byOffice = new Map<string, ArticleRow[]>();
     for (const r of data ?? []) {
       const name = r.primaryOfficeName;
@@ -40,8 +40,17 @@ export default function TrialOfficesPage() {
       if (!byOffice.has(name)) byOffice.set(name, []);
       byOffice.get(name)!.push(r);
     }
-    const m = new Map<string, number>();
-    byOffice.forEach((arts, name) => m.set(name, dedupeArticles(arts).length));
+    const m = new Map<string, { count: number; top: { sub: string; n: number }[] }>();
+    byOffice.forEach((arts, name) => {
+      const deduped = dedupeArticles(arts);
+      const subCount = new Map<string, number>();
+      for (const d of deduped) {
+        const s = d.rep.crimeSubtype;
+        if (s && s !== "기타") subCount.set(s, (subCount.get(s) ?? 0) + 1);
+      }
+      const top = [...subCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 2).map(([sub, n]) => ({ sub, n }));
+      m.set(name, { count: deduped.length, top });
+    });
     return m;
   }, [data]);
 
@@ -59,8 +68,8 @@ export default function TrialOfficesPage() {
   }, [offices]);
 
   const ranking = useMemo(
-    () => [...countByOffice.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
-    [countByOffice],
+    () => [...statsByOffice.entries()].map(([name, s]) => ({ name, count: s.count, top: s.top })).sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
+    [statsByOffice],
   );
 
   const selectedDeduped = useMemo(() => {
@@ -70,7 +79,8 @@ export default function TrialOfficesPage() {
   }, [data, selected]);
 
   function OfficeRow({ o, indent }: { o: Office; indent: number }) {
-    const c = countByOffice.get(o.name) ?? 0;
+    const st = statsByOffice.get(o.name);
+    const c = st?.count ?? 0;
     return (
       <button
         onClick={() => c > 0 && setSelected(o.name)}
@@ -87,7 +97,14 @@ export default function TrialOfficesPage() {
           <span className="truncate text-body-s text-ink-title">{o.name}</span>
           <span className="shrink-0 text-detail text-ink-disabled">{o.region}</span>
         </span>
-        {c > 0 ? <Badge tone="blue">공판 {c}</Badge> : <span className="text-detail text-ink-disabled">-</span>}
+        {c > 0 ? (
+          <span className="flex shrink-0 flex-wrap items-center justify-end gap-1">
+            <Badge tone="blue">공판 {c}</Badge>
+            {st?.top.map((t) => <Badge key={t.sub} tone="outline">{t.sub} {t.n}</Badge>)}
+          </span>
+        ) : (
+          <span className="text-detail text-ink-disabled">-</span>
+        )}
       </button>
     );
   }
@@ -109,7 +126,7 @@ export default function TrialOfficesPage() {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-1.5"><Building2 className="h-4 w-4 text-primary" /> 조직도</CardTitle>
-                <span className="text-detail text-ink-muted">클릭 시 해당 검찰청 공판 보도</span>
+                <span className="text-detail text-ink-muted">클릭시 해당 검찰청 공판 관련 기사로 이동</span>
               </CardHeader>
               <CardContent className="space-y-1">
                 {!offices?.length ? (
@@ -165,6 +182,7 @@ export default function TrialOfficesPage() {
                         <tr className="border-b border-line bg-gray-5 text-left text-detail text-ink-muted">
                           <th className="px-3 py-2 font-medium">순위</th>
                           <th className="px-3 py-2 font-medium">검찰청</th>
+                          <th className="px-3 py-2 font-medium">주요 유형</th>
                           <th className="px-3 py-2 text-right font-medium">공판 보도</th>
                         </tr>
                       </thead>
@@ -173,6 +191,7 @@ export default function TrialOfficesPage() {
                           <tr key={r.name} className={cn("cursor-pointer hover:bg-gray-5", selected === r.name && "bg-blue-5")} onClick={() => setSelected(r.name)}>
                             <td className="px-3 py-2 text-ink-disabled">{i + 1}</td>
                             <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">{r.name}</td>
+                            <td className="px-3 py-2 text-ink-muted">{r.top.length ? r.top.map((t) => `${t.sub} ${t.n}`).join(" · ") : "-"}</td>
                             <td className="px-3 py-2 text-right text-ink-body">{r.count}</td>
                           </tr>
                         ))}

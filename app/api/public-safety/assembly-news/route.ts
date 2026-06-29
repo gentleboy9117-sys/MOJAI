@@ -84,13 +84,11 @@ export async function GET(req: NextRequest) {
       .map(([date, count]) => ({ date, count }))
       .sort((x, y) => (x.date < y.date ? 1 : -1));
 
-    // 선택 날짜: 지정값 > 오늘 > 가장 최근 보유일
+    // 선택 날짜: 지정값 > 오늘(보유 시) > 가장 최근 보유일
+    //  (오늘 기사가 없으면 가장 최근 보유일로 — 목록이 비어 헤드라인 기사가 안 보이는 문제 방지)
     const today = dayKey(appToday());
-    let selectedDate = dateParam || today;
-    if (!dateCounts.has(selectedDate)) {
-      // 오늘 기사가 없으면 빈 결과를 주되, 선택값은 유지(프론트에서 안내)
-      selectedDate = dateParam || today;
-    }
+    const selectedDate =
+      dateParam || (dateCounts.has(today) ? today : availableDates[0]?.date ?? today);
 
     const dayArticles = articles.filter((a) => dayKey(a.publishedAt) === selectedDate);
 
