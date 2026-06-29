@@ -24,7 +24,6 @@ export function ReportGenerator() {
   const [office, setOffice] = useState("");
   const [region, setRegion] = useState("");
   const [crimeType, setCrimeType] = useState("");
-  const [includeReview, setIncludeReview] = useState(true);
 
   const [report, setReport] = useState<ReportData | null>(null);
   const [loading, setLoading] = useState(false);
@@ -60,7 +59,6 @@ export function ReportGenerator() {
           officeName: office || undefined,
           region: region || undefined,
           crimeType: crimeType || undefined,
-          includeReview,
         },
       });
       setReport(data);
@@ -126,15 +124,6 @@ export function ReportGenerator() {
                 ))}
               </Select>
             </div>
-            <label className="flex cursor-pointer items-center gap-2 text-body-s text-ink-body">
-              <input
-                type="checkbox"
-                checked={includeReview}
-                onChange={(e) => setIncludeReview(e.target.checked)}
-                className="h-4 w-4 rounded border-line-strong text-primary focus:ring-ring"
-              />
-              검토필요 항목 포함
-            </label>
             <Button className="w-full" onClick={generate} disabled={loading}>
               {loading ? <Spinner className="border-white/40 border-t-white" /> : null}
               {loading ? "생성 중…" : "보고서 생성"}
