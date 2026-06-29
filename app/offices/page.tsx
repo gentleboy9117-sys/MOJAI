@@ -118,11 +118,13 @@ export default function OfficesPage() {
     <div className="mx-auto max-w-content space-y-5 p-5">
       <div>
         <h1 className="text-heading-m text-ink-title">검찰청별 보기</h1>
-        <p className="text-detail text-ink-muted">
-          · <span className="font-medium text-blue-60">이슈(파랑)</span> = 비슷한 기사를 묶은 사건 수 ·{" "}
-          <span className="font-medium text-[#9a6a00]">중요(노랑)</span> = 보도 파급도가 높은 중요 이슈 수
+        <p className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-body-s text-ink-muted">
+          <span>이슈 현황 및 순위</span>
+          <span className="text-detail">
+            · <span className="font-medium text-blue-60">이슈(파랑)</span> = 비슷한 기사를 묶은 사건 수 ·{" "}
+            <span className="font-medium text-[#9a6a00]">중요(노랑)</span> = 보도 파급도가 높은 중요 이슈 수
+          </span>
         </p>
-        <p className="mt-1 text-body-s text-ink-muted">이슈 현황 및 순위</p>
       </div>
       <IssueSubNav />
 
