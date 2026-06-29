@@ -1,10 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import {
-  JURISDICTION_METHOD_LABEL,
-  confidenceTone,
-  isInferredJurisdiction,
-  formatPercent,
-} from "./publicSafetyLabels";
+import { confidenceTone, formatPercent } from "./publicSafetyLabels";
 
 /**
  * [공안] 관할 배지 — 검찰청명 + 신뢰도 표시.
@@ -23,18 +18,11 @@ export function AssemblyJurisdictionBadge({
   needsHumanReview?: boolean;
   showConfidence?: boolean;
 }) {
-  const inferred = isInferredJurisdiction(method, needsHumanReview);
   return (
     <span className="inline-flex flex-wrap items-center gap-1">
-      <Badge tone="navy">{officeName || "관할 추정"}</Badge>
-      {inferred && <Badge tone="warning">관할 추정</Badge>}
+      <Badge tone="navy">{officeName || "관할 미상"}</Badge>
       {showConfidence && confidence != null && (
         <Badge tone={confidenceTone(confidence)}>신뢰도 {formatPercent(confidence)}</Badge>
-      )}
-      {method && (
-        <span className="text-detail text-ink-disabled">
-          {JURISDICTION_METHOD_LABEL[method] ?? method}
-        </span>
       )}
     </span>
   );

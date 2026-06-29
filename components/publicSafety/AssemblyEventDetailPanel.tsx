@@ -129,8 +129,8 @@ export function AssemblyEventDetailPanel({
           )}
         </Section>
 
-        {/* 장소·관할(추정) */}
-        <Section title="장소 · 검찰청 관할(추정)" icon={<MapPin className="h-3.5 w-3.5 text-primary" />}>
+        {/* 장소·관할 */}
+        <Section title="장소 · 검찰청 관할" icon={<MapPin className="h-3.5 w-3.5 text-primary" />}>
           <div className="space-y-2 rounded-md border border-line bg-white p-3">
             <AssemblyJurisdictionBadge
               officeName={a.prosecutionOfficeName}

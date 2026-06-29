@@ -59,7 +59,7 @@ export function AssemblyScheduleTable({
             <th className="px-3 py-2 font-medium">행정구</th>
             <th className="px-3 py-2 font-medium">주최(공개)</th>
             <th className="px-3 py-2 font-medium">예상 인원</th>
-            <th className="px-3 py-2 font-medium">관할(추정)</th>
+            <th className="px-3 py-2 font-medium">관할</th>
             <th className="px-3 py-2 text-right font-medium">관련 보도</th>
             <th className="px-3 py-2 font-medium">상태</th>
           </tr>

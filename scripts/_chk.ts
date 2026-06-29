@@ -1,18 +1,20 @@
 import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
-import { isNonLegalNoise, isForeignTopic, isCelebGossip, isPhotoOnlyTitle, isOpinionColumn } from "@/lib/collect/filters";
+import { isNonLegalNoise } from "@/lib/collect/filters";
 (async () => {
-  const all = await prisma.article.findMany({ select: { id: true, title: true, summary: true } });
-  const noise = all.filter((a) => isNonLegalNoise(a.title, a.summary));
-  const foreign = all.filter((a) => isForeignTopic(a.title, a.summary));
-  const celeb = all.filter((a) => isCelebGossip(a.title, a.summary));
-  const photo = all.filter((a) => isPhotoOnlyTitle(a.title));
-  const col = all.filter((a) => isOpinionColumn(a.title));
-  const union = new Set([...noise, ...foreign, ...celeb, ...photo, ...col].map((a) => a.id));
-  console.log(`전체 ${all.length}`);
-  console.log(`  형사사법무관 ${noise.length} · 해외 ${foreign.length} · 연예 ${celeb.length} · 포토 ${photo.length} · 칼럼 ${col.length}`);
-  console.log(`  삭제 합집합 ${union.size} (잔존 예상 ${all.length - union.size})`);
-  console.log("\n형사사법무관 샘플 15:");
-  noise.slice(0, 15).forEach((a) => console.log("  - " + a.title.slice(0, 50)));
+  const total = await prisma.article.count();
+  const unclass = await prisma.article.count({ where: { primaryOfficeId: null } });
+  const un = await prisma.article.findMany({ where: { primaryOfficeId: null }, select: { title: true, originalUrl: true, resolvedUrl: true, summary: true }, take: 40 });
+  // 출처 유형 분석
+  let google = 0, naver = 0, noise = 0;
+  for (const a of un) {
+    const u = a.resolvedUrl || a.originalUrl;
+    if (u.includes("news.google.com")) google++; else naver++;
+    if (isNonLegalNoise(a.title, a.summary)) noise++;
+  }
+  console.log(`총 ${total} · 미분류 ${unclass} (${Math.round(unclass/total*100)}%)`);
+  console.log(`미분류 샘플40: 구글소스 ${google} · 비구글 ${naver} · 무관잡음 ${noise}`);
+  console.log("\n샘플:");
+  un.slice(0, 12).forEach((a) => console.log("  - " + a.title.slice(0, 45) + "  [" + (a.resolvedUrl || a.originalUrl).slice(0, 30) + "]"));
   await prisma.$disconnect();
 })().catch((e) => { console.error(e); process.exit(1); });

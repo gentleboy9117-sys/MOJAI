@@ -45,17 +45,11 @@ export function PublicSafetyDashboardPage() {
   return (
     <div className="space-y-5">
       {/* 요약 카드 */}
-      <div className="grid grid-cols-2 gap-3 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="오늘 공개 집회" value={summary.loading ? "…" : (s?.todayCount ?? 0)} sub="공개 일정 정보" />
         <Stat label="내일 예정" value={summary.loading ? "…" : (s?.tomorrowCount ?? 0)} sub="공개 일정 정보" />
-        <Stat label="관할(추정) 검찰청" value={summary.loading ? "…" : (s?.byOfficeCount ?? 0)} sub="곳" />
+        <Stat label="관할 검찰청" value={summary.loading ? "…" : (s?.byOfficeCount ?? 0)} sub="곳" />
         <Stat label="관련 보도 있는 일정" value={summary.loading ? "…" : (s?.withRelatedReportCount ?? 0)} sub="공개 보도" />
-        <Stat
-          label="법적 이슈 언급"
-          value={summary.loading ? "…" : (s?.legalIssueMentionCount ?? 0)}
-          sub="가능성 언급(확정 아님)"
-          tone="text-[#9a6a00]"
-        />
       </div>
 
       {/* 출처별 수집 현황 · 정보 반영 시각 */}

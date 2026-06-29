@@ -68,7 +68,7 @@ export function AssemblySourceStatusPanel() {
               <table className="w-full text-detail">
                 <thead>
                   <tr className="border-b border-line text-left text-ink-muted">
-                    <th className="px-2 py-1.5 font-medium">지방청</th>
+                    <th className="px-2 py-1.5 font-medium">지방경찰청</th>
                     <th className="px-2 py-1.5 font-medium">상태</th>
                     <th className="px-2 py-1.5 font-medium">수집 건수</th>
                     <th className="px-2 py-1.5 font-medium">반영된 최신 집회일</th>
@@ -101,7 +101,7 @@ export function AssemblySourceStatusPanel() {
               </table>
             </div>
             <p className="mt-2 text-detail text-ink-disabled">
-              · '반영된 최신 집회일'은 각 지방청 게시판에서 수집된 공지 중 가장 최근 집회 예정일입니다. 미수집 지방청은 게시판 구조(JS/프레임)로 별도 파서가 필요합니다.
+              · '반영된 최신 집회일'은 각 지방경찰청 게시판에서 수집된 공지 중 가장 최근 집회 예정일입니다. 미수집 지방경찰청은 게시판 구조(JS/프레임)로 별도 파서가 필요합니다.
             </p>
           </>
         )}
