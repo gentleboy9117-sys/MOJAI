@@ -8,7 +8,7 @@ export interface SubNavItem {
 }
 
 export const PUBLIC_SAFETY_SUBNAV: SubNavItem[] = [
-  { label: "공안 모니터링", href: "/public-safety" },
+  { label: "집회·시위 모니터링", href: "/public-safety" },
   { label: "집회·시위 일정", href: "/public-safety/assemblies" },
   { label: "집회·시위 보도", href: "/public-safety/related-news" },
   { label: "선거 보도", href: "/public-safety/election-news" },

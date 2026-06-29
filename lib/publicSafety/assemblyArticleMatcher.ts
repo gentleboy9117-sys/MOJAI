@@ -53,6 +53,7 @@ export interface AssemblyArticleMatch {
   matchedKeywords: string[];
   matchedLocation: boolean;
   matchedOrg: boolean;
+  matchedTopic: boolean;
   matchedDate: boolean;
   hasLegalIssueMention: boolean;
   legalIssueKeywords: string[];
@@ -129,8 +130,9 @@ export function matchAssemblyArticle(
     matchedKeywords.push(org);
   }
 
-  // 주제 키워드 +20
-  if (TOPIC_KEYWORDS.some((k) => full.includes(k))) {
+  // 주제 키워드 +20 (집회·시위 관련 보도인지)
+  const matchedTopic = TOPIC_KEYWORDS.some((k) => full.includes(k));
+  if (matchedTopic) {
     score += 20;
     for (const k of TOPIC_KEYWORDS) if (full.includes(k) && !matchedKeywords.includes(k)) matchedKeywords.push(k);
   }
@@ -186,6 +188,7 @@ export function matchAssemblyArticle(
     matchedKeywords,
     matchedLocation,
     matchedOrg,
+    matchedTopic,
     matchedDate,
     hasLegalIssueMention,
     legalIssueKeywords,
@@ -230,9 +233,11 @@ export function matchAssemblyToArticles(
     // 집회 전 1일 ~ 집회 후 windowDays 일 범위만 평가(후속 보도 고려)
     if (diff < -1 || diff > Math.max(windowDays, 1)) continue;
     const match = matchAssemblyArticle(assembly, article);
-    // 관할 정확도: 집회 주제·날짜만으로는 그날 모든 집회에 무관 기사가 붙으므로,
-    // 장소(장소명/행정구) 또는 주최단체가 실제 일치하는 경우에만 연결한다.
-    if (match.relationConfidence >= 0.5 && (match.matchedLocation || match.matchedOrg)) {
+    // 관할 정확도:
+    //  ① 장소(장소명/행정구) 또는 주최단체가 실제 일치하고
+    //  ② 기사가 실제로 집회·시위를 다룬 보도여야(matchedTopic) 연결한다.
+    //  (지역명만 같은 보이스피싱·일반사건 기사가 '집회 관련 보도'로 붙는 것 방지)
+    if (match.relationConfidence >= 0.5 && (match.matchedLocation || match.matchedOrg) && match.matchedTopic) {
       out.push({ article, match });
     }
   }
