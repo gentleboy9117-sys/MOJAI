@@ -9,6 +9,7 @@ import { IssueSubNav } from "@/components/issues/IssueSubNav";
 import { cn, formatDate } from "@/lib/utils";
 import { pickDistinctTop } from "@/lib/client/dedupeSimilar";
 import { calendarRange, type CalPeriod } from "@/lib/periodRange";
+import { KoreaOfficeMap } from "@/components/issues/KoreaOfficeMap";
 
 interface ArticleRow {
   id: string;
@@ -81,7 +82,6 @@ export default function IssueMonitoringPage() {
     [heat],
   );
   const crimes = useMemo(() => rank(inRange(pCrime).map((r) => r.crimeType || "기타")), [rows, pCrime]);
-  const officeMax = offices[0]?.count ?? 0;
   const crimeMax = crimes[0]?.count ?? 0;
 
   return (
@@ -111,9 +111,9 @@ export default function IssueMonitoringPage() {
               {!notable.length ? (
                 <p className="py-4 text-center text-body-s text-ink-muted">해당 기간 이슈가 없습니다.</p>
               ) : (
-                <ul className="divide-y divide-line">
+                <ul className="max-h-[300px] divide-y divide-line overflow-y-auto scrollbar-thin">
                   {notable.map((a, i) => (
-                    <li key={a.id} className="flex items-start gap-3 px-3 py-2 hover:bg-gray-5">
+                    <li key={a.id} className="flex items-start gap-3 px-3 py-1.5 hover:bg-gray-5">
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-caption font-bold text-white">{i + 1}</span>
                       <div className="min-w-0 flex-1">
                         {isRealUrl(a.originalUrl) ? (
@@ -137,20 +137,15 @@ export default function IssueMonitoringPage() {
             </CardContent>
           </Card>
 
-          {/* 검찰청별 이슈 분포(전국) */}
+          {/* 검찰청별 이슈 분포(전국 지도) */}
           <Card>
             <CardHeader>
               <CardTitle>검찰청별 이슈 분포 (전국)</CardTitle>
               <Periods value={pOffice} onChange={setPOffice} />
             </CardHeader>
             <CardContent>
-              {offices.length ? (
-                <div className="space-y-1.5">
-                  {offices.map((o) => <BarRow key={o.name} label={o.name} value={o.count} max={officeMax} tone="bg-primary" />)}
-                </div>
-              ) : (
-                <p className="text-body-s text-ink-muted">집계된 검찰청이 없습니다.</p>
-              )}
+              <KoreaOfficeMap data={offices} />
+              <p className="mt-2 text-detail text-ink-disabled">· 원의 크기·진하기 = 이슈 수. 검찰청 소재 도시 기준 집계(법무부/대검찰청 등 전국 단위 제외).</p>
             </CardContent>
           </Card>
 
