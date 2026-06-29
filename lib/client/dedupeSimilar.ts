@@ -24,6 +24,29 @@ function jaccard(a: Set<string>, b: Set<string>): number {
   return inter / (a.size + b.size - inter);
 }
 
+/** 두 문자열의 최장 공통 부분문자열 길이(같은 인물·사안명 탐지용) */
+function lcsLen(a: string, b: string): number {
+  if (!a || !b) return 0;
+  let max = 0;
+  const dp = new Array(b.length + 1).fill(0);
+  for (let i = 1; i <= a.length; i++) {
+    let prev = 0;
+    for (let j = 1; j <= b.length; j++) {
+      const tmp = dp[j];
+      if (a[i - 1] === b[j - 1]) { dp[j] = prev + 1; if (dp[j] > max) max = dp[j]; }
+      else dp[j] = 0;
+      prev = tmp;
+    }
+  }
+  return max;
+}
+
+// 같은 사건 판정: 토큰 유사도 0.35↑ 이거나, 공통 부분문자열 5자↑ + 토큰 유사도 0.25↑
+function sameEvent(ga: Set<string>, gb: Set<string>, ca: string, cb: string): boolean {
+  const j = jaccard(ga, gb);
+  return j >= 0.35 || (lcsLen(ca, cb) >= 5 && j >= 0.25);
+}
+
 export interface DistinctRow {
   title: string;
   issueClusterId?: string | null;
@@ -31,20 +54,23 @@ export interface DistinctRow {
   publishedAt: string;
 }
 
-/** 파급도 순으로 '서로 다른 사건' n개 추출(클러스터 + 내용 유사도 0.4 임계) */
-export function pickDistinctTop<T extends DistinctRow>(rows: T[], n: number, threshold = 0.4): T[] {
+/** 파급도 순으로 '서로 다른 사건' n개 추출(클러스터 + 내용 유사도 + 공통 인물·사안명) */
+export function pickDistinctTop<T extends DistinctRow>(rows: T[], n: number): T[] {
   const sorted = [...rows].sort(
     (a, b) => (b.issueScore ?? 0) - (a.issueScore ?? 0) || new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime(),
   );
   const out: T[] = [];
   const grams: Set<string>[] = [];
+  const cleans: string[] = [];
   const seenCluster = new Set<string>();
   for (const a of sorted) {
     if (a.issueClusterId && seenCluster.has(a.issueClusterId)) continue;
-    const g = bigrams(cleanCore(a.title));
-    if (grams.some((pg) => jaccard(g, pg) >= threshold)) continue;
+    const c = cleanCore(a.title);
+    const g = bigrams(c);
+    if (grams.some((pg, i) => sameEvent(g, pg, c, cleans[i]))) continue; // 같은 사건 → 제외
     out.push(a);
     grams.push(g);
+    cleans.push(c);
     if (a.issueClusterId) seenCluster.add(a.issueClusterId);
     if (out.length >= n) break;
   }

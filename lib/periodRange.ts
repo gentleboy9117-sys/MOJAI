@@ -27,7 +27,7 @@ export function calendarRange(period: CalPeriod, ref: Date = appToday()): Period
       end: endOfDay(ref),
       prevStart: startOfDay(new Date(y, m, d - 1)),
       prevEnd: endOfDay(new Date(y, m, d - 1)),
-      periodLabel: "오늘",
+      periodLabel: "금일",
       deltaLabel: "전일 대비",
     };
   }

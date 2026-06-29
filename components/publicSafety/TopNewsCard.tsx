@@ -28,7 +28,6 @@ export function TopNewsCard({ title, baseUrl, n = 5 }: { title: string; baseUrl:
     <Card className="flex flex-col">
       <CardHeader>
         <CardTitle>{title} TOP {n}</CardTitle>
-        <span className="text-detail text-ink-muted">파급도순 · 중복 사건 제외</span>
       </CardHeader>
       <CardContent className="flex-1 p-0">
         {loading ? (

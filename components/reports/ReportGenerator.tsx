@@ -118,7 +118,7 @@ export function ReportGenerator({ fixedCrimeType }: { fixedCrimeType?: string } 
                 <Label htmlFor="rpt-crime">범죄유형 (선택)</Label>
                 <Select id="rpt-crime" value={crimeType} onChange={(e) => setCrimeType(e.target.value)}>
                   <option value="">전체</option>
-                  {ALL_CRIME_TYPES.map((c) => (
+                  {ALL_CRIME_TYPES.filter((c) => c !== "공판").map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>

@@ -222,7 +222,7 @@ export default function TrialOfficesPage() {
                       onClick={() => setPeriod(v)}
                       className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
                     >
-                      {v === "today" ? "오늘" : v === "week" ? "금주" : "금월"}
+                      {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
                     </button>
                   ))}
                 </div>
