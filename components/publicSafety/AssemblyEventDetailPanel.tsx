@@ -97,7 +97,6 @@ export function AssemblyEventDetailPanel({
       <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
         <span className="text-detail text-ink-disabled">공개 집회·시위 일정 상세</span>
         <span className="ml-auto flex flex-wrap gap-1.5">
-          {a.needsHumanReview && <Badge tone="danger">검토 필요</Badge>}
           {a.hasLegalIssueMention && <Badge tone="warning">법적 이슈 가능성 언급</Badge>}
         </span>
       </div>
@@ -137,6 +136,7 @@ export function AssemblyEventDetailPanel({
               confidence={a.jurisdictionConfidence}
               method={a.jurisdictionMethod}
               needsHumanReview={a.needsHumanReview}
+              showConfidence={false}
             />
             {a.jurisdictionReason && (
               <p className="text-detail leading-relaxed text-ink-muted">
