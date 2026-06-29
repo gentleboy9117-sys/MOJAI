@@ -72,7 +72,7 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "집회·시위 모니터링",
+    title: "공안 모니터링",
     items: [
       { label: "집회·시위 모니터링", href: "/public-safety" },
       { label: "집회·시위 일정", href: "/public-safety/assemblies" },
