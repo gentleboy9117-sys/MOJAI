@@ -1,17 +1,20 @@
 import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
-import { pickDistinctTop } from "@/lib/client/dedupeSimilar";
-import { calendarRange } from "@/lib/periodRange";
-
+import { isOpinionColumn } from "@/lib/collect/filters";
+import { rebuildClusters } from "@/lib/pipeline/runPipeline";
 (async () => {
-  const r = calendarRange("month");
-  const rows = await prisma.article.findMany({
-    where: { crimeType: "공판", publishedAt: { gte: r.start, lte: r.end } },
-    select: { id: true, title: true, issueClusterId: true, issueScore: true, publishedAt: true },
-  });
-  const mapped = rows.map((a) => ({ ...a, publishedAt: a.publishedAt.toISOString(), issueScore: a.issueScore ?? 0 }));
-  const top = pickDistinctTop(mapped as any, 10);
-  console.log(`금월 공판 ${rows.length}건 → Top10(중복제거):`);
-  top.forEach((a: any, i: number) => console.log(`${i + 1}. [${a.issueScore}] ${a.title.split(" - ")[0].slice(0, 50)}`));
+  const all = await prisma.article.findMany({ select: { id: true, title: true } });
+  const hit = all.filter((a) => isOpinionColumn(a.title));
+  console.log(`칼럼·오피니언 기사 ${hit.length}건 삭제`);
+  hit.slice(0, 15).forEach((a) => console.log("  -", a.title.slice(0, 45)));
+  const ids = hit.map((h) => h.id);
+  for (let i = 0; i < ids.length; i += 200) {
+    const c = ids.slice(i, i + 200);
+    await prisma.articleClassification.deleteMany({ where: { articleId: { in: c } } }).catch(() => {});
+    await prisma.assemblyArticleLink.deleteMany({ where: { articleId: { in: c } } }).catch(() => {});
+    await prisma.article.deleteMany({ where: { id: { in: c } } });
+  }
+  if (ids.length) await rebuildClusters();
+  console.log("클러스터 재생성 완료");
   await prisma.$disconnect();
 })().catch((e) => { console.error(e); process.exit(1); });
