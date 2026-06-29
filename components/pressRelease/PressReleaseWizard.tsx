@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Sparkles, ChevronLeft, ChevronRight, FileText, ShieldQuestion } from "lucide-react";
+import { Sparkles, ChevronLeft, ChevronRight, FileText } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label, Input, Textarea, Select } from "@/components/ui/field";
@@ -134,17 +134,6 @@ export function PressReleaseWizard() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-4">
-      {/* 필수 안내 문구 */}
-      <Card className="border-warning/40 bg-warning-bg">
-        <CardContent className="flex gap-3 py-3">
-          <ShieldQuestion className="mt-0.5 h-5 w-5 shrink-0 text-[#9a6a00]" />
-          <p className="text-detail leading-relaxed text-[#9a6a00]">
-            이 기능은 기사 내용을 보도자료로 바꾸는 도구가 아닙니다. 사건 처리 이후 공개 가능한 사실을 입력하면, 공개 검찰발표자료의 구조와
-            문체를 참고해 보도자료 초안을 생성합니다. 생성물은 모두 ‘초안 — 담당자 검토 필요’이며, 유무죄를 단정하지 않고 ‘A씨’ 등 비식별
-            표기를 유지합니다.
-          </p>
-        </CardContent>
-      </Card>
 
       {/* 스텝 인디케이터 */}
       <div className="flex items-center gap-2">
@@ -328,7 +317,7 @@ export function PressReleaseWizard() {
                 />
               </div>
               <div>
-                <Label htmlFor="pr-legal">참고 법령 키워드 (쉼표로 구분, 법적 판단 아님)</Label>
+                <Label htmlFor="pr-legal">참고 법령 키워드 (쉼표로 구분)</Label>
                 <Input
                   id="pr-legal"
                   value={form.legalKeywords}
@@ -346,7 +335,7 @@ export function PressReleaseWizard() {
                 />
               </div>
               <div>
-                <Label htmlFor="pr-attach">첨부자료명 (쉼표로 구분)</Label>
+                <Label htmlFor="pr-attach">첨부자료 (쉼표로 구분)</Label>
                 <Input
                   id="pr-attach"
                   value={form.attachments}

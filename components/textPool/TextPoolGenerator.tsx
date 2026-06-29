@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { MessageSquareText, Copy, Check } from "lucide-react";
+import { MessageSquareText, Copy, Check, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label, Input, Select } from "@/components/ui/field";
@@ -38,6 +38,19 @@ export function TextPoolGenerator() {
 
   const set = (k: keyof Form, v: string) => setForm((f) => ({ ...f, [k]: v }));
 
+  function loadSample() {
+    setForm({
+      officeName: "서울중앙지방검찰청",
+      crimeType: "경제범죄",
+      caseSummary: "투자 리딩방을 운영하며 불특정 다수 투자자로부터 약 32억원을 받아 가로챈 혐의",
+      disposition: "기소(구속)",
+      dispositionDetail: "사기·유사수신행위규제법위반",
+      subject: "피의자 A씨(50대)",
+      occurredAt: "2026.6.30.",
+    });
+    setDraft(null);
+  }
+
   async function generate() {
     setLoading(true);
     setError(null);
@@ -64,6 +77,9 @@ export function TextPoolGenerator() {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-1.5"><MessageSquareText className="h-4 w-4 text-primary" /> 입력</CardTitle>
+          <button onClick={loadSample} className="flex items-center gap-1 text-detail text-blue-60 hover:underline">
+            <Sparkles className="h-4 w-4" /> 샘플 입력 불러오기
+          </button>
         </CardHeader>
         <CardContent className="space-y-3">
           <div>

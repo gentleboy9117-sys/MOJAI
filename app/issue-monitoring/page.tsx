@@ -9,7 +9,7 @@ import { IssueSubNav } from "@/components/issues/IssueSubNav";
 import { cn, formatDate } from "@/lib/utils";
 import { pickDistinctTop } from "@/lib/client/dedupeSimilar";
 import { calendarRange, type CalPeriod } from "@/lib/periodRange";
-import { KoreaOfficeMap } from "@/components/issues/KoreaOfficeMap";
+import { KoreaChoropleth } from "@/components/issues/KoreaChoropleth";
 
 interface ArticleRow {
   id: string;
@@ -83,6 +83,7 @@ export default function IssueMonitoringPage() {
   );
   const crimes = useMemo(() => rank(inRange(pCrime).map((r) => r.crimeType || "기타")), [rows, pCrime]);
   const crimeMax = crimes[0]?.count ?? 0;
+  const nationalCount = useMemo(() => (heat ?? []).find((h) => h.officeName === "법무부/대검찰청")?.issueCount ?? 0, [heat]);
 
   return (
     <div className="mx-auto max-w-content space-y-5 p-5">
@@ -137,34 +138,35 @@ export default function IssueMonitoringPage() {
             </CardContent>
           </Card>
 
-          {/* 검찰청별 이슈 분포(전국 지도) */}
-          <Card>
-            <CardHeader>
-              <CardTitle>검찰청별 이슈 분포 (전국)</CardTitle>
-              <Periods value={pOffice} onChange={setPOffice} />
-            </CardHeader>
-            <CardContent>
-              <KoreaOfficeMap data={offices} />
-              <p className="mt-2 text-detail text-ink-disabled">· 원의 크기·진하기 = 이슈 수. 검찰청 소재 도시 기준 집계(법무부/대검찰청 등 전국 단위 제외).</p>
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 lg:grid-cols-3">
+            {/* 검찰청별 이슈 분포(전국 지도 히트맵) */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>검찰청별 이슈 분포 (전국)</CardTitle>
+                <Periods value={pOffice} onChange={setPOffice} />
+              </CardHeader>
+              <CardContent>
+                <KoreaChoropleth offices={offices} nationalCount={nationalCount} />
+              </CardContent>
+            </Card>
 
-          {/* 범죄유형 분류(전체) */}
-          <Card>
-            <CardHeader>
-              <CardTitle>범죄유형 분류 (전체)</CardTitle>
-              <Periods value={pCrime} onChange={setPCrime} />
-            </CardHeader>
-            <CardContent>
-              {crimes.length ? (
-                <div className="space-y-1.5">
-                  {crimes.map((c) => <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} tone="bg-blue-60" />)}
-                </div>
-              ) : (
-                <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
+            {/* 범죄유형 분류(전체) */}
+            <Card>
+              <CardHeader>
+                <CardTitle>범죄유형 분류 (전체)</CardTitle>
+                <Periods value={pCrime} onChange={setPCrime} />
+              </CardHeader>
+              <CardContent>
+                {crimes.length ? (
+                  <div className="space-y-1.5">
+                    {crimes.map((c) => <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} tone="bg-blue-60" />)}
+                  </div>
+                ) : (
+                  <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
     </div>

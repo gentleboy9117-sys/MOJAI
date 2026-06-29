@@ -17,7 +17,7 @@ export interface TextPoolInput {
 }
 
 const DISPOSITIONS = [
-  "수사 개시",
+  "입건",
   "압수수색 실시",
   "체포영장 청구",
   "구속영장 청구",
@@ -28,8 +28,6 @@ const DISPOSITIONS = [
   "약식기소",
   "불기소(혐의없음)",
   "불기소(기소유예)",
-  "송치 수리",
-  "공소제기",
   "구형",
 ];
 export const TEXT_POOL_DISPOSITIONS = DISPOSITIONS;
@@ -42,8 +40,6 @@ export function buildTextPoolTemplate(input: TextPoolInput): string {
   lines.push(`○ 처분 결과: ${input.disposition}${input.dispositionDetail ? ` — ${input.dispositionDetail.trim()}` : ""}`);
   if (input.subject?.trim()) lines.push(`○ 대상: ${input.subject.trim()}`);
   if (input.occurredAt?.trim()) lines.push(`○ 일자: ${input.occurredAt.trim()}`);
-  lines.push("");
-  lines.push("※ 기자단 신속 공보용 참고자료(문자 분량). 무죄추정 원칙·피의사실 공표 유의. 정식 내용은 보도자료/공보담당 확인.");
   return lines.join("\n");
 }
 
