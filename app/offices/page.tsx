@@ -55,7 +55,6 @@ function Counts({ heat }: { heat?: HeatRow }) {
 export default function OfficesPage() {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
   const [period, setPeriod] = useState<"today" | "7d" | "30d">("30d");
-  const [sortBy, setSortBy] = useState<"issue" | "important">("issue");
   const [selectedOffice, setSelectedOffice] = useState<{ id: string; name: string } | null>(null);
   const { data: heatmap, loading: lh } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${period}`);
 
@@ -89,11 +88,8 @@ export default function OfficesPage() {
   }, [offices]);
 
   const ranking = useMemo(
-    () => {
-      const key = sortBy === "important" ? "importantIssues" : "issueCount";
-      return [...(heatmap ?? [])].sort((a, b) => (b[key] as number) - (a[key] as number) || b.articleCount - a.articleCount);
-    },
-    [heatmap, sortBy],
+    () => [...(heatmap ?? [])].sort((a, b) => b.issueCount - a.issueCount || b.articleCount - a.articleCount),
+    [heatmap],
   );
 
   const loading = lo || lh;
@@ -194,17 +190,6 @@ export default function OfficesPage() {
                     </button>
                   ))}
                 </div>
-                <div className="flex rounded-md border border-line p-0.5">
-                  {(["issue", "important"] as const).map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setSortBy(v)}
-                      className={cn("rounded px-2 py-0.5 text-caption transition-colors", sortBy === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
-                    >
-                      {v === "issue" ? "이슈순" : "중요순"}
-                    </button>
-                  ))}
-                </div>
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -221,7 +206,6 @@ export default function OfficesPage() {
                         <th className="px-3 py-2 text-right font-medium">이슈</th>
                         <th className="px-3 py-2 font-medium">주요 유형</th>
                         <th className="px-3 py-2 text-right font-medium">전일 대비</th>
-                        <th className="px-3 py-2 text-right font-medium">중요</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-line">
@@ -241,7 +225,6 @@ export default function OfficesPage() {
                           >
                             {r.deltaPrev > 0 ? `+${r.deltaPrev}` : r.deltaPrev}
                           </td>
-                          <td className="px-3 py-2 text-right text-ink-body">{r.importantIssues}</td>
                         </tr>
                       ))}
                     </tbody>
