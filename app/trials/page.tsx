@@ -85,7 +85,10 @@ export default function TrialMonitoringPage() {
           {/* 주요 사건 Top 10 */}
           <Card>
             <CardHeader>
-              <CardTitle>주요 사건 Top 10</CardTitle>
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
+                <CardTitle>주요 사건 Top 10</CardTitle>
+                <span className="text-detail text-ink-muted">파급도 = 보도량·출처 수·확산 속도 등으로 산정한 공개보도 영향력(0~100)</span>
+              </div>
               <Periods value={pTop} onChange={setPTop} />
             </CardHeader>
             <CardContent className="space-y-2">
