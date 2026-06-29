@@ -49,9 +49,6 @@ export function SideNav({ open = false, onClose }: { open?: boolean; onClose?: (
             </ul>
           </div>
         ))}
-        <p className="mt-auto px-2 text-detail leading-relaxed text-ink-disabled">
-          공개 자료 기반 참고 시스템 · 모든 AI 결과는 초안/참고용
-        </p>
       </nav>
     </>
   );
