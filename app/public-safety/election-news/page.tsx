@@ -1,7 +1,5 @@
-import { Suspense } from "react";
-import { Spinner } from "@/components/ui/misc";
 import { PublicSafetySubNav } from "@/components/publicSafety/PublicSafetySubNav";
-import { AssemblyNewsByOfficePanel } from "@/components/publicSafety/AssemblyNewsByOfficePanel";
+import { OfficeNewsBoard } from "@/components/publicSafety/OfficeNewsBoard";
 
 export const dynamic = "force-dynamic";
 
@@ -11,19 +9,11 @@ export default function ElectionNewsPage() {
       <div>
         <h1 className="text-heading-m text-ink-title">선거 보도</h1>
         <p className="text-body-s text-ink-muted">
-          공개 언론기사 중 선거범죄 관련 보도를 검찰청 관할별로 정리합니다. 각 기사 제목을 누르면 원문으로 이동합니다.
+          공개 언론기사 중 선거범죄 관련 보도를 검찰청 관할별로 정리합니다. 검찰청을 누르면 해당 청 보도가 표시됩니다.
         </p>
       </div>
       <PublicSafetySubNav />
-      <Suspense
-        fallback={
-          <div className="flex justify-center py-16">
-            <Spinner className="h-6 w-6" />
-          </div>
-        }
-      >
-        <AssemblyNewsByOfficePanel kind="election" title="선거 보도" />
-      </Suspense>
+      <OfficeNewsBoard baseUrl="/api/articles?crimeType=선거범죄&limit=300" />
     </div>
   );
 }
