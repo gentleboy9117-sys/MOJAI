@@ -1,11 +1,11 @@
 "use client";
 import { useMemo, useState } from "react";
-import { ExternalLink, Gavel } from "lucide-react";
+import { ExternalLink, LayoutDashboard } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Spinner, EmptyState } from "@/components/ui/misc";
 import { useApi } from "@/lib/client/useApi";
-import { TrialSubNav } from "@/components/trials/TrialSubNav";
+import { IssueSubNav } from "@/components/issues/IssueSubNav";
 import { cn, formatDate } from "@/lib/utils";
 import { pickDistinctTop } from "@/lib/client/dedupeSimilar";
 import { calendarRange, type CalPeriod } from "@/lib/periodRange";
@@ -16,15 +16,10 @@ interface ArticleRow {
   sourceName: string;
   publishedAt: string;
   originalUrl: string;
-  summary?: string | null;
-  primaryOfficeId?: string | null;
   primaryOfficeName?: string | null;
-  primaryRegion?: string | null;
   crimeType?: string | null;
-  crimeSubtype?: string | null;
   issueClusterId?: string | null;
   issueScore: number;
-  issueLevel: string;
 }
 
 function topCount(arr: string[], n: number): { name: string; count: number }[] {
@@ -49,8 +44,8 @@ function Periods({ value, onChange }: { value: CalPeriod; onChange: (p: CalPerio
   );
 }
 
-export default function TrialMonitoringPage() {
-  const { data, loading } = useApi<ArticleRow[]>("/api/articles?crimeType=공판&period=all&limit=300");
+export default function IssueMonitoringPage() {
+  const { data, loading } = useApi<ArticleRow[]>("/api/articles?period=all&limit=300&sort=score");
   const [pTop, setPTop] = useState<CalPeriod>("month");
   const [pOffice, setPOffice] = useState<CalPeriod>("month");
   const [pCrime, setPCrime] = useState<CalPeriod>("month");
@@ -64,36 +59,34 @@ export default function TrialMonitoringPage() {
 
   const notable = useMemo(() => pickDistinctTop(inRange(pTop), 10), [rows, pTop]);
   const topOffices = useMemo(() => topCount(inRange(pOffice).map((r) => r.primaryOfficeName ?? "").filter(Boolean), 5), [rows, pOffice]);
-  const bySubtype = useMemo(() => topCount(inRange(pCrime).map((r) => r.crimeSubtype || "기타"), 99), [rows, pCrime]);
+  const byType = useMemo(() => topCount(inRange(pCrime).map((r) => r.crimeType || "기타"), 99), [rows, pCrime]);
 
   return (
     <div className="mx-auto max-w-content space-y-5 p-5">
       <div>
-        <h1 className="text-heading-m text-ink-title">공판 모니터링</h1>
-        <p className="text-body-s text-ink-muted">공판 관련 언론보도를 정리한 화면입니다.</p>
+        <h1 className="text-heading-m text-ink-title">이슈 모니터링</h1>
+        <p className="text-body-s text-ink-muted">검찰 관련 주요 이슈 현황을 정리한 화면입니다.</p>
       </div>
-      <TrialSubNav />
+      <IssueSubNav />
 
       {loading ? (
-        <div className="flex justify-center py-16">
-          <Spinner className="h-6 w-6" />
-        </div>
+        <div className="flex justify-center py-16"><Spinner className="h-6 w-6" /></div>
       ) : !rows.length ? (
-        <EmptyState icon={<Gavel className="h-8 w-8" />} title="공판 관련 보도가 없습니다" desc="공판 관련 기사가 수집되면 집계됩니다." />
+        <EmptyState icon={<LayoutDashboard className="h-8 w-8" />} title="수집된 이슈가 없습니다" desc="기사가 수집되면 집계됩니다." />
       ) : (
         <div className="space-y-4">
-          {/* 주요 사건 Top 10 */}
+          {/* 주요 이슈 Top 10 */}
           <Card>
             <CardHeader>
               <div className="min-w-0">
-                <CardTitle>주요 사건 Top 10</CardTitle>
+                <CardTitle>주요 이슈 Top 10</CardTitle>
                 <span className="mt-0.5 block text-detail text-ink-muted">파급도 = 보도량·출처 수·확산 속도 등으로 산정한 공개보도 영향력(0~100)</span>
               </div>
               <Periods value={pTop} onChange={setPTop} />
             </CardHeader>
             <CardContent className="p-0">
               {!notable.length ? (
-                <p className="py-4 text-center text-body-s text-ink-muted">해당 기간 공판 보도가 없습니다.</p>
+                <p className="py-4 text-center text-body-s text-ink-muted">해당 기간 이슈가 없습니다.</p>
               ) : (
                 <ul className="divide-y divide-line">
                   {notable.map((a, i) => (
@@ -109,7 +102,7 @@ export default function TrialMonitoringPage() {
                           <span className="line-clamp-1 text-body-s font-medium text-ink-title">{a.title.split(" - ")[0]}</span>
                         )}
                         <p className="flex flex-wrap items-center gap-x-1.5 text-detail text-ink-muted">
-                          <span className="text-ink-body">{a.primaryOfficeName ?? "관할 미상"}</span>· {a.crimeSubtype || "기타"} · 파급도 {a.issueScore} · {formatDate(a.publishedAt)}
+                          <span className="text-ink-body">{a.primaryOfficeName ?? "관할 미상"}</span>· {a.crimeType || "기타"} · 파급도 {a.issueScore} · {formatDate(a.publishedAt)}
                         </p>
                       </div>
                     </li>
@@ -145,9 +138,9 @@ export default function TrialMonitoringPage() {
               <Periods value={pCrime} onChange={setPCrime} />
             </CardHeader>
             <CardContent>
-              {bySubtype.length ? (
+              {byType.length ? (
                 <div className="flex flex-wrap gap-1.5">
-                  {bySubtype.map((s) => (
+                  {byType.map((s) => (
                     <Badge key={s.name} tone="blue">{s.name} {s.count}</Badge>
                   ))}
                 </div>
