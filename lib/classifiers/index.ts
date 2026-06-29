@@ -69,6 +69,23 @@ export function classifyArticle(input: ClassifyInput, offices: OfficeLite[]): Ar
       officeMatches.unshift(primary);
     }
   }
+
+  // 형사사법제도/정책은 특정 지검 사건이 아니라 제도 사안 → 관할을 항상 법무부/대검찰청으로
+  //  (국회가 여의도에 있어 서울남부 등으로 오분류되는 것 방지)
+  if (crime.crimeType === "형사사법제도/정책") {
+    const moj = offices.find((o) => o.name === "법무부/대검찰청" || o.type === "법무부/대검찰청");
+    if (moj) {
+      primary = {
+        officeId: moj.id, officeName: moj.name, officeType: moj.type, region: moj.region,
+        confidence: 0.9, matchType: "INSTITUTION",
+        reason: "형사사법제도/정책 사안 → 법무부/대검찰청",
+        evidence: [],
+      };
+      officeMatches.length = 0;
+      officeMatches.push(primary);
+    }
+  }
+
   const highImpact = detectHighImpact(input);
   const reviewReasons = computeReviewReasons({ input, offices: officeMatches, crime });
 

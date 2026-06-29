@@ -1,14 +1,16 @@
 import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
+import { rebuildClusters } from "@/lib/pipeline/runPipeline";
 (async () => {
-  const latest = await prisma.article.findFirst({ orderBy: { publishedAt: "desc" }, select: { publishedAt: true } });
-  const earliest = await prisma.article.findFirst({ orderBy: { publishedAt: "asc" }, select: { publishedAt: true } });
-  console.log("latest:", latest?.publishedAt.toISOString(), "earliest:", earliest?.publishedAt.toISOString());
-  // 최근 10일 일자별 건수
-  const all = await prisma.article.findMany({ select: { publishedAt: true } });
-  const byDay = new Map<string, number>();
-  for (const a of all) { const k = a.publishedAt.toISOString().slice(0, 10); byDay.set(k, (byDay.get(k) ?? 0) + 1); }
-  const days = [...byDay.entries()].sort((a, b) => (a[0] < b[0] ? 1 : -1)).slice(0, 12);
-  days.forEach(([d, n]) => console.log(`  ${d}: ${n}`));
+  const moj = await prisma.prosecutionOffice.findFirst({ where: { name: "법무부/대검찰청" }, select: { id: true } });
+  if (!moj) throw new Error("법무부/대검찰청 office 없음");
+  const before = await prisma.article.count({ where: { crimeType: "형사사법제도/정책", primaryOfficeId: { not: moj.id } } });
+  const res = await prisma.article.updateMany({
+    where: { crimeType: "형사사법제도/정책" },
+    data: { primaryOfficeId: moj.id, officeMatchType: "MANUAL" },
+  });
+  console.log(`형사사법제도/정책 ${res.count}건 → 법무부/대검찰청 (이전 타관할 ${before}건)`);
+  await rebuildClusters();
+  console.log("클러스터 재생성 완료");
   await prisma.$disconnect();
 })().catch((e) => { console.error(e); process.exit(1); });
