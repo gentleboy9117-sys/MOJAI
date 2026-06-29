@@ -85,11 +85,10 @@ export const NAV_GROUPS: NavGroup[] = [
     ],
   },
   {
-    title: "사건 처리 후 발표자료",
+    title: "공보",
     items: [
-      { label: "보도자료 초안 생성", href: "/press-release-generator" },
-      { label: "검찰발표자료 레퍼런스", href: "/press-release-references" },
-      { label: "문장 리스크 점검", href: "/risk-checker" },
+      { label: "보도자료 초안", href: "/press-release-generator" },
+      { label: "문자풀 초안", href: "/text-pool" },
     ],
   },
   {
