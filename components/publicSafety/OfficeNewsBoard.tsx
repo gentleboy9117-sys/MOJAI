@@ -25,7 +25,7 @@ interface ArticleRow {
 }
 
 /** 검찰청 관할별 보도 보기 — 이슈/공판 '검찰청별 보기'와 동일 형식([조직도 | 순위 | 선택 청 기사]) */
-export function OfficeNewsBoard({ baseUrl, countLabel = "보도" }: { baseUrl: string; countLabel?: string }) {
+export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "클릭 시 해당 검찰청 보도" }: { baseUrl: string; countLabel?: string; clickHint?: string }) {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
   const [period, setPeriod] = useState<"today" | "7d" | "30d" | "all">("30d");
   const sep = baseUrl.includes("?") ? "&" : "?";
@@ -143,7 +143,7 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도" }: { baseUrl: s
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-1.5"><Building2 className="h-4 w-4 text-primary" /> 조직도</CardTitle>
-            <span className="text-detail text-ink-muted">클릭 시 해당 검찰청 보도</span>
+            <span className="text-detail text-ink-muted">{clickHint}</span>
           </CardHeader>
           <CardContent className="space-y-1">
             {!offices?.length ? (

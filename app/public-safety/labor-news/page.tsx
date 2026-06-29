@@ -13,7 +13,7 @@ export default function LaborNewsPage() {
         </p>
       </div>
       <PublicSafetySubNav />
-      <OfficeNewsBoard baseUrl={`/api/articles?crimeType=${encodeURIComponent("노동/중대재해범죄")}&limit=300`} />
+      <OfficeNewsBoard baseUrl={`/api/articles?crimeType=${encodeURIComponent("노동/중대재해범죄")}&limit=300`} clickHint="클릭시 해당 검찰청 노동·중대재해 관련 기사로 이동" />
     </div>
   );
 }

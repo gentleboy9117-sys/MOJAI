@@ -13,7 +13,7 @@ export default function ElectionNewsPage() {
         </p>
       </div>
       <PublicSafetySubNav />
-      <OfficeNewsBoard baseUrl="/api/articles?crimeType=선거범죄&limit=300" />
+      <OfficeNewsBoard baseUrl="/api/articles?crimeType=선거범죄&limit=300" clickHint="클릭시 해당 검찰청 선거 관련 기사로 이동" />
     </div>
   );
 }

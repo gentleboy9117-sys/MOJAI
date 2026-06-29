@@ -13,7 +13,7 @@ export default function RelatedNewsPage() {
         </p>
       </div>
       <PublicSafetySubNav />
-      <OfficeNewsBoard baseUrl="/api/articles?keyword=집회&limit=300" />
+      <OfficeNewsBoard baseUrl="/api/articles?keyword=집회&limit=300" clickHint="클릭시 해당 검찰청 집회·시위 관련 기사로 이동" />
     </div>
   );
 }
