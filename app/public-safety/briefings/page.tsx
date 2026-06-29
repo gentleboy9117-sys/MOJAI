@@ -11,7 +11,7 @@ export default function BriefingsPage() {
       <div>
         <h1 className="text-heading-m text-ink-title">공안 브리핑</h1>
         <p className="text-body-s text-ink-muted">
-          공개자료·공개 보도 기준으로 공안 브리핑 초안을 생성합니다 — 참고용 자동 생성물(담당자 검토 필요).
+          수집된 자료를 바탕으로 보고서 초안을 생성합니다
         </p>
       </div>
       <PublicSafetySubNav />

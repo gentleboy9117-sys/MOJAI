@@ -9,7 +9,7 @@ export default function PublicSafetyDashboard() {
   return (
     <div className="mx-auto max-w-content space-y-4 p-5">
       <div>
-        <h1 className="text-heading-m text-ink-title">공안 — 집회·시위 공개정보 모니터링</h1>
+        <h1 className="text-heading-m text-ink-title">공안 모니터링</h1>
         <p className="text-body-s text-ink-muted">
           집회·시위 일정 및 관련 언론보도를 검찰청 관할 단위로 정리한 화면입니다.
         </p>
