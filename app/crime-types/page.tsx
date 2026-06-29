@@ -155,18 +155,6 @@ export default function CrimeTypesPage() {
                   </div>
                 )}
 
-                {g.keywords.length > 0 && (
-                  <div className="mt-auto">
-                    <p className="text-detail text-ink-muted">반복 키워드</p>
-                    <div className="mt-0.5 flex flex-wrap gap-1">
-                      {g.keywords.map((k) => (
-                        <Badge key={k} tone="neutral">
-                          {k}
-                        </Badge>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </CardContent>
             </Card>
           ))}
