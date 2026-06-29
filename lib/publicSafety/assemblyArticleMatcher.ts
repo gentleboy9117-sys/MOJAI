@@ -52,6 +52,7 @@ export interface AssemblyArticleMatch {
   relationReason: string;
   matchedKeywords: string[];
   matchedLocation: boolean;
+  matchedOrg: boolean;
   matchedDate: boolean;
   hasLegalIssueMention: boolean;
   legalIssueKeywords: string[];
@@ -122,7 +123,8 @@ export function matchAssemblyArticle(
 
   // 단체명(주최) +30
   const org = (assembly.organizerName ?? "").trim();
-  if (org.length >= 2 && full.includes(org)) {
+  const matchedOrg = org.length >= 2 && full.includes(org);
+  if (matchedOrg) {
     score += 30;
     matchedKeywords.push(org);
   }
@@ -171,7 +173,7 @@ export function matchAssemblyArticle(
   const relationReason = buildReason({
     matchedLocation,
     matchedDate,
-    matchedOrg: org.length >= 2 && full.includes(org),
+    matchedOrg,
     hasLegalIssueMention,
     diff,
     relationConfidence,
@@ -183,6 +185,7 @@ export function matchAssemblyArticle(
     relationReason,
     matchedKeywords,
     matchedLocation,
+    matchedOrg,
     matchedDate,
     hasLegalIssueMention,
     legalIssueKeywords,
@@ -227,7 +230,11 @@ export function matchAssemblyToArticles(
     // 집회 전 1일 ~ 집회 후 windowDays 일 범위만 평가(후속 보도 고려)
     if (diff < -1 || diff > Math.max(windowDays, 1)) continue;
     const match = matchAssemblyArticle(assembly, article);
-    if (match.relationConfidence >= 0.5) out.push({ article, match });
+    // 관할 정확도: 집회 주제·날짜만으로는 그날 모든 집회에 무관 기사가 붙으므로,
+    // 장소(장소명/행정구) 또는 주최단체가 실제 일치하는 경우에만 연결한다.
+    if (match.relationConfidence >= 0.5 && (match.matchedLocation || match.matchedOrg)) {
+      out.push({ article, match });
+    }
   }
   out.sort((a, b) => b.match.relationConfidence - a.match.relationConfidence);
   return out;
