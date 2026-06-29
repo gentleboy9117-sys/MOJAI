@@ -91,28 +91,30 @@ export default function TrialMonitoringPage() {
               </div>
               <Periods value={pTop} onChange={setPTop} />
             </CardHeader>
-            <CardContent className="space-y-2">
+            <CardContent className="p-0">
               {!notable.length ? (
                 <p className="py-4 text-center text-body-s text-ink-muted">해당 기간 공판 보도가 없습니다.</p>
               ) : (
-                notable.map((a, i) => (
-                  <div key={a.id} className="rounded-md border border-line bg-white p-3">
-                    <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                      <Badge tone="solid">{i + 1}</Badge>
-                      <Badge tone="navy">{a.primaryOfficeName ?? "관할 미상"}</Badge>
-                      <Badge tone="blue">{a.crimeSubtype || "기타"}</Badge>
-                      <span className="text-detail text-ink-muted">파급도 {a.issueScore}/100 · {formatDate(a.publishedAt)}</span>
-                    </div>
-                    <p className="line-clamp-2 text-body-s font-medium text-ink-title">{a.title.split(" - ")[0]}</p>
-                    {isRealUrl(a.originalUrl) ? (
-                      <a href={a.originalUrl} target="_blank" rel="noreferrer" className="mt-1 inline-flex items-center gap-1 text-detail font-medium text-blue-60 hover:underline">
-                        원문 보기 <ExternalLink className="h-3 w-3" />
-                      </a>
-                    ) : (
-                      <span className="mt-1 inline-block text-detail text-ink-disabled">원문 링크 없음(샘플)</span>
-                    )}
-                  </div>
-                ))
+                <ul className="divide-y divide-line">
+                  {notable.map((a, i) => (
+                    <li key={a.id} className="flex items-start gap-2 px-3 py-1.5 hover:bg-gray-5">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-caption font-bold text-white">{i + 1}</span>
+                      <div className="min-w-0 flex-1">
+                        {isRealUrl(a.originalUrl) ? (
+                          <a href={a.originalUrl} target="_blank" rel="noreferrer" className="group flex items-start gap-1 text-body-s font-medium text-ink-title hover:text-primary">
+                            <span className="line-clamp-1 hover:underline">{a.title.split(" - ")[0]}</span>
+                            <ExternalLink className="mt-0.5 h-3 w-3 shrink-0 opacity-40 group-hover:opacity-100" />
+                          </a>
+                        ) : (
+                          <span className="line-clamp-1 text-body-s font-medium text-ink-title">{a.title.split(" - ")[0]}</span>
+                        )}
+                        <p className="flex flex-wrap items-center gap-x-1.5 text-detail text-ink-muted">
+                          <span className="text-ink-body">{a.primaryOfficeName ?? "관할 미상"}</span>· {a.crimeSubtype || "기타"} · 파급도 {a.issueScore} · {formatDate(a.publishedAt)}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
               )}
             </CardContent>
           </Card>
