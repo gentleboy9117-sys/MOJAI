@@ -21,11 +21,12 @@ interface ArticleRow {
   issueClusterId?: string | null;
   issueScore: number;
 }
+interface HeatRow { officeName: string; issueCount: number; articleCount: number }
 
-function topCount(arr: string[], n: number): { name: string; count: number }[] {
+function rank(arr: string[]): { name: string; count: number }[] {
   const m = new Map<string, number>();
   arr.forEach((a) => a && m.set(a, (m.get(a) ?? 0) + 1));
-  return [...m.entries()].sort((a, b) => b[1] - a[1]).slice(0, n).map(([name, count]) => ({ name, count }));
+  return [...m.entries()].sort((a, b) => b[1] - a[1]).map(([name, count]) => ({ name, count }));
 }
 
 function isRealUrl(url?: string | null): boolean {
@@ -44,11 +45,28 @@ function Periods({ value, onChange }: { value: CalPeriod; onChange: (p: CalPerio
   );
 }
 
+/** 가로 막대 행 */
+function BarRow({ label, value, max, tone }: { label: string; value: number; max: number; tone: string }) {
+  const pct = max > 0 ? Math.max(3, Math.round((value / max) * 100)) : 0;
+  return (
+    <div className="flex items-center gap-2">
+      <span className="w-36 shrink-0 truncate text-body-s text-ink-title sm:w-44">
+        {label} <span className="text-ink-muted">({value})</span>
+      </span>
+      <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5">
+        <div className={cn("h-full rounded", tone)} style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
 export default function IssueMonitoringPage() {
   const { data, loading } = useApi<ArticleRow[]>("/api/articles?period=all&limit=300&sort=score");
   const [pTop, setPTop] = useState<CalPeriod>("month");
   const [pOffice, setPOffice] = useState<CalPeriod>("month");
   const [pCrime, setPCrime] = useState<CalPeriod>("month");
+  // 검찰청별 이슈 분포는 전국 전체 집계 API 사용(상위 300 샘플이 아닌 전수)
+  const { data: heat } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${pOffice}`);
 
   const rows = useMemo(() => data ?? [], [data]);
   const inRange = (period: CalPeriod) => {
@@ -58,8 +76,13 @@ export default function IssueMonitoringPage() {
   };
 
   const notable = useMemo(() => pickDistinctTop(inRange(pTop), 10), [rows, pTop]);
-  const topOffices = useMemo(() => topCount(inRange(pOffice).map((r) => r.primaryOfficeName ?? "").filter(Boolean), 5), [rows, pOffice]);
-  const byType = useMemo(() => topCount(inRange(pCrime).map((r) => r.crimeType || "기타"), 99), [rows, pCrime]);
+  const offices = useMemo(
+    () => [...(heat ?? [])].map((h) => ({ name: h.officeName, count: h.issueCount })).filter((o) => o.count > 0).sort((a, b) => b.count - a.count),
+    [heat],
+  );
+  const crimes = useMemo(() => rank(inRange(pCrime).map((r) => r.crimeType || "기타")), [rows, pCrime]);
+  const officeMax = offices[0]?.count ?? 0;
+  const crimeMax = crimes[0]?.count ?? 0;
 
   return (
     <div className="mx-auto max-w-content space-y-5 p-5">
@@ -90,7 +113,7 @@ export default function IssueMonitoringPage() {
               ) : (
                 <ul className="divide-y divide-line">
                   {notable.map((a, i) => (
-                    <li key={a.id} className="flex items-start gap-2 px-3 py-1.5 hover:bg-gray-5">
+                    <li key={a.id} className="flex items-start gap-3 px-3 py-2 hover:bg-gray-5">
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-caption font-bold text-white">{i + 1}</span>
                       <div className="min-w-0 flex-1">
                         {isRealUrl(a.originalUrl) ? (
@@ -101,9 +124,11 @@ export default function IssueMonitoringPage() {
                         ) : (
                           <span className="line-clamp-1 text-body-s font-medium text-ink-title">{a.title.split(" - ")[0]}</span>
                         )}
-                        <p className="flex flex-wrap items-center gap-x-1.5 text-detail text-ink-muted">
-                          <span className="text-ink-body">{a.primaryOfficeName ?? "관할 미상"}</span>· {a.crimeType || "기타"} · 파급도 {a.issueScore} · {formatDate(a.publishedAt)}
-                        </p>
+                        <p className="text-detail text-ink-muted">파급도 {a.issueScore} · {formatDate(a.publishedAt)}</p>
+                      </div>
+                      <div className="flex shrink-0 flex-col items-end gap-1">
+                        <Badge tone="navy">{a.primaryOfficeName ?? "관할 미상"}</Badge>
+                        <Badge tone="blue">{a.crimeType || "기타"}</Badge>
                       </div>
                     </li>
                   ))}
@@ -112,18 +137,16 @@ export default function IssueMonitoringPage() {
             </CardContent>
           </Card>
 
-          {/* 상위 검찰청 Top 5 */}
+          {/* 검찰청별 이슈 분포(전국) */}
           <Card>
             <CardHeader>
-              <CardTitle>상위 검찰청 Top 5</CardTitle>
+              <CardTitle>검찰청별 이슈 분포 (전국)</CardTitle>
               <Periods value={pOffice} onChange={setPOffice} />
             </CardHeader>
             <CardContent>
-              {topOffices.length ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {topOffices.map((o) => (
-                    <Badge key={o.name} tone="navy">{o.name} {o.count}</Badge>
-                  ))}
+              {offices.length ? (
+                <div className="space-y-1.5">
+                  {offices.map((o) => <BarRow key={o.name} label={o.name} value={o.count} max={officeMax} tone="bg-primary" />)}
                 </div>
               ) : (
                 <p className="text-body-s text-ink-muted">집계된 검찰청이 없습니다.</p>
@@ -131,18 +154,16 @@ export default function IssueMonitoringPage() {
             </CardContent>
           </Card>
 
-          {/* 범죄유형 분류 */}
+          {/* 범죄유형 분류(전체) */}
           <Card>
             <CardHeader>
-              <CardTitle>범죄유형 분류</CardTitle>
+              <CardTitle>범죄유형 분류 (전체)</CardTitle>
               <Periods value={pCrime} onChange={setPCrime} />
             </CardHeader>
             <CardContent>
-              {byType.length ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {byType.map((s) => (
-                    <Badge key={s.name} tone="blue">{s.name} {s.count}</Badge>
-                  ))}
+              {crimes.length ? (
+                <div className="space-y-1.5">
+                  {crimes.map((c) => <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} tone="bg-blue-60" />)}
                 </div>
               ) : (
                 <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
