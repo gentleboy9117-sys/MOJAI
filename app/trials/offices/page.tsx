@@ -9,6 +9,7 @@ import { useApi } from "@/lib/client/useApi";
 import { TrialSubNav } from "@/components/trials/TrialSubNav";
 import { OFFICE_ORDER, HIGH_PROSECUTION_TREE } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
 import { dedupeArticles } from "@/lib/client/dedupeArticles";
+import { calendarRange, DELTA_LABEL, type CalPeriod } from "@/lib/periodRange";
 
 const HIGH_ORDER: Record<string, number> = Object.fromEntries(HIGH_PROSECUTION_TREE.map((g, i) => [g.high, i]));
 const ord = (name: string) => OFFICE_ORDER[name] ?? 9999;
@@ -26,10 +27,26 @@ interface ArticleRow {
 
 export default function TrialOfficesPage() {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
-  const [period, setPeriod] = useState<"today" | "7d" | "30d" | "all">("30d");
-  const { data, loading: la } = useApi<ArticleRow[]>(`/api/articles?crimeType=공판&period=${period}&limit=500`);
+  const [period, setPeriod] = useState<CalPeriod>("month");
+  const range = useMemo(() => calendarRange(period), [period]);
+  const { data, loading: la } = useApi<ArticleRow[]>(`/api/articles?crimeType=공판&startDate=${range.start.toISOString()}&endDate=${range.end.toISOString()}&limit=500`);
+  // 동기간 대비용 전기간 데이터(건수만)
+  const { data: prevData } = useApi<ArticleRow[]>(`/api/articles?crimeType=공판&startDate=${range.prevStart.toISOString()}&endDate=${range.prevEnd.toISOString()}&limit=500`);
   const [selected, setSelected] = useState<string | null>(null);
   const loading = lo || la;
+
+  const prevCountByOffice = useMemo(() => {
+    const byOffice = new Map<string, ArticleRow[]>();
+    for (const r of prevData ?? []) {
+      const name = r.primaryOfficeName;
+      if (!name) continue;
+      if (!byOffice.has(name)) byOffice.set(name, []);
+      byOffice.get(name)!.push(r);
+    }
+    const m = new Map<string, number>();
+    byOffice.forEach((arts, name) => m.set(name, dedupeArticles(arts).length));
+    return m;
+  }, [prevData]);
 
   // 검찰청별 공판 보도(중복 제거) 건수 + 주요 범죄유형 Top2
   const statsByOffice = useMemo(() => {
@@ -68,8 +85,8 @@ export default function TrialOfficesPage() {
   }, [offices]);
 
   const ranking = useMemo(
-    () => [...statsByOffice.entries()].map(([name, s]) => ({ name, count: s.count, top: s.top })).sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
-    [statsByOffice],
+    () => [...statsByOffice.entries()].map(([name, s]) => ({ name, count: s.count, top: s.top, delta: s.count - (prevCountByOffice.get(name) ?? 0) })).sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
+    [statsByOffice, prevCountByOffice],
   );
 
   const selectedDeduped = useMemo(() => {
@@ -199,13 +216,13 @@ export default function TrialOfficesPage() {
               <CardHeader>
                 <CardTitle>검찰청 순위</CardTitle>
                 <div className="flex rounded-md border border-line p-0.5">
-                  {(["today", "7d", "30d", "all"] as const).map((v) => (
+                  {(["today", "week", "month"] as const).map((v) => (
                     <button
                       key={v}
                       onClick={() => setPeriod(v)}
                       className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
                     >
-                      {v === "today" ? "오늘" : v === "7d" ? "지난 7일" : v === "30d" ? "지난 30일" : "전체"}
+                      {v === "today" ? "오늘" : v === "week" ? "금주" : "금월"}
                     </button>
                   ))}
                 </div>
@@ -222,6 +239,7 @@ export default function TrialOfficesPage() {
                           <th className="px-3 py-2 font-medium">검찰청</th>
                           <th className="px-3 py-2 font-medium">주요 유형</th>
                           <th className="px-3 py-2 text-right font-medium">공판 보도</th>
+                          <th className="px-3 py-2 text-right font-medium">{DELTA_LABEL[period]}</th>
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-line">
@@ -231,6 +249,9 @@ export default function TrialOfficesPage() {
                             <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">{r.name}</td>
                             <td className="px-3 py-2 text-ink-muted">{r.top.length ? r.top.map((t) => `${t.sub} ${t.n}`).join(" · ") : "-"}</td>
                             <td className="px-3 py-2 text-right text-ink-body">{r.count}</td>
+                            <td className={cn("px-3 py-2 text-right font-medium tabular-nums", r.delta > 0 ? "text-danger" : r.delta < 0 ? "text-blue-60" : "text-ink-disabled")}>
+                              {r.delta > 0 ? `+${r.delta}` : r.delta}
+                            </td>
                           </tr>
                         ))}
                       </tbody>

@@ -9,6 +9,7 @@ import { useApi } from "@/lib/client/useApi";
 import { IssueSubNav } from "@/components/issues/IssueSubNav";
 import { OfficeCrimeBoard } from "@/components/issues/OfficeCrimeBoard";
 import { OFFICE_ORDER, HIGH_PROSECUTION_TREE } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
+import { DELTA_LABEL, type CalPeriod } from "@/lib/periodRange";
 
 // 고검 정렬 순서(서울→수원→대전→대구→부산→광주)
 const HIGH_ORDER: Record<string, number> = Object.fromEntries(
@@ -54,7 +55,7 @@ function Counts({ heat }: { heat?: HeatRow }) {
 
 export default function OfficesPage() {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
-  const [period, setPeriod] = useState<"today" | "7d" | "30d">("30d");
+  const [period, setPeriod] = useState<CalPeriod>("month");
   const [selectedOffice, setSelectedOffice] = useState<{ id: string; name: string } | null>(null);
   const { data: heatmap, loading: lh } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${period}`);
 
@@ -180,13 +181,13 @@ export default function OfficesPage() {
               <CardTitle>검찰청 순위</CardTitle>
               <div className="flex flex-wrap items-center gap-1.5">
                 <div className="flex rounded-md border border-line p-0.5">
-                  {(["today", "7d", "30d"] as const).map((v) => (
+                  {(["today", "week", "month"] as const).map((v) => (
                     <button
                       key={v}
                       onClick={() => setPeriod(v)}
                       className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
                     >
-                      {v === "today" ? "오늘" : v === "7d" ? "지난 7일" : "지난 30일"}
+                      {v === "today" ? "오늘" : v === "week" ? "금주" : "금월"}
                     </button>
                   ))}
                 </div>
@@ -205,7 +206,7 @@ export default function OfficesPage() {
                         <th className="px-3 py-2 text-right font-medium">기사</th>
                         <th className="px-3 py-2 text-right font-medium">이슈</th>
                         <th className="px-3 py-2 font-medium">주요 유형</th>
-                        <th className="px-3 py-2 text-right font-medium">전일 대비</th>
+                        <th className="px-3 py-2 text-right font-medium">{DELTA_LABEL[period]}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-line">

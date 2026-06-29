@@ -27,10 +27,14 @@ function topKey(map: Map<string, number>): string | undefined {
 export async function getOfficeHeatmap(opts: {
   periodStart: Date;
   periodEnd: Date;
+  prevStart?: Date;
+  prevEnd?: Date;
 }): Promise<OfficeHeatRow[]> {
   const { periodStart, periodEnd } = opts;
+  // 전기간(동기간 대비) 범위: 명시값이 있으면 사용, 없으면 직전 동일 span
   const span = periodEnd.getTime() - periodStart.getTime();
-  const prevStart = new Date(periodStart.getTime() - span);
+  const prevStart = opts.prevStart ?? new Date(periodStart.getTime() - span);
+  const prevEnd = opts.prevEnd ?? periodStart;
 
   const [articles, prevArticles, offices] = await Promise.all([
     prisma.article.findMany({
@@ -38,7 +42,7 @@ export async function getOfficeHeatmap(opts: {
       select: { primaryOfficeId: true, crimeType: true, needsHumanReview: true, issueClusterId: true, issueLevel: true },
     }),
     prisma.article.findMany({
-      where: { publishedAt: { gte: prevStart, lt: periodStart }, primaryOfficeId: { not: null } },
+      where: { publishedAt: { gte: prevStart, lte: prevEnd }, primaryOfficeId: { not: null } },
       select: { primaryOfficeId: true },
     }),
     prisma.prosecutionOffice.findMany({ select: { id: true, name: true, region: true, type: true } }),

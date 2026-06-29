@@ -8,6 +8,7 @@ import { Spinner, EmptyState } from "@/components/ui/misc";
 import { useApi } from "@/lib/client/useApi";
 import { OFFICE_ORDER, HIGH_PROSECUTION_TREE } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
 import { dedupeArticles } from "@/lib/client/dedupeArticles";
+import { calendarRange, DELTA_LABEL, type CalPeriod } from "@/lib/periodRange";
 
 const HIGH_ORDER: Record<string, number> = Object.fromEntries(HIGH_PROSECUTION_TREE.map((g, i) => [g.high, i]));
 const ord = (name: string) => OFFICE_ORDER[name] ?? 9999;
@@ -27,15 +28,18 @@ interface ArticleRow {
 /** 검찰청 관할별 보도 보기 — 이슈/공판 '검찰청별 보기'와 동일 형식([조직도 | 순위 | 선택 청 기사]) */
 export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "클릭 시 해당 검찰청 보도" }: { baseUrl: string; countLabel?: string; clickHint?: string }) {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
-  const [period, setPeriod] = useState<"today" | "7d" | "30d" | "all">("30d");
+  const [period, setPeriod] = useState<CalPeriod>("month");
+  const range = useMemo(() => calendarRange(period), [period]);
   const sep = baseUrl.includes("?") ? "&" : "?";
-  const { data, loading: la } = useApi<ArticleRow[]>(`${baseUrl}${sep}period=${period}`);
+  const { data, loading: la } = useApi<ArticleRow[]>(`${baseUrl}${sep}startDate=${range.start.toISOString()}&endDate=${range.end.toISOString()}`);
+  // 동기간 대비용 전기간 데이터(건수만 사용)
+  const { data: prevData } = useApi<ArticleRow[]>(`${baseUrl}${sep}startDate=${range.prevStart.toISOString()}&endDate=${range.prevEnd.toISOString()}`);
   const [selected, setSelected] = useState<string | null>(null);
   const loading = lo || la;
 
-  const countByOffice = useMemo(() => {
+  const dedupCountMap = (rows: ArticleRow[] | null | undefined) => {
     const byOffice = new Map<string, ArticleRow[]>();
-    for (const r of data ?? []) {
+    for (const r of rows ?? []) {
       const name = r.primaryOfficeName;
       if (!name) continue;
       if (!byOffice.has(name)) byOffice.set(name, []);
@@ -44,7 +48,9 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
     const m = new Map<string, number>();
     byOffice.forEach((arts, name) => m.set(name, dedupeArticles(arts).length));
     return m;
-  }, [data]);
+  };
+  const countByOffice = useMemo(() => dedupCountMap(data), [data]);
+  const prevCountByOffice = useMemo(() => dedupCountMap(prevData), [prevData]);
 
   const tree = useMemo(() => {
     const list = offices ?? [];
@@ -59,8 +65,8 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
   }, [offices]);
 
   const ranking = useMemo(
-    () => [...countByOffice.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
-    [countByOffice],
+    () => [...countByOffice.entries()].map(([name, count]) => ({ name, count, delta: count - (prevCountByOffice.get(name) ?? 0) })).sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
+    [countByOffice, prevCountByOffice],
   );
 
   const selectedDeduped = useMemo(() => {
@@ -178,13 +184,13 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
           <CardHeader>
             <CardTitle>검찰청 순위</CardTitle>
             <div className="flex rounded-md border border-line p-0.5">
-              {(["today", "7d", "30d", "all"] as const).map((v) => (
+              {(["today", "week", "month"] as const).map((v) => (
                 <button
                   key={v}
                   onClick={() => setPeriod(v)}
                   className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
                 >
-                  {v === "today" ? "오늘" : v === "7d" ? "지난 7일" : v === "30d" ? "지난 30일" : "전체"}
+                  {v === "today" ? "오늘" : v === "week" ? "금주" : "금월"}
                 </button>
               ))}
             </div>
@@ -200,6 +206,7 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
                       <th className="px-3 py-2 font-medium">순위</th>
                       <th className="px-3 py-2 font-medium">검찰청</th>
                       <th className="px-3 py-2 text-right font-medium">{countLabel}</th>
+                      <th className="px-3 py-2 text-right font-medium">{DELTA_LABEL[period]}</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-line">
@@ -208,6 +215,9 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
                         <td className="px-3 py-2 text-ink-disabled">{i + 1}</td>
                         <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">{r.name}</td>
                         <td className="px-3 py-2 text-right text-ink-body">{r.count}</td>
+                        <td className={cn("px-3 py-2 text-right font-medium tabular-nums", r.delta > 0 ? "text-danger" : r.delta < 0 ? "text-blue-60" : "text-ink-disabled")}>
+                          {r.delta > 0 ? `+${r.delta}` : r.delta}
+                        </td>
                       </tr>
                     ))}
                   </tbody>
