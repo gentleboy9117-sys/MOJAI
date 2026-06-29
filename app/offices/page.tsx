@@ -119,7 +119,8 @@ export default function OfficesPage() {
           <span>이슈 현황 및 순위</span>
           <span className="text-detail">
             · <span className="font-medium text-blue-60">이슈(파랑)</span> = 비슷한 기사를 묶은 사건 수 ·{" "}
-            <span className="font-medium text-[#9a6a00]">중요(노랑)</span> = 보도 파급도가 높은 중요 이슈 수
+            <span className="font-medium text-[#9a6a00]">중요(노랑)</span> = 보도 파급도가 높은 중요 이슈 수 ·{" "}
+            <span className="font-medium text-ink-body">파급도</span> = 보도량·출처 수·확산 속도 등으로 산정한 공개보도 영향력(0~100)
           </span>
         </p>
       </div>
