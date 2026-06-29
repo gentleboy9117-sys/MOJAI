@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { Building2, Gavel, ChevronRight, ExternalLink } from "lucide-react";
+import { Building2, Gavel, ChevronRight, ExternalLink, ArrowLeft } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn, formatDate } from "@/lib/utils";
@@ -118,9 +118,48 @@ export default function TrialOfficesPage() {
 
       {loading ? (
         <div className="flex justify-center py-16"><Spinner className="h-6 w-6" /></div>
+      ) : selected ? (
+        <Card>
+          <div className="flex items-center gap-2 border-b border-line px-4 py-2.5">
+            <button onClick={() => setSelected(null)} className="flex items-center gap-1 text-detail text-ink-muted hover:text-primary">
+              <ArrowLeft className="h-4 w-4" /> 검찰청별 보기
+            </button>
+            <span className="flex items-center gap-1.5 text-body-s font-bold text-ink-title">
+              <Gavel className="h-4 w-4 text-primary" /> {selected} 공판 보도
+            </span>
+            <span className="ml-auto"><Badge tone="outline">{selectedDeduped.length}건</Badge></span>
+          </div>
+          <CardContent className="p-0">
+            {!selectedDeduped.length ? (
+              <EmptyState icon={<Gavel className="h-8 w-8" />} title="공판 보도가 없습니다" />
+            ) : (
+              <ul className="divide-y divide-line">
+                {selectedDeduped.map((d) => (
+                  <li key={d.rep.id} className="px-4 py-2.5">
+                    <a href={d.rep.originalUrl} target="_blank" rel="noreferrer" className="group flex items-start gap-1.5 text-body-s font-medium text-ink-title hover:text-primary">
+                      <span className="hover:underline">{d.rep.title.split(" - ")[0]}</span>
+                      <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 opacity-40 group-hover:opacity-100" />
+                    </a>
+                    <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-detail text-ink-muted">
+                      {d.rep.crimeSubtype && <Badge tone="navy">{d.rep.crimeSubtype}</Badge>}
+                      <span>{d.rep.sourceName}{d.rep.publishedAt ? ` · ${formatDate(d.rep.publishedAt)}` : ""}</span>
+                      {d.count > 1 && <span className="text-blue-60">· 동일 보도 {d.count}건</span>}
+                    </p>
+                    {d.count > 1 && (
+                      <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
+                        {d.sources.map((s, i) => (
+                          <a key={i} href={s.url} target="_blank" rel="noreferrer" className="text-detail text-blue-60 hover:underline">· {s.sourceName}</a>
+                        ))}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
       ) : (
-        <>
-          <div className="grid gap-4 lg:grid-cols-2">
+        <div className="grid gap-4 lg:grid-cols-2">
             {/* 조직도 */}
             <Card>
               <CardHeader>
@@ -201,45 +240,6 @@ export default function TrialOfficesPage() {
               </CardContent>
             </Card>
           </div>
-
-          {/* 선택한 검찰청의 공판 보도 */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-1.5"><Gavel className="h-4 w-4 text-primary" /> {selected ? `${selected} 공판 보도` : "공판 보도"}</CardTitle>
-              {selected && <Badge tone="outline">{selectedDeduped.length}건</Badge>}
-            </CardHeader>
-            <CardContent className={selected && selectedDeduped.length ? "p-0" : ""}>
-              {!selected ? (
-                <EmptyState icon={<Building2 className="h-8 w-8" />} title="검찰청을 선택하세요" desc="왼쪽 조직도 또는 순위에서 검찰청을 누르면 해당 청의 공판 보도가 표시됩니다." />
-              ) : !selectedDeduped.length ? (
-                <EmptyState icon={<Gavel className="h-8 w-8" />} title="공판 보도가 없습니다" />
-              ) : (
-                <ul className="divide-y divide-line">
-                  {selectedDeduped.map((d) => (
-                    <li key={d.rep.id} className="px-4 py-2.5">
-                      <a href={d.rep.originalUrl} target="_blank" rel="noreferrer" className="group flex items-start gap-1.5 text-body-s font-medium text-ink-title hover:text-primary">
-                        <span className="hover:underline">{d.rep.title.split(" - ")[0]}</span>
-                        <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 opacity-40 group-hover:opacity-100" />
-                      </a>
-                      <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-detail text-ink-muted">
-                        {d.rep.crimeSubtype && <Badge tone="navy">{d.rep.crimeSubtype}</Badge>}
-                        <span>{d.rep.sourceName}{d.rep.publishedAt ? ` · ${formatDate(d.rep.publishedAt)}` : ""}</span>
-                        {d.count > 1 && <span className="text-blue-60">· 동일 보도 {d.count}건</span>}
-                      </p>
-                      {d.count > 1 && (
-                        <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
-                          {d.sources.map((s, i) => (
-                            <a key={i} href={s.url} target="_blank" rel="noreferrer" className="text-detail text-blue-60 hover:underline">· {s.sourceName}</a>
-                          ))}
-                        </div>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </CardContent>
-          </Card>
-        </>
       )}
     </div>
   );
