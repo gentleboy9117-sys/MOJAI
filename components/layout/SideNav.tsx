@@ -1,36 +1,10 @@
 "use client";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard, Building2, ListTree, Landmark, FileText, Gavel,
-  Megaphone, CalendarDays, Newspaper, Vote, HardHat, FilePenLine,
-  BookOpen, ShieldAlert, ScrollText, Settings, Circle, type LucideIcon,
-} from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { NAV_GROUPS } from "@/lib/client/labels";
 import { cn } from "@/lib/utils";
-
-// 항목별 아이콘(KRDS 아이콘 톤 — 비활성 ink-disabled, 활성 흰색)
-const ICONS: Record<string, LucideIcon> = {
-  "/": LayoutDashboard,
-  "/offices": Building2,
-  "/crime-types": ListTree,
-  "/policy-issues": Landmark,
-  "/reports": FileText,
-  "/trials/offices": Building2,
-  "/trials/crime-types": Gavel,
-  "/trials/reports": FileText,
-  "/public-safety": Megaphone,
-  "/public-safety/assemblies": CalendarDays,
-  "/public-safety/related-news": Newspaper,
-  "/public-safety/election-news": Vote,
-  "/public-safety/labor-news": HardHat,
-  "/public-safety/briefings": FileText,
-  "/press-release-generator": FilePenLine,
-  "/press-release-references": BookOpen,
-  "/risk-checker": ShieldAlert,
-  "/audit-logs": ScrollText,
-  "/settings": Settings,
-};
 
 export function SideNav({ open = false, onClose }: { open?: boolean; onClose?: () => void }) {
   const path = usePathname();
@@ -38,6 +12,22 @@ export function SideNav({ open = false, onClose }: { open?: boolean; onClose?: (
   const bestMatch = NAV_GROUPS.flatMap((g) => g.items.map((i) => i.href))
     .filter((h) => path === h || path.startsWith(h + "/"))
     .sort((a, b) => b.length - a.length)[0];
+  // 현재 활성 항목이 속한 그룹
+  const activeGroup = NAV_GROUPS.find((g) => g.items.some((i) => i.href === bestMatch))?.title;
+
+  // 그룹 접기/펼치기 — 기본은 활성 그룹만 펼침
+  const [openGroups, setOpenGroups] = useState<Set<string>>(() => new Set(activeGroup ? [activeGroup] : []));
+  // 다른 메뉴로 이동하면 해당 그룹은 자동으로 펼침
+  useEffect(() => {
+    if (activeGroup) setOpenGroups((p) => (p.has(activeGroup) ? p : new Set(p).add(activeGroup)));
+  }, [activeGroup]);
+  const toggle = (t: string) =>
+    setOpenGroups((p) => {
+      const n = new Set(p);
+      n.has(t) ? n.delete(t) : n.add(t);
+      return n;
+    });
+
   return (
     <>
       {/* 모바일 드로어 배경(클릭 시 닫힘) */}
@@ -49,39 +39,46 @@ export function SideNav({ open = false, onClose }: { open?: boolean; onClose?: (
           open ? "translate-x-0" : "-translate-x-full md:translate-x-0",
         )}
       >
-        {NAV_GROUPS.map((g, gi) => (
-          <div
-            key={g.title || "_top"}
-            className={cn(gi > 0 && "mt-3 border-t border-line pt-3")}
-          >
-            {g.title && (
-              <p className="px-2 pb-1 text-caption font-semibold uppercase tracking-wider text-ink-disabled">
-                {g.title}
-              </p>
-            )}
-            <ul className="space-y-0.5">
-              {g.items.map((it) => {
-                const active = it.href === bestMatch;
-                const Icon = ICONS[it.href] ?? Circle;
-                return (
-                  <li key={it.href}>
-                    <Link
-                      href={it.href}
-                      onClick={onClose}
-                      className={cn(
-                        "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-body-s transition-colors",
-                        active ? "bg-primary font-medium text-white" : "text-ink-body hover:bg-gray-5",
-                      )}
-                    >
-                      <Icon className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-ink-disabled")} />
-                      <span className="truncate">{it.label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+        {NAV_GROUPS.map((g, gi) => {
+          const collapsible = !!g.title;
+          const isOpen = !collapsible || openGroups.has(g.title);
+          return (
+            <div key={g.title || "_top"} className={cn(gi > 0 && "mt-2 border-t border-line pt-2")}>
+              {collapsible && (
+                <button
+                  onClick={() => toggle(g.title)}
+                  aria-expanded={isOpen}
+                  className="flex w-full items-center justify-between rounded-md px-2 py-1.5 text-caption font-semibold uppercase tracking-wider text-ink-disabled transition-colors hover:text-ink-muted"
+                >
+                  <span>{g.title}</span>
+                  <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", isOpen ? "" : "-rotate-90")} />
+                </button>
+              )}
+              {isOpen && (
+                <ul className="space-y-0.5">
+                  {g.items.map((it) => {
+                    const active = it.href === bestMatch;
+                    return (
+                      <li key={it.href}>
+                        <Link
+                          href={it.href}
+                          onClick={onClose}
+                          className={cn(
+                            "flex items-center gap-2.5 rounded-md px-2.5 py-2 text-body-s transition-colors",
+                            active ? "bg-primary font-medium text-white" : "text-ink-body hover:bg-gray-5",
+                          )}
+                        >
+                          <span className={cn("h-1.5 w-1.5 shrink-0 rounded-[2px]", active ? "bg-white" : "bg-ink-disabled")} />
+                          <span className="truncate">{it.label}</span>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+          );
+        })}
       </nav>
     </>
   );
