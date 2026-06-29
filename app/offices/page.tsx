@@ -1,6 +1,5 @@
 "use client";
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Building2, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { Spinner, EmptyState } from "@/components/ui/misc";
 import { useApi } from "@/lib/client/useApi";
 import { IssueSubNav } from "@/components/issues/IssueSubNav";
+import { OfficeCrimeBoard } from "@/components/issues/OfficeCrimeBoard";
 import { OFFICE_ORDER, HIGH_PROSECUTION_TREE } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
 
 // 고검 정렬 순서(서울→수원→대전→대구→부산→광주)
@@ -56,6 +56,7 @@ export default function OfficesPage() {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
   const [period, setPeriod] = useState<"today" | "7d" | "30d">("30d");
   const [sortBy, setSortBy] = useState<"issue" | "important">("issue");
+  const [selectedOffice, setSelectedOffice] = useState<{ id: string; name: string } | null>(null);
   const { data: heatmap, loading: lh } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${period}`);
 
   const heatById = useMemo(() => {
@@ -99,9 +100,9 @@ export default function OfficesPage() {
 
   function OfficeLink({ o, indent }: { o: Office; indent: number }) {
     return (
-      <Link
-        href={`/issues?officeId=${o.id}`}
-        className="flex items-center justify-between gap-3 rounded-md px-2 py-1.5 hover:bg-gray-5"
+      <button
+        onClick={() => setSelectedOffice({ id: o.id, name: o.name })}
+        className="flex w-full items-center justify-between gap-3 rounded-md px-2 py-1.5 text-left hover:bg-gray-5"
         style={{ paddingLeft: 8 + indent * 16 }}
       >
         <span className="flex min-w-0 items-center gap-1.5">
@@ -109,7 +110,7 @@ export default function OfficesPage() {
           <span className="truncate text-body-s text-ink-title">{o.name}</span>
         </span>
         <Counts heat={heatById.get(o.id)} />
-      </Link>
+      </button>
     );
   }
 
@@ -131,6 +132,8 @@ export default function OfficesPage() {
         <div className="flex justify-center py-16">
           <Spinner className="h-6 w-6" />
         </div>
+      ) : selectedOffice ? (
+        <OfficeCrimeBoard officeId={selectedOffice.id} officeName={selectedOffice.name} onBack={() => setSelectedOffice(null)} />
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {/* 조직 트리 */}
@@ -223,11 +226,9 @@ export default function OfficesPage() {
                     </thead>
                     <tbody className="divide-y divide-line">
                       {ranking.map((r) => (
-                        <tr key={r.officeId} className="hover:bg-gray-5">
-                          <td className="px-3 py-2 font-medium text-ink-title">
-                            <Link href={`/issues?officeId=${r.officeId}`} className="hover:text-primary hover:underline">
-                              {r.officeName}
-                            </Link>
+                        <tr key={r.officeId} className="cursor-pointer hover:bg-gray-5" onClick={() => setSelectedOffice({ id: r.officeId, name: r.officeName })}>
+                          <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">
+                            {r.officeName}
                           </td>
                           <td className="px-3 py-2 text-ink-muted">{r.region}</td>
                           <td className="px-3 py-2 text-right text-ink-body">{r.articleCount}</td>
