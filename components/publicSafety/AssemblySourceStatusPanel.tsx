@@ -101,7 +101,7 @@ export function AssemblySourceStatusPanel() {
               </table>
             </div>
             <p className="mt-2 text-detail text-ink-disabled">
-              · '반영된 최신 집회일'은 각 지방경찰청 게시판에서 수집된 공지 중 가장 최근 집회 예정일입니다. 미수집 지방경찰청은 게시판 구조(JS/프레임)로 별도 파서가 필요합니다.
+              · '반영된 최신 집회일'은 각 지방경찰청 게시판에서 수집된 공지 중 가장 최근 집회 예정일입니다.
             </p>
           </>
         )}
