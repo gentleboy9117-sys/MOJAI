@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const ISSUE_SUBNAV = [
-  { label: "이슈 대시보드", href: "/issues" },
   { label: "검찰청별 보기", href: "/offices" },
   { label: "범죄유형별 보기", href: "/crime-types" },
   { label: "제도/정책 이슈", href: "/policy-issues" },
