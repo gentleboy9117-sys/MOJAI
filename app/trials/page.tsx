@@ -85,7 +85,7 @@ export default function TrialMonitoringPage() {
           {/* 주요 사건 Top 10 */}
           <Card>
             <CardHeader>
-              <CardTitle>주요 사건 Top 10 (파급도 순)</CardTitle>
+              <CardTitle>주요 사건 Top 10</CardTitle>
               <Periods value={pTop} onChange={setPTop} />
             </CardHeader>
             <CardContent className="space-y-2">
