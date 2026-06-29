@@ -1,16 +1,12 @@
 import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
-import { rebuildClusters } from "@/lib/pipeline/runPipeline";
 (async () => {
-  const moj = await prisma.prosecutionOffice.findFirst({ where: { name: "법무부/대검찰청" }, select: { id: true } });
-  if (!moj) throw new Error("법무부/대검찰청 office 없음");
-  const before = await prisma.article.count({ where: { crimeType: "형사사법제도/정책", primaryOfficeId: { not: moj.id } } });
-  const res = await prisma.article.updateMany({
-    where: { crimeType: "형사사법제도/정책" },
-    data: { primaryOfficeId: moj.id, officeMatchType: "MANUAL" },
+  const arts = await prisma.article.findMany({
+    where: { crimeType: "공판", title: { contains: "건진법사" } },
+    select: { title: true, issueClusterId: true, issueScore: true },
+    orderBy: { issueScore: "desc" },
+    take: 12,
   });
-  console.log(`형사사법제도/정책 ${res.count}건 → 법무부/대검찰청 (이전 타관할 ${before}건)`);
-  await rebuildClusters();
-  console.log("클러스터 재생성 완료");
+  arts.forEach((a) => console.log(`cluster=${(a.issueClusterId ?? "none").slice(0, 8)} score=${a.issueScore} · ${a.title.slice(0, 50)}`));
   await prisma.$disconnect();
 })().catch((e) => { console.error(e); process.exit(1); });
