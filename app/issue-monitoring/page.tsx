@@ -48,7 +48,7 @@ function Periods({ value, onChange }: { value: CalPeriod; onChange: (p: CalPerio
 
 /** 가로 막대 행 */
 function BarRow({ label, value, max, tone }: { label: string; value: number; max: number; tone: string }) {
-  const pct = max > 0 ? Math.max(3, Math.round((value / max) * 100)) : 0;
+  const pct = value > 0 && max > 0 ? Math.max(3, Math.round((Math.log(value + 1) / Math.log(max + 1)) * 100)) : 0;
   return (
     <div className="flex items-center gap-2">
       <span className="w-36 shrink-0 truncate text-body-s text-ink-title sm:w-44">
@@ -83,7 +83,6 @@ export default function IssueMonitoringPage() {
   );
   const crimes = useMemo(() => rank(inRange(pCrime).map((r) => r.crimeType || "기타")), [rows, pCrime]);
   const crimeMax = crimes[0]?.count ?? 0;
-  const nationalCount = useMemo(() => (heat ?? []).find((h) => h.officeName === "법무부/대검찰청")?.issueCount ?? 0, [heat]);
 
   return (
     <div className="mx-auto max-w-content space-y-5 p-5">
@@ -146,7 +145,7 @@ export default function IssueMonitoringPage() {
                 <Periods value={pOffice} onChange={setPOffice} />
               </CardHeader>
               <CardContent>
-                <KoreaChoropleth offices={offices} nationalCount={nationalCount} />
+                <KoreaChoropleth offices={offices} />
               </CardContent>
             </Card>
 
