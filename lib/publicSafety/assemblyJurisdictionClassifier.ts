@@ -522,12 +522,18 @@ export function classifyAllOffices(
 
   for (const o of offices) {
     // (a) 검찰청 직접 언급(서울남부지검/서울남부지방검찰청)
-    const direct = [o.name];
-    if (o.name === "법무부/대검찰청") direct.push("법무부", "대검찰청", "대검");
-    else if (o.name.endsWith("지방검찰청")) direct.push(o.name.replace("지방검찰청", "지검"));
+    //  ※ '법무부'는 본부(검찰개혁/장관 등)일 때만. '법무부 ○○보호관찰소/출입국/교도소' 등 필드기관은 제외(소재지 검찰청으로 가야 함)
+    const direct = o.name === "법무부/대검찰청" ? ["대검찰청", "대검"] : [o.name];
+    if (o.name.endsWith("지방검찰청")) direct.push(o.name.replace("지방검찰청", "지검"));
     else if (o.name.endsWith("고등검찰청")) direct.push(o.name.replace("고등검찰청", "고검"));
     const d = earliest(direct);
     if (d) matches.push({ officeId: o.id, officeName: o.name, hint: d.hint, idx: d.idx });
+    if (o.name === "법무부/대검찰청") {
+      const i = text.indexOf("법무부");
+      if (i >= 0 && !/^법무부\s*\S{0,8}(보호관찰|출입국|교도소|구치소|소년원|범죄예방|준법지원|치료감호)/.test(text.slice(i, i + 22))) {
+        matches.push({ officeId: o.id, officeName: o.name, hint: "법무부", idx: i });
+      }
+    }
 
     // (b) 대응 법원명(부산지법 → 부산지검, 성남지원 → 성남지청)
     const c = earliest(courtAliasesFor(o.name));

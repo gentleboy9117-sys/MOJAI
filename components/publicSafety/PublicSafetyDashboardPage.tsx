@@ -56,12 +56,6 @@ export function PublicSafetyDashboardPage() {
           sub="가능성 언급(확정 아님)"
           tone="text-[#9a6a00]"
         />
-        <Stat
-          label="검토 필요"
-          value={summary.loading ? "…" : (s?.reviewNeededCount ?? 0)}
-          sub="담당자 확인"
-          tone="text-danger"
-        />
       </div>
 
       {/* 출처별 수집 현황 · 정보 반영 시각 */}

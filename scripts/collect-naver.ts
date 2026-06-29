@@ -4,7 +4,7 @@ import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
 import { classifyArticle, contentHashOf } from "@/lib/classifiers";
 import { getOfficeLites, rebuildClusters } from "@/lib/pipeline/runPipeline";
-import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip } from "@/lib/collect/filters";
+import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip, isNonLegalNoise } from "@/lib/collect/filters";
 
 const ID = process.env.NAVER_CLIENT_ID;
 const SECRET = process.env.NAVER_CLIENT_SECRET;
@@ -54,6 +54,7 @@ async function main() {
         if (isPhotoOnlyTitle(title)) { skipped++; continue; } // 사진/화보 기사 제외
         if (isOpinionColumn(title)) { skipped++; continue; } // 칼럼·오피니언·연재물 제외
         if (isCelebGossip(title, summary)) { skipped++; continue; } // 연예 가십(법률 맥락 없음) 제외
+        if (isNonLegalNoise(title, summary)) { skipped++; continue; } // 형사사법 무관(정치·경제·스포츠) 제외
         if (isForeignTopic(title, summary)) { skipped++; continue; } // 해외토픽(외국인·외국 사건) 제외
         const hash = contentHashOf(title, url);
         if (await prisma.article.findUnique({ where: { contentHash: hash }, select: { id: true } })) continue;

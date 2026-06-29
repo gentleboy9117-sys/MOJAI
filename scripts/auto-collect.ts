@@ -9,7 +9,7 @@ import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
 import { getNewsProviders } from "@/lib/providers/news";
 import { NaverNewsProvider } from "@/lib/providers/news/NaverNewsProvider";
-import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip } from "@/lib/collect/filters";
+import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip, isNonLegalNoise } from "@/lib/collect/filters";
 import { classifyArticle, contentHashOf } from "@/lib/classifiers";
 import { getOfficeLites, rebuildClusters, persistTrendAlerts } from "@/lib/pipeline/runPipeline";
 import {
@@ -53,6 +53,7 @@ async function saveRaw(a: any, offices: any[]): Promise<boolean> {
   if (isPhotoOnlyTitle(a.title)) return false; // 사진/화보 기사 제외
   if (isOpinionColumn(a.title)) return false; // 칼럼·오피니언·연재물 제외
   if (isCelebGossip(a.title, a.summary)) return false; // 연예 가십(법률 맥락 없음) 제외
+  if (isNonLegalNoise(a.title, a.summary)) return false; // 형사사법 무관(정치·경제·스포츠) 제외
   if (isForeignTopic(a.title, a.summary)) return false; // 해외토픽(외국인·외국 사건) 제외
   const hash = contentHashOf(a.title, a.originalUrl);
   if (await prisma.article.findUnique({ where: { contentHash: hash }, select: { id: true } })) return false;

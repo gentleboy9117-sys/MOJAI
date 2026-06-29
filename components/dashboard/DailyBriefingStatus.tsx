@@ -22,11 +22,10 @@ export function DailyBriefingStatus() {
         {loading ? <Spinner /> : !data ? (
           <p className="text-body-s text-ink-muted">실행 이력이 없습니다. <code className="text-detail">npm run briefing</code> 으로 생성하세요.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-3 gap-3">
             <Field label="마지막 실행" value={formatDateTime(data.runAt)} />
             <Field label="수집 기사" value={`${data.articleCount}건`} />
             <Field label="생성 이슈" value={`${data.issueCount}건`} />
-            <Field label="검토 필요" value={`${data.reviewNeededCount}건`} tone="text-danger" />
           </div>
         )}
         {data?.reportId && (

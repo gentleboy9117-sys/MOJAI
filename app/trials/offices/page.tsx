@@ -6,6 +6,7 @@ import { Spinner, EmptyState } from "@/components/ui/misc";
 import { useApi } from "@/lib/client/useApi";
 import { TrialSubNav } from "@/components/trials/TrialSubNav";
 import { OFFICE_ORDER } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
+import { dedupeArticles } from "@/lib/client/dedupeArticles";
 import { formatDate } from "@/lib/utils";
 
 interface ArticleRow {
@@ -78,25 +79,33 @@ export default function TrialOfficesPage() {
                   <ChevronDown className={`h-4 w-4 shrink-0 text-ink-muted transition-transform ${isOpen ? "rotate-180" : ""}`} />
                   <Building2 className="h-4 w-4 shrink-0 text-primary" />
                   <span className="text-body-s font-bold text-ink-title">{g.name}</span>
-                  <Badge tone="outline">{g.articles.length}건</Badge>
+                  <Badge tone="outline">{dedupeArticles(g.articles).length}건</Badge>
                 </button>
                 {isOpen && (
                   <ul className="divide-y divide-line border-t border-line">
-                    {g.articles.map((a) => (
-                      <li key={a.id} className="px-4 py-2.5">
+                    {dedupeArticles(g.articles).map((d) => (
+                      <li key={d.rep.id} className="px-4 py-2.5">
                         <a
-                          href={a.originalUrl}
+                          href={d.rep.originalUrl}
                           target="_blank"
                           rel="noreferrer"
                           className="group flex items-start gap-1.5 text-body-s font-medium text-ink-title hover:text-primary"
                         >
-                          <span className="hover:underline">{a.title.split(" - ")[0]}</span>
+                          <span className="hover:underline">{d.rep.title.split(" - ")[0]}</span>
                           <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 opacity-40 group-hover:opacity-100" />
                         </a>
                         <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-detail text-ink-muted">
-                          {a.crimeSubtype && <Badge tone="navy">{a.crimeSubtype}</Badge>}
-                          <span>{a.sourceName}{a.publishedAt ? ` · ${formatDate(a.publishedAt)}` : ""}</span>
+                          {d.rep.crimeSubtype && <Badge tone="navy">{d.rep.crimeSubtype}</Badge>}
+                          <span>{d.rep.sourceName}{d.rep.publishedAt ? ` · ${formatDate(d.rep.publishedAt)}` : ""}</span>
+                          {d.count > 1 && <span className="text-blue-60">· 동일 보도 {d.count}건</span>}
                         </p>
+                        {d.count > 1 && (
+                          <div className="mt-1 flex flex-wrap gap-x-2 gap-y-0.5">
+                            {d.sources.map((s, i) => (
+                              <a key={i} href={s.url} target="_blank" rel="noreferrer" className="text-detail text-blue-60 hover:underline">· {s.sourceName}</a>
+                            ))}
+                          </div>
+                        )}
                       </li>
                     ))}
                   </ul>

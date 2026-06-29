@@ -42,7 +42,6 @@ export function AssemblyByOfficeView({ date }: { date: string }) {
                   <th className="px-3 py-2 text-right font-medium">공개 집회</th>
                   <th className="px-3 py-2 font-medium">주요 장소</th>
                   <th className="px-3 py-2 text-right font-medium">관련 보도</th>
-                  <th className="px-3 py-2 text-right font-medium">검토 필요</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -54,12 +53,12 @@ export function AssemblyByOfficeView({ date }: { date: string }) {
                     <Fragment key={r.officeId ?? `none-${i}`}>
                       {showHigh && (
                         <tr className="bg-primary/5">
-                          <td colSpan={5} className="px-3 py-1 text-detail font-bold text-primary">{r.highOffice}</td>
+                          <td colSpan={4} className="px-3 py-1 text-detail font-bold text-primary">{r.highOffice}</td>
                         </tr>
                       )}
                       {showEtc && (
                         <tr className="bg-gray-5">
-                          <td colSpan={5} className="px-3 py-1 text-detail font-bold text-ink-muted">관할 미상</td>
+                          <td colSpan={4} className="px-3 py-1 text-detail font-bold text-ink-muted">관할 미상</td>
                         </tr>
                       )}
                       <tr className="hover:bg-gray-5">
@@ -75,13 +74,6 @@ export function AssemblyByOfficeView({ date }: { date: string }) {
                         <td className="px-3 py-2 text-right text-ink-body">{r.assemblyCount}</td>
                         <td className="px-3 py-2 text-ink-muted">{r.mainLocations.join(", ") || "-"}</td>
                         <td className="px-3 py-2 text-right text-ink-body">{r.relatedReportCount}</td>
-                        <td className="px-3 py-2 text-right">
-                          {r.reviewNeededCount > 0 ? (
-                            <Badge tone="danger">{r.reviewNeededCount}</Badge>
-                          ) : (
-                            <span className="text-ink-disabled">0</span>
-                          )}
-                        </td>
                       </tr>
                     </Fragment>
                   );

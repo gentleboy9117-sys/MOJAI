@@ -1,9 +1,10 @@
 "use client";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Building2, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { cn } from "@/lib/utils";
 import { Spinner, EmptyState } from "@/components/ui/misc";
 import { useApi } from "@/lib/client/useApi";
 import { IssueSubNav } from "@/components/issues/IssueSubNav";
@@ -47,14 +48,15 @@ function Counts({ heat }: { heat?: HeatRow }) {
       <Badge tone="outline">기사 {heat.articleCount}</Badge>
       <Badge tone="blue">이슈 {heat.issueCount}</Badge>
       {heat.importantIssues > 0 && <Badge tone="warning">중요 {heat.importantIssues}</Badge>}
-      {heat.reviewNeeded > 0 && <Badge tone="danger">검토 {heat.reviewNeeded}</Badge>}
     </span>
   );
 }
 
 export default function OfficesPage() {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
-  const { data: heatmap, loading: lh } = useApi<HeatRow[]>("/api/dashboard/office-heatmap?period=30d");
+  const [period, setPeriod] = useState<"today" | "7d" | "30d">("30d");
+  const [sortBy, setSortBy] = useState<"issue" | "important">("issue");
+  const { data: heatmap, loading: lh } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${period}`);
 
   const heatById = useMemo(() => {
     const m = new Map<string, HeatRow>();
@@ -86,8 +88,11 @@ export default function OfficesPage() {
   }, [offices]);
 
   const ranking = useMemo(
-    () => [...(heatmap ?? [])].sort((a, b) => b.issueCount - a.issueCount || b.articleCount - a.articleCount),
-    [heatmap],
+    () => {
+      const key = sortBy === "important" ? "importantIssues" : "issueCount";
+      return [...(heatmap ?? [])].sort((a, b) => (b[key] as number) - (a[key] as number) || b.articleCount - a.articleCount);
+    },
+    [heatmap, sortBy],
   );
 
   const loading = lo || lh;
@@ -115,6 +120,10 @@ export default function OfficesPage() {
         <h1 className="text-heading-m text-ink-title">검찰청별 보기</h1>
         <p className="text-body-s text-ink-muted">
           조직 체계별 이슈 현황과 검찰청 순위 — 최근 30일 공개 보도 기준(보도 파급도)
+        </p>
+        <p className="mt-1 text-detail text-ink-muted">
+          · <span className="font-medium text-blue-60">이슈(파랑)</span> = 비슷한 기사를 묶은 사건 수 ·{" "}
+          <span className="font-medium text-[#9a6a00]">중요(노랑)</span> = 그중 보도 파급도가 높은 중요 이슈 수
         </p>
       </div>
       <IssueSubNav />
@@ -170,8 +179,31 @@ export default function OfficesPage() {
           {/* 순위 표 */}
           <Card>
             <CardHeader>
-              <CardTitle>검찰청 순위 (이슈 기준)</CardTitle>
-              <span className="text-detail text-ink-muted">최근 30일</span>
+              <CardTitle>검찰청 순위</CardTitle>
+              <div className="flex flex-wrap items-center gap-1.5">
+                <div className="flex rounded-md border border-line p-0.5">
+                  {(["today", "7d", "30d"] as const).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setPeriod(v)}
+                      className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
+                    >
+                      {v === "today" ? "오늘" : v === "7d" ? "지난 7일" : "지난 30일"}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex rounded-md border border-line p-0.5">
+                  {(["issue", "important"] as const).map((v) => (
+                    <button
+                      key={v}
+                      onClick={() => setSortBy(v)}
+                      className={cn("rounded px-2 py-0.5 text-caption transition-colors", sortBy === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
+                    >
+                      {v === "issue" ? "이슈순" : "중요순"}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </CardHeader>
             <CardContent className="p-0">
               {!ranking.length ? (
@@ -188,7 +220,6 @@ export default function OfficesPage() {
                         <th className="px-3 py-2 font-medium">주요 유형</th>
                         <th className="px-3 py-2 text-right font-medium">전일 대비</th>
                         <th className="px-3 py-2 text-right font-medium">중요</th>
-                        <th className="px-3 py-2 text-right font-medium">검토필요</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-line">
@@ -211,7 +242,6 @@ export default function OfficesPage() {
                             {r.deltaPrev > 0 ? `+${r.deltaPrev}` : r.deltaPrev}
                           </td>
                           <td className="px-3 py-2 text-right text-ink-body">{r.importantIssues}</td>
-                          <td className="px-3 py-2 text-right text-ink-body">{r.reviewNeeded}</td>
                         </tr>
                       ))}
                     </tbody>

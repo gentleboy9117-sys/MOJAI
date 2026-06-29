@@ -34,7 +34,6 @@ export function OfficeHeatmap({ limit = 10 }: { limit?: number }) {
                   <th className="px-3 py-2 font-medium">주요 유형</th>
                   <th className="px-3 py-2 text-right font-medium">전일 대비</th>
                   <th className="px-3 py-2 text-right font-medium">중요</th>
-                  <th className="px-3 py-2 text-right font-medium">검토필요</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
@@ -49,7 +48,6 @@ export function OfficeHeatmap({ limit = 10 }: { limit?: number }) {
                       {r.deltaPrev > 0 ? `+${r.deltaPrev}` : r.deltaPrev}
                     </td>
                     <td className="px-3 py-2 text-right text-ink-body">{r.importantIssues}</td>
-                    <td className="px-3 py-2 text-right text-ink-body">{r.reviewNeeded}</td>
                   </tr>
                 ))}
               </tbody>

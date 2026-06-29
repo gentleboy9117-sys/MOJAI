@@ -56,7 +56,31 @@ function scoreCrimeCategory(text: string): { cat: string; sub: string; hits: str
 
 // 본문에 '당일 또는 전일' 법원 선고가 있었는지 판별 → 공판 모니터링 대상 여부.
 //  (과거 재판을 단순 언급한 기사는 제외; 법원+선고 표현 + 선고일이 기사일/전일과 일치)
+// 가사·민사·행정 등 '형사 아님' 사건 → 공판(형사) 제외
+const CIVIL_RE = /가사\s*\d*\s*부|민사\s*\d*\s*부|행정\s*\d*\s*부|가정법원|행정법원|재산\s*분할|위자료|친권|양육권|이혼\s*소송|상속\s*재산|손해배상\s*청구\s*소(송|장)|부당이득\s*반환/;
+// 미래(선고 예정) 표현 → 어제/오늘 선고 아님
+const FUTURE_RE = /내달|다음\s*달|오는|예정|열린다|열릴|연다|선고할|선고한다|선고된다|선고될|선고\s*기일|선고기일|선고를\s*앞|선고\s*예정/;
+// 제목만으로도 '실제 형 선고'가 드러나는 강한 표현(헤드라인=그날의 선고)
+const TITLE_VERDICT_RE = /(징역|금고|벌금)\s*\d|집행유예|법정구속|선고유예|실형|무죄\s*(선고|판결|확정)|유죄\s*(선고|판결|확정)|[1-3]심\s*(선고|판결)|(항소심|상고심)\s*(선고|판결|기각)|파기환송|원심\s*확정|벌금형/;
+
+// 사건이 아닌 홍보·예방·행사·정책 기사(중대재해 예방 로드맵 등) → 범죄로 분류하지 않음
+const PR_EVENT_RE = /로드맵|예방\s*(강화|대책|캠페인|교육|활동)|캠페인|업무\s*협약|협약\s*체결|\bMOU\b|간담회|토론회|세미나|포럼|학술대회|출범|선포|정조준|다짐|결의대회|비전\s*선포|안전\s*다짐|확대\s*방침|도입\s*방침|점검\s*나서|예방에\s*나서|예방하겠|근절\s*나서|행사\s*개최|박람회|공모전|위촉|발대식|기념식|축제|개막식|페스티벌|체육대회|한마당|걷기대회|음악회|전시회/;
+const INCIDENT_RE = /수사|기소|입건|구속|송치|혐의|선고|판결|적발|검거|체포|구형|고발|고소|압수수색|재판|숨진|숨져|사망|다쳐|부상|범행|처벌|벌금|징역|피의자|피고|영장|덜미|기소|불구속/;
+
+/** 사건(수사·기소·선고 등)이 아닌 홍보·예방·행사 기사면 true → 범죄 분류 제외 */
+export function isNonIncidentPR(text: string): boolean {
+  return PR_EVENT_RE.test(text) && !INCIDENT_RE.test(text);
+}
+
+/** 제목이 '그날의 형 선고' 헤드라인인가(미래·가사 제외) */
+export function isTitleVerdict(title: string): boolean {
+  if (!title) return false;
+  if (FUTURE_RE.test(title) || CIVIL_RE.test(title)) return false;
+  return TITLE_VERDICT_RE.test(title);
+}
+
 export function detectFreshVerdict(text: string, publishedAt: Date): boolean {
+  if (CIVIL_RE.test(text)) return false; // 가사·민사 등 형사 아님
   if (!COURT_RE.test(text)) return false;
   // (1) '이미 선고됨'(과거완료) 표현이 있어야 한다 — '7월 24일 선고 예정' 같은 미래 announcement 제외
   const PAST = /선고했|선고받|선고됐|선고를\s*내렸|선고가\s*내려|내려졌|법정구속(했|됐|돼|을)|실형을?\s*선고(?!\s*(예정|할|한다|될|공판|앞))|무죄를?\s*선고(?!\s*(예정|할|한다|될|공판))|유죄를?\s*선고(?!\s*(예정|할|한다|될))|징역[^.\n]{0,12}선고(?!\s*(예정|할|한다|될|공판|앞))|집행유예[^.\n]{0,10}선고(?!\s*(예정|할|한다|될))|벌금[^.\n]{0,10}선고(?!\s*(예정|할|한다|될))|파기환송(했|됐)|원심을?\s*(확정|파기)|형을?\s*확정/;
@@ -99,8 +123,21 @@ export function classifyCrime(input: ClassifyInput, opts: { skipTitleTrial?: boo
     };
   }
 
-  // 공판 판정은 제목이 아니라 '본문 + 선고일(어제/오늘)' 기준으로만 한다(detectFreshVerdict).
-  //  → 여기서는 공판으로 분류하지 않고, scripts/reclassify-trial.ts(본문 크롤)가 결정한다.
+  // 사건이 아닌 홍보·예방·행사 기사(중대재해 예방 로드맵 등)는 범죄 아님 → 기타
+  if (isNonIncidentPR(text)) {
+    return { crimeType: "기타", crimeSubtype: "기타", confidence: 0.4, evidenceKeywords: [], reason: "사건(수사·기소·선고)이 아닌 홍보·예방·행사 기사 → 기타" };
+  }
+
+  // 공판: 제목에 '그날의 형 선고' 헤드라인이 있으면 인정(미래·가사 제외). 본문 기반은 reclassify-trial 가 보강.
+  if (!opts.skipTitleTrial && isTitleVerdict(input.title ?? "")) {
+    return {
+      crimeType: "공판",
+      crimeSubtype: underlying?.cat ?? "기타",
+      confidence: 0.9,
+      evidenceKeywords: [(input.title ?? "").match(TITLE_VERDICT_RE)?.[0] ?? "선고"],
+      reason: `제목의 형 선고 표현 → '공판'(기저: ${underlying?.cat ?? "기타"})`,
+    };
+  }
 
   if (!underlying) {
     return {

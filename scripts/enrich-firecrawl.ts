@@ -14,18 +14,21 @@ const SINCE = Number(process.env.BF_SINCE_DAYS || 30);
 async function main() {
   const offices = await getJurisdictionOffices(prisma);
   const since = new Date(Date.now() - SINCE * 86400000);
+  // 잘못 '법무부/대검찰청'으로 분류된 사건 기사(제도/정책 아님)도 본문 재확인 대상에 포함
+  const moj = await prisma.prosecutionOffice.findFirst({ where: { name: "법무부/대검찰청" }, select: { id: true } });
   const targets = await prisma.article.findMany({
     where: {
       publishedAt: { gte: since },
       OR: [
         { primaryOfficeId: null }, // 관할 미분류 → 본문으로 분류
+        ...(moj ? [{ AND: [{ primaryOfficeId: moj.id }, { crimeType: { not: "형사사법제도/정책" } }] }] : []),
         // 구글 리다이렉트 링크(깨짐) → 실제 원문 URL 해석
         { AND: [{ originalUrl: { contains: "news.google.com" } }, { OR: [{ resolvedUrl: null }, { resolvedUrl: { contains: "news.google.com" } }] }] },
       ],
     },
     orderBy: { publishedAt: "desc" },
     take: MAX,
-    select: { id: true, title: true, summary: true, originalUrl: true },
+    select: { id: true, title: true, summary: true, originalUrl: true, resolvedUrl: true },
   });
   console.log(`대상 ${targets.length}건(미분류+구글링크, 최근 ${SINCE}일) — Firecrawl 본문보강·URL해석 시작`);
 
@@ -33,7 +36,8 @@ async function main() {
   for (let i = 0; i < targets.length; i += CONC) {
     const chunk = targets.slice(i, i + CONC);
     await Promise.all(chunk.map(async (a) => {
-      const r = await firecrawlScrape(a.originalUrl);
+      const scrapeUrl = (a as any).resolvedUrl && !(a as any).resolvedUrl.includes("news.google.com") ? (a as any).resolvedUrl : a.originalUrl;
+      const r = await firecrawlScrape(scrapeUrl);
       done++;
       if (!r || !r.markdown) { failed++; return; }
       const offs = classifyAllOffices(`${a.title} ${a.summary ?? ""} ${r.markdown}`, offices);

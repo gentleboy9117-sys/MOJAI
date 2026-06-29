@@ -7,6 +7,7 @@ import { Spinner, EmptyState } from "@/components/ui/misc";
 import { useApi } from "@/lib/client/useApi";
 import { ArticleDetailPanel } from "@/components/article-detail/ArticleDetailPanel";
 import { TrialSubNav } from "@/components/trials/TrialSubNav";
+import { dedupeArticles } from "@/lib/client/dedupeArticles";
 import { formatDate } from "@/lib/utils";
 
 interface ArticleRow {
@@ -40,6 +41,7 @@ export default function TrialsPage() {
     [data],
   );
 
+  const deduped = useMemo(() => dedupeArticles(rows), [rows]);
   const officeCount = useMemo(
     () => new Set(rows.map((r) => r.primaryOfficeName).filter(Boolean)).size,
     [rows],
@@ -74,7 +76,7 @@ export default function TrialsPage() {
       ) : (
         <>
           <div className="flex flex-wrap gap-1.5">
-            <Badge tone="blue">총 공판기사 {rows.length}</Badge>
+            <Badge tone="blue">공판 사건 {deduped.length}건</Badge>
             <Badge tone="navy">검찰청 {officeCount}곳</Badge>
             <Badge tone="outline">기저 범죄유형 {subtypeCount}종</Badge>
           </div>
@@ -82,31 +84,35 @@ export default function TrialsPage() {
           <div className="grid gap-4 lg:grid-cols-2">
             {/* 최근 기사 목록 */}
             <div className="space-y-2">
-              {rows.map((a) => (
-                <button
-                  key={a.id}
-                  onClick={() => setSelected(a.id)}
-                  className={`w-full rounded-md border p-3 text-left transition hover:border-primary ${selected === a.id ? "border-primary bg-primary/5" : "border-line bg-white"}`}
-                >
-                  <div className="mb-1 flex flex-wrap items-center gap-1.5">
-                    <Badge tone="blue">{a.crimeSubtype || "기타"}</Badge>
-                    {a.primaryOfficeName && (
-                      <Badge tone="navy">{a.primaryOfficeName}</Badge>
-                    )}
-                    <span className="text-detail text-ink-muted">
-                      {a.sourceName} · {formatDate(a.publishedAt)}
-                    </span>
-                  </div>
-                  <p className="line-clamp-2 text-body-s font-medium text-ink-title">
-                    {a.title.split(" - ")[0]}
-                  </p>
-                  {a.summary && (
-                    <p className="mt-0.5 line-clamp-1 text-detail text-ink-muted">
-                      {a.summary}
+              {deduped.map((d) => {
+                const a = d.rep;
+                return (
+                  <button
+                    key={a.id}
+                    onClick={() => setSelected(a.id)}
+                    className={`w-full rounded-md border p-3 text-left transition hover:border-primary ${selected === a.id ? "border-primary bg-primary/5" : "border-line bg-white"}`}
+                  >
+                    <div className="mb-1 flex flex-wrap items-center gap-1.5">
+                      <Badge tone="blue">{a.crimeSubtype || "기타"}</Badge>
+                      {a.primaryOfficeName && (
+                        <Badge tone="navy">{a.primaryOfficeName}</Badge>
+                      )}
+                      <span className="text-detail text-ink-muted">
+                        {a.sourceName} · {formatDate(a.publishedAt)}
+                      </span>
+                      {d.count > 1 && <span className="text-detail text-blue-60">· 동일 보도 {d.count}건</span>}
+                    </div>
+                    <p className="line-clamp-2 text-body-s font-medium text-ink-title">
+                      {a.title.split(" - ")[0]}
                     </p>
-                  )}
-                </button>
-              ))}
+                    {a.summary && (
+                      <p className="mt-0.5 line-clamp-1 text-detail text-ink-muted">
+                        {a.summary}
+                      </p>
+                    )}
+                  </button>
+                );
+              })}
             </div>
             {/* 상세 */}
             <div className="lg:sticky lg:top-4 lg:self-start">
