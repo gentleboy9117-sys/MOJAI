@@ -72,13 +72,18 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
 
   // 표시 피처
   const features = useMemo(() => drill ? (sgg?.features ?? []).filter((f) => f.properties.code.startsWith(drill.code)) : (sido?.features ?? []), [sido, sgg, drill]);
-  // 드릴 시 실좌표 포인트
+  // 드릴 시 실좌표 포인트 — 전체 지검·지청(0건 포함)
   const points = useMemo(() => {
     if (!drill) return [] as { name: string; count: number; lng: number; lat: number }[];
     const out: { name: string; count: number; lng: number; lat: number }[] = [];
-    for (const o of offices) { if (sidoOfName(o.name) !== drill.name) continue; const c = coords[o.name]; if (!c) continue; out.push({ name: o.name, count: o.count, lng: c[0], lat: c[1] }); }
+    for (const o of orgs) {
+      if (o.type === "고등검찰청" || o.type === "법무부/대검찰청") continue;
+      if (sidoOfName(o.name) !== drill.name) continue;
+      const c = coords[o.name]; if (!c) continue;
+      out.push({ name: o.name, count: countByName.get(o.name) ?? 0, lng: c[0], lat: c[1] });
+    }
     return out;
-  }, [drill, offices, coords]);
+  }, [drill, orgs, coords, countByName]);
   const pointMax = Math.max(1, ...points.map((p) => p.count));
 
   const proj = useMemo(() => {
@@ -135,8 +140,8 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
                   </path>
                 );
               })}
-              {drill && proj && points.map((p, i) => { const [x, y] = proj(p.lng, p.lat); const r = 2.5 + Math.sqrt(p.count / pointMax) * 6; return (
-                <circle key={i} cx={x} cy={y} r={r} fill="#003675" fillOpacity={0.82} stroke="#fff" strokeWidth={0.6} className="cursor-pointer"><title>{p.name}: {p.count}건</title></circle>
+              {drill && proj && points.map((p, i) => { const [x, y] = proj(p.lng, p.lat); const z = p.count > 0; const r = z ? 3 + Math.sqrt(p.count / pointMax) * 6 : 2.5; return (
+                <circle key={i} cx={x} cy={y} r={r} fill={z ? "#003675" : "#cbd5e1"} fillOpacity={z ? 0.85 : 0.95} stroke="#fff" strokeWidth={0.6} className="cursor-pointer"><title>{p.name}: {p.count}건</title></circle>
               ); })}
             </g>
           </svg>
