@@ -110,15 +110,23 @@ function buildFallbackMarkdown(input: PressReleaseInput, title: string): string 
   const charges = val(input.charges, "관련 혐의");
   const L: string[] = [];
 
-  // 1) 보도 유의 문구
-  L.push("> **[보도 유의]** 이 보도자료를 통해 공개되는 범죄사실은 재판에 의하여 확정된 사실이 아님을 유의하여 주시기 바랍니다.");
+  // 1) 보도 유의 문구(서울중앙지검 표준 양식)
+  L.push("이 보도자료는 배포 즉시 보도하여 주시고, 공개되는 범죄사실은 재판에 의하여 확정된 사실이 아님을 유의하여 주시기 바랍니다.");
   L.push("");
-  // 2) 발표 기관 헤더
-  L.push(`**${office}**　|　보도자료　|　(배포일 기재)　|　자료문의: ${office} 공보담당`);
+  // 2) 발표 기관 헤더(검찰청 · 전문공보관 · 연락처)
+  L.push(`**${office}**`);
+  L.push("전문공보관 ○○○ ｜ 전화 (   ) ｜ 팩스 (   )");
   L.push("");
-  // 3) 제목 + 부제
+  L.push("**보 도 자 료**　　(배포일 기재)");
+  L.push("");
+  // 3) 제목 + 부제(핵심 수치 요약)
   L.push(`# ${title}`);
-  if (input.emphasisMessage?.trim()) L.push(`### – ${input.emphasisMessage.trim()} –`);
+  if (input.emphasisMessage?.trim()) L.push(`### - ${input.emphasisMessage.trim()} -`);
+  L.push("");
+  // 4) 공소제기 후 공개의 요건 및 범위
+  L.push("**공소제기 후 공개의 요건 및 범위**");
+  L.push("☑ 피고인, 죄명, 공소사실 요지, 공소제기 일시·방식, 수사경위·수사상황, 범행경과 및 수사의 의의 등(「형사사건 공개금지 등에 관한 규정」 제11조 제1항)");
+  L.push("☑ 제9조 제1항 제1호 내지 제6호의 어느 하나에 해당하고 미리 공개가 필요한 상당한 이유가 있다고 인정되어 소속 검찰청의 장의 승인이 있는 경우(제11조 제2항 제2호) 제7조 제2호 내지 제6호의 공개금지정보");
   L.push("");
   L.push("> 본 문서는 입력된 공개 가능 사실만으로 생성한 **초안**입니다. 배포 전 담당자 검토가 필요하며, 피의자·피고인은 비식별(A씨 등) 처리되었습니다.");
   L.push("");
