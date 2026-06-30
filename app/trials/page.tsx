@@ -9,6 +9,7 @@ import { TrialSubNav } from "@/components/trials/TrialSubNav";
 import { cn, formatDate } from "@/lib/utils";
 import { pickDistinctTop } from "@/lib/client/dedupeSimilar";
 import { calendarRange, type CalPeriod } from "@/lib/periodRange";
+import { KoreaChoropleth } from "@/components/issues/KoreaChoropleth";
 
 interface ArticleRow {
   id: string;
@@ -26,6 +27,8 @@ interface ArticleRow {
   issueScore: number;
   issueLevel: string;
 }
+
+const BAR_COLOR = "rgb(0,34,84)";
 
 function topCount(arr: string[], n: number): { name: string; count: number }[] {
   const m = new Map<string, number>();
@@ -49,6 +52,16 @@ function Periods({ value, onChange }: { value: CalPeriod; onChange: (p: CalPerio
   );
 }
 
+function BarRow({ label, value, max }: { label: string; value: number; max: number }) {
+  const pct = value > 0 && max > 0 ? Math.max(3, Math.round((Math.log(value + 1) / Math.log(max + 1)) * 100)) : 0;
+  return (
+    <div className="flex items-center gap-2">
+      <span className="w-28 shrink-0 truncate text-left text-body-s text-ink-title sm:w-36">{label} <span className="text-ink-muted">({value})</span></span>
+      <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5"><div className="h-full rounded" style={{ width: `${pct}%`, background: BAR_COLOR }} /></div>
+    </div>
+  );
+}
+
 export default function TrialMonitoringPage() {
   const { data, loading } = useApi<ArticleRow[]>("/api/articles?crimeType=공판&period=all&limit=300");
   const [pTop, setPTop] = useState<CalPeriod>("month");
@@ -63,8 +76,9 @@ export default function TrialMonitoringPage() {
   };
 
   const notable = useMemo(() => pickDistinctTop(inRange(pTop), 10), [rows, pTop]);
-  const topOffices = useMemo(() => topCount(inRange(pOffice).map((r) => r.primaryOfficeName ?? "").filter(Boolean), 5), [rows, pOffice]);
+  const trialOffices = useMemo(() => topCount(inRange(pOffice).map((r) => r.primaryOfficeName ?? "").filter(Boolean), 999), [rows, pOffice]);
   const bySubtype = useMemo(() => topCount(inRange(pCrime).map((r) => r.crimeSubtype || "기타"), 99), [rows, pCrime]);
+  const crimeMax = bySubtype[0]?.count ?? 0;
 
   return (
     <div className="mx-auto max-w-content space-y-5 p-5">
@@ -82,7 +96,7 @@ export default function TrialMonitoringPage() {
         <EmptyState icon={<Gavel className="h-8 w-8" />} title="공판 관련 보도가 없습니다" desc="공판 관련 기사가 수집되면 집계됩니다." />
       ) : (
         <div className="space-y-4">
-          {/* 주요 사건 Top 10 */}
+          {/* 주요 사건 Top 10 — 좌우 5+5 */}
           <Card>
             <CardHeader>
               <div className="min-w-0">
@@ -91,13 +105,13 @@ export default function TrialMonitoringPage() {
               </div>
               <Periods value={pTop} onChange={setPTop} />
             </CardHeader>
-            <CardContent className="p-0">
+            <CardContent>
               {!notable.length ? (
                 <p className="py-4 text-center text-body-s text-ink-muted">해당 기간 공판 보도가 없습니다.</p>
               ) : (
-                <ul className="divide-y divide-line">
+                <div className="grid gap-x-6 gap-y-1 sm:grid-cols-2">
                   {notable.map((a, i) => (
-                    <li key={a.id} className="flex items-start gap-2 px-3 py-1.5 hover:bg-gray-5">
+                    <div key={a.id} className="flex items-start gap-2 rounded px-1 py-1.5 hover:bg-gray-5">
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded bg-primary text-caption font-bold text-white">{i + 1}</span>
                       <div className="min-w-0 flex-1">
                         {isRealUrl(a.originalUrl) ? (
@@ -108,54 +122,49 @@ export default function TrialMonitoringPage() {
                         ) : (
                           <span className="line-clamp-1 text-body-s font-medium text-ink-title">{a.title.split(" - ")[0]}</span>
                         )}
-                        <p className="flex flex-wrap items-center gap-x-1.5 text-detail text-ink-muted">
-                          <span className="text-ink-body">{a.primaryOfficeName ?? "관할 미상"}</span>· {a.crimeSubtype || "기타"} · 파급도 {a.issueScore} · {formatDate(a.publishedAt)}
+                        <p className="mt-0.5 flex flex-wrap items-center gap-1 text-detail text-ink-muted">
+                          <Badge tone="navy">{a.primaryOfficeName ?? "관할 미상"}</Badge>
+                          <Badge tone="blue">{a.crimeSubtype || "기타"}</Badge>
+                          <span>파급도 {a.issueScore}</span>
+                          <span>· {formatDate(a.publishedAt)}</span>
                         </p>
                       </div>
-                    </li>
+                    </div>
                   ))}
-                </ul>
+                </div>
               )}
             </CardContent>
           </Card>
 
-          {/* 상위 검찰청 Top 5 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>상위 검찰청 Top 5</CardTitle>
-              <Periods value={pOffice} onChange={setPOffice} />
-            </CardHeader>
-            <CardContent>
-              {topOffices.length ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {topOffices.map((o) => (
-                    <Badge key={o.name} tone="navy">{o.name} {o.count}</Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-body-s text-ink-muted">집계된 검찰청이 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
+          <div className="grid gap-4 lg:grid-cols-3">
+            {/* 검찰청별 분포(전국 지도) */}
+            <Card className="lg:col-span-2">
+              <CardHeader>
+                <CardTitle>검찰청별 분포 (전국)</CardTitle>
+                <Periods value={pOffice} onChange={setPOffice} />
+              </CardHeader>
+              <CardContent>
+                <KoreaChoropleth offices={trialOffices} />
+              </CardContent>
+            </Card>
 
-          {/* 범죄유형 분류 */}
-          <Card>
-            <CardHeader>
-              <CardTitle>범죄유형 분류</CardTitle>
-              <Periods value={pCrime} onChange={setPCrime} />
-            </CardHeader>
-            <CardContent>
-              {bySubtype.length ? (
-                <div className="flex flex-wrap gap-1.5">
-                  {bySubtype.map((s) => (
-                    <Badge key={s.name} tone="blue">{s.name} {s.count}</Badge>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
-              )}
-            </CardContent>
-          </Card>
+            {/* 범죄유형 분류(막대) */}
+            <Card>
+              <CardHeader>
+                <CardTitle>범죄유형 분류</CardTitle>
+                <Periods value={pCrime} onChange={setPCrime} />
+              </CardHeader>
+              <CardContent>
+                {bySubtype.length ? (
+                  <div className="max-h-[400px] space-y-1 overflow-y-auto scrollbar-thin pr-1">
+                    {bySubtype.map((s) => <BarRow key={s.name} label={s.name} value={s.count} max={crimeMax} />)}
+                  </div>
+                ) : (
+                  <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
         </div>
       )}
     </div>

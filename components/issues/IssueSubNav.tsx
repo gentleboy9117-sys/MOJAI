@@ -8,7 +8,6 @@ const ISSUE_SUBNAV = [
   { label: "검찰청별 보기", href: "/offices" },
   { label: "범죄유형별 보기", href: "/crime-types" },
   { label: "제도/정책 이슈", href: "/policy-issues" },
-  { label: "이슈 브리핑", href: "/reports" },
 ];
 
 /** [이슈 모니터링] 하위 탭 바 — 이슈 대시보드/검찰청별/범죄유형별/이슈 브리핑 */

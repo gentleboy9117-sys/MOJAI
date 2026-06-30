@@ -61,7 +61,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "검찰청별 보기", href: "/offices" },
       { label: "범죄유형별 보기", href: "/crime-types" },
       { label: "제도/정책 이슈", href: "/policy-issues" },
-      { label: "이슈 브리핑", href: "/reports" },
     ],
   },
   {
@@ -70,7 +69,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "공판 모니터링", href: "/trials" },
       { label: "검찰청별 보기", href: "/trials/offices" },
       { label: "범죄유형별 보기", href: "/trials/crime-types" },
-      { label: "공판 브리핑", href: "/trials/reports" },
     ],
   },
   {
@@ -81,7 +79,6 @@ export const NAV_GROUPS: NavGroup[] = [
       { label: "집회·시위 보도", href: "/public-safety/related-news" },
       { label: "선거 보도", href: "/public-safety/election-news" },
       { label: "노동·중대재해 보도", href: "/public-safety/labor-news" },
-      { label: "공안 브리핑", href: "/public-safety/briefings" },
     ],
   },
   {

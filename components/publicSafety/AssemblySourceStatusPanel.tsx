@@ -64,44 +64,44 @@ export function AssemblySourceStatusPanel() {
               <b className="text-primary">{d.okSources}</b>곳 수집 성공 · 마지막 수집{" "}
               <b className="text-ink-title">{fmtDateTime(d.lastCollectedAt)}</b>
             </p>
-            <div className="overflow-x-auto">
-              <table className="w-full text-detail">
-                <thead>
-                  <tr className="border-b border-line text-left text-ink-muted">
-                    <th className="px-2 py-1.5 font-medium">지방경찰청</th>
-                    <th className="px-2 py-1.5 font-medium">상태</th>
-                    <th className="px-2 py-1.5 font-medium">수집 건수</th>
-                    <th className="px-2 py-1.5 font-medium">반영된 최신 집회일</th>
-                    <th className="px-2 py-1.5 font-medium">마지막 수집</th>
-                    <th className="px-2 py-1.5 font-medium">비고</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {d.sources.map((s) => (
-                    <tr key={s.sourceName} className="border-b border-line/60">
-                      <td className="px-2 py-1.5">
-                        <a href={s.listUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-ink-body hover:text-primary">
-                          {s.sourceName} <ExternalLink className="h-3 w-3 opacity-50" />
-                        </a>
-                      </td>
-                      <td className="px-2 py-1.5">
-                        {s.lastSuccess ? (
-                          <span className="rounded bg-success/10 px-1.5 py-0.5 text-success">수집됨</span>
-                        ) : (
-                          <span className="rounded bg-danger/10 px-1.5 py-0.5 text-danger">미수집</span>
-                        )}
-                      </td>
-                      <td className="px-2 py-1.5 tabular-nums">{s.collectedCount}</td>
-                      <td className="px-2 py-1.5 tabular-nums text-ink-title">{fmtDate(s.latestEventDate)}</td>
-                      <td className="px-2 py-1.5 tabular-nums text-ink-muted">{fmtDateTime(s.lastCollectedAt)}</td>
-                      <td className="px-2 py-1.5 text-ink-disabled">{s.lastSuccess ? "" : s.message}</td>
+            <div className="grid gap-x-6 gap-y-1 lg:grid-cols-2">
+              {(() => { const half = Math.ceil(d.sources.length / 2); return [d.sources.slice(0, half), d.sources.slice(half)]; })().map((rows, hi) => (
+                <table key={hi} className="w-full text-detail">
+                  <thead>
+                    <tr className="border-b border-line text-left text-ink-muted">
+                      <th className="px-2 py-1.5 font-medium">지방경찰청</th>
+                      <th className="px-2 py-1.5 font-medium">상태</th>
+                      <th className="px-2 py-1.5 font-medium">건수</th>
+                      <th className="px-2 py-1.5 font-medium">최신 집회일</th>
+                      <th className="px-2 py-1.5 font-medium">최근 수집</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {rows.map((s) => (
+                      <tr key={s.sourceName} className="border-b border-line/60">
+                        <td className="px-2 py-1.5">
+                          <a href={s.listUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-ink-body hover:text-primary">
+                            {s.sourceName} <ExternalLink className="h-3 w-3 opacity-50" />
+                          </a>
+                        </td>
+                        <td className="px-2 py-1.5">
+                          {s.lastSuccess ? (
+                            <span className="rounded bg-success/10 px-1.5 py-0.5 text-success">수집됨</span>
+                          ) : (
+                            <span className="rounded bg-danger/10 px-1.5 py-0.5 text-danger">미수집</span>
+                          )}
+                        </td>
+                        <td className="px-2 py-1.5 tabular-nums">{s.collectedCount}</td>
+                        <td className="px-2 py-1.5 tabular-nums text-ink-title">{fmtDate(s.latestEventDate)}</td>
+                        <td className="px-2 py-1.5 tabular-nums text-ink-muted">{fmtDateTime(s.lastCollectedAt)}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              ))}
             </div>
             <p className="mt-2 text-detail text-ink-disabled">
-              · '반영된 최신 집회일'은 각 지방경찰청 게시판에서 수집된 공지 중 가장 최근 집회 예정일입니다.
+              · '최신 집회일'은 각 지방경찰청 게시판에서 수집된 공지 중 가장 최근 집회 예정일입니다.
             </p>
           </>
         )}

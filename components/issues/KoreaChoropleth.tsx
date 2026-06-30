@@ -70,7 +70,9 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
     const subCount = (highId: string) => childrenOf(highId).reduce((s, c) => s + ownCount(c.office.name), 0);
     return { highs, childrenOf, ownCount, subCount };
   }, [orgs, countByName]);
-  const orgMax = Math.max(1, ...tree.highs.map((h) => tree.subCount(h.id)));
+  // 전국 단위(법무부/대검찰청) — 고검과 함께 상위 행으로 표시
+  const nationalCount = ["법무부/대검찰청", "대검찰청", "법무부"].reduce((s, n) => s + (countByName.get(n) ?? 0), 0);
+  const orgMax = Math.max(1, nationalCount, ...tree.highs.map((h) => tree.subCount(h.id)));
   const ownMax = Math.max(1, ...orgs.filter((o) => o.type === "지방검찰청" || o.type === "지청").map((o) => countByName.get(o.name) ?? 0));
 
   const toggle = (id: string) => setOpen((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
@@ -158,6 +160,13 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
       {/* 조직도 아코디언(고검 상위 → 펼치면 산하 지검+지청 평면) */}
       <div className="w-full shrink-0 overflow-hidden lg:flex lg:w-72 lg:items-center">
         <div className="w-full space-y-2.5 overflow-y-auto overflow-x-hidden scrollbar-thin pr-1 lg:max-h-[440px]">
+          {nationalCount > 0 && (
+            <div className="flex w-full items-center gap-2 pb-1">
+              <span className="h-3.5 w-3.5 shrink-0" />
+              <span className="w-14 shrink-0 text-left text-body-s font-bold text-ink-title">법무부·대검</span>
+              <Bar count={nationalCount} max={orgMax} /><span className="w-8 shrink-0 text-right text-body-s font-semibold text-primary">{nationalCount}</span>
+            </div>
+          )}
           {tree.highs.map((h, idx) => {
             const hOpen = open.has(h.id); const hc = tree.subCount(h.id);
             return (

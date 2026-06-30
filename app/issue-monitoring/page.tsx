@@ -10,7 +10,6 @@ import { IssueSubNav } from "@/components/issues/IssueSubNav";
 import { cn } from "@/lib/utils";
 import { type CalPeriod } from "@/lib/periodRange";
 import { KoreaChoropleth } from "@/components/issues/KoreaChoropleth";
-import { REPORT_TYPES } from "@/lib/report/reportTemplates";
 import { ALL_CRIME_TYPES } from "@/lib/classifiers/taxonomy";
 
 interface IssueRow { id: string; title: string; officeName?: string | null; crimeType?: string | null; issueScore?: number; articleCount?: number }
@@ -82,7 +81,7 @@ export default function IssueMonitoringPage() {
     <div className="mx-auto max-w-content space-y-5 p-5">
       <div>
         <h1 className="text-heading-m text-ink-title">이슈 모니터링</h1>
-        <p className="text-body-s text-ink-muted">검찰 관련 주요 이슈 현황을 정리한 화면입니다 (최근 30일 · 이슈 단위).</p>
+        <p className="text-body-s text-ink-muted">주요 이슈 현황을 정리한 화면입니다.</p>
       </div>
       <IssueSubNav />
 
@@ -139,7 +138,7 @@ export default function IssueMonitoringPage() {
                   <span className="text-detail text-ink-muted">이슈 수</span>
                 </CardHeader>
                 <CardContent>
-                  <div className="max-h-[220px] space-y-1 overflow-y-auto scrollbar-thin pr-1">
+                  <div className="max-h-[268px] space-y-1 overflow-y-auto scrollbar-thin pr-1">
                     {crimeRows.map((c) => (
                       <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} href={`/crime-news?type=${encodeURIComponent(c.name)}&scope=issue`} />
                     ))}
@@ -162,22 +161,6 @@ export default function IssueMonitoringPage() {
                   ) : (
                     <p className="text-body-s text-ink-muted">최근 30일 제도/정책 이슈가 없습니다.</p>
                   )}
-                </CardContent>
-              </Card>
-
-              {/* 이슈 브리핑 선택 */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>이슈 브리핑</CardTitle>
-                  <Link href="/reports" className="flex shrink-0 items-center text-detail text-blue-60 hover:underline">작성 <ChevronRight className="h-3 w-3" /></Link>
-                </CardHeader>
-                <CardContent className="space-y-1.5">
-                  {REPORT_TYPES.map((t) => (
-                    <Link key={t.key} href={`/reports?type=${t.key}`} className="flex items-center justify-between gap-2 rounded-md border border-line px-3 py-2 text-body-s text-ink-title transition-colors hover:border-primary hover:text-primary">
-                      <span className="min-w-0"><span className="font-medium">{t.label}</span><span className="ml-1 text-detail text-ink-muted">· {t.audience}</span></span>
-                      <ChevronRight className="h-4 w-4 shrink-0 text-ink-disabled" />
-                    </Link>
-                  ))}
                 </CardContent>
               </Card>
             </div>

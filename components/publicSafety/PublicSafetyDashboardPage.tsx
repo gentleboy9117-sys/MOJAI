@@ -19,7 +19,7 @@ export function PublicSafetyDashboardPage() {
   const s = summary.data;
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       {/* 요약 카드 */}
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Stat label="오늘 공개 집회" value={summary.loading ? "…" : (s?.todayCount ?? 0)} sub="공개 일정 정보" />
