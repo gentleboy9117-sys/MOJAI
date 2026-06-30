@@ -1,6 +1,4 @@
 import { DashboardSections } from "@/components/dashboard/DashboardSections";
-import { DailyBriefingStatus } from "@/components/dashboard/DailyBriefingStatus";
-import { TrendAlerts } from "@/components/dashboard/TrendAlerts";
 
 export default function DashboardPage() {
   return (
@@ -11,10 +9,6 @@ export default function DashboardPage() {
       </div>
       {/* 이슈·공판·공안 모니터링 요약 + 공보 진입 */}
       <DashboardSections />
-      <div className="grid gap-4 lg:grid-cols-2">
-        <DailyBriefingStatus />
-        <TrendAlerts />
-      </div>
     </div>
   );
 }
