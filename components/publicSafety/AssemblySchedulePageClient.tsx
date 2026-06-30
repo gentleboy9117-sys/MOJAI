@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { CalendarDays, RefreshCw } from "lucide-react";
+import { CalendarDays, RefreshCw, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/misc";
@@ -17,6 +17,8 @@ export function AssemblySchedulePageClient({ date }: { date: string }) {
   const [needsReview, setNeedsReview] = useState(false);
   const [selected, setSelected] = useState<string | null>(sp.get("assembly"));
   const [collecting, setCollecting] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const PREVIEW = 5;
   const canAct = getDevUser().role !== "VIEWER";
 
   // ?assembly= 로 진입 시 선택 동기화
@@ -75,9 +77,21 @@ export function AssemblySchedulePageClient({ date }: { date: string }) {
             <div className="py-8 text-center">
               <Spinner />
             </div>
-          ) : (
-            <AssemblyScheduleTable rows={data ?? []} selectedId={selected} onSelect={setSelected} />
-          )}
+          ) : (() => {
+            const all = data ?? [];
+            const rows = showAll ? all : all.slice(0, PREVIEW);
+            return (
+              <>
+                <AssemblyScheduleTable rows={rows} selectedId={selected} onSelect={setSelected} />
+                {all.length > PREVIEW && (
+                  <button onClick={() => setShowAll((v) => !v)} className="flex w-full items-center justify-center gap-1 border-t border-line py-2 text-detail font-medium text-blue-60 hover:bg-gray-5">
+                    {showAll ? "접기" : `더보기 (+${all.length - PREVIEW})`}
+                    <ChevronDown className={`h-3.5 w-3.5 transition-transform ${showAll ? "rotate-180" : ""}`} />
+                  </button>
+                )}
+              </>
+            );
+          })()}
         </CardContent>
       </Card>
 
