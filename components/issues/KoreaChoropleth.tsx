@@ -23,9 +23,10 @@ const sidoOfName = (n: string) => { const c = Object.keys(CITY_SIDO).find((k) =>
 // 로그 스케일(서울 왜곡 완화) — 막대·히트맵 공통
 const logScale = (c: number, max: number) => (c <= 0 || max <= 0 ? 0 : Math.log(c + 1) / Math.log(max + 1));
 const logPct = (c: number, max: number) => (c <= 0 ? 0 : Math.max(3, Math.round(logScale(c, max) * 100)));
-// 단일 파랑 히트맵(옅은 파랑 → primary)
+// 단일 파랑 히트맵 — 색 레인지 크게(제곱근 스케일: 옅은 파랑 → 진한 남색)
 function lerp(a: number[], b: number[], t: number) { return `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(",")})`; }
-const heatColor = (c: number, max: number) => (c <= 0 ? "#eef2f9" : lerp([210, 224, 244], [0, 54, 117], 0.18 + 0.82 * logScale(c, max))); // → #003675
+const heatColor = (c: number, max: number) => (c <= 0 ? "#eef2f9" : lerp([226, 238, 251], [0, 34, 84], 0.08 + 0.92 * Math.sqrt(max > 0 ? c / max : 0)));
+const BAR_GRAD = "linear-gradient(90deg, #8fb8ec, #003675)";
 
 interface Office { id: string; name: string; type: string; region: string; parentId: string | null }
 interface Feature { properties: { code: string; name: string }; geometry: { type: string; coordinates: any } }
@@ -110,7 +111,7 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
 
   // 막대(단일 파랑)
   const Bar = ({ count, max }: { count: number; max: number }) => (
-    <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5"><div className="h-full rounded bg-primary" style={{ width: `${logPct(count, max)}%` }} /></div>
+    <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5"><div className="h-full rounded" style={{ width: `${logPct(count, max)}%`, background: BAR_GRAD }} /></div>
   );
 
   return (

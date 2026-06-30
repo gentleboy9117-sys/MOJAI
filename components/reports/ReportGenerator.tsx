@@ -19,7 +19,9 @@ export function ReportGenerator({ fixedCrimeType }: { fixedCrimeType?: string } 
   const params = useSearchParams();
   const reportId = params.get("report");
 
-  const [reportType, setReportType] = useState<ReportType>("EXEC_SUMMARY");
+  const typeParam = params.get("type");
+  const initType = REPORT_TYPES.some((t) => t.key === typeParam) ? (typeParam as ReportType) : "EXEC_SUMMARY";
+  const [reportType, setReportType] = useState<ReportType>(initType);
   const [period, setPeriod] = useState<Period>("7d");
   const [office, setOffice] = useState("");
   const [region, setRegion] = useState("");
