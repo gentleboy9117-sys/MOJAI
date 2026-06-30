@@ -11,6 +11,14 @@ export type LengthOption = "short" | "normal" | "detailed";
 export interface PressReleaseInput {
   /** 발표 주체 검찰청 (예: 서울중앙지방검찰청) */
   officeName: string;
+  /** 전문공보관 성명 (헤더) */
+  spokesperson?: string;
+  /** 공보 연락처 - 전화 */
+  contactPhone?: string;
+  /** 공보 연락처 - 팩스 */
+  contactFax?: string;
+  /** 배포일 (예: 2026. 6. 30.(화)) */
+  releaseDate?: string;
   /** 발표 유형 key (RELEASE_TYPES) */
   releaseType: string;
   /** 사건 단계 key (CASE_STAGES) */

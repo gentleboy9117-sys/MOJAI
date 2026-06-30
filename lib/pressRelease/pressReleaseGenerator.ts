@@ -115,9 +115,9 @@ function buildFallbackMarkdown(input: PressReleaseInput, title: string): string 
   L.push("");
   // 2) 발표 기관 헤더(검찰청 · 전문공보관 · 연락처)
   L.push(`**${office}**`);
-  L.push("전문공보관 ○○○ ｜ 전화 (   ) ｜ 팩스 (   )");
+  L.push(`전문공보관 ${val(input.spokesperson, "○○○")} ｜ 전화 ${val(input.contactPhone, "(   )")} ｜ 팩스 ${val(input.contactFax, "(   )")}`);
   L.push("");
-  L.push("**보 도 자 료**　　(배포일 기재)");
+  L.push(`**보 도 자 료**　　${val(input.releaseDate, "(배포일 기재)")}`);
   L.push("");
   // 3) 제목 + 부제(핵심 수치 요약)
   L.push(`# ${title}`);

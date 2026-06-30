@@ -9,6 +9,7 @@ interface SimpleBody {
   officeName?: string; division?: string; chief?: string; crimeName?: string;
   caseSummary?: string; disposition?: string; dispositionDate?: string;
   significance?: string; emphasis?: string; futurePlan?: string;
+  spokesperson?: string; contactPhone?: string; contactFax?: string; releaseDate?: string;
 }
 
 function stageOf(d: string): string {
@@ -32,6 +33,10 @@ export async function POST(req: NextRequest) {
     const office = b.division ? `${b.officeName} ${b.division}` : b.officeName;
     const input: PressReleaseInput = {
       officeName: office,
+      spokesperson: b.spokesperson ?? "",
+      contactPhone: b.contactPhone ?? "",
+      contactFax: b.contactFax ?? "",
+      releaseDate: b.releaseDate ?? "",
       releaseType: "INVESTIGATION_RESULT",
       caseStage: stageOf(b.disposition),
       crimeType: b.crimeName ?? "",

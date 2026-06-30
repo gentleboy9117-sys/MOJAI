@@ -10,12 +10,14 @@ import { TEXT_POOL_DISPOSITIONS } from "@/lib/textPool";
 
 interface Form {
   officeName: string; division: string; chief: string; crimeName: string;
+  spokesperson: string; contactPhone: string; contactFax: string; releaseDate: string;
   caseSummary: string; disposition: string; dispositionDate: string;
   significance: string; emphasis: string; futurePlan: string;
 }
 const EMPTY: Form = {
-  officeName: "", division: "", chief: "", crimeName: "", caseSummary: "",
-  disposition: TEXT_POOL_DISPOSITIONS[6], dispositionDate: "", significance: "", emphasis: "", futurePlan: "",
+  officeName: "", division: "", chief: "", crimeName: "",
+  spokesperson: "", contactPhone: "", contactFax: "", releaseDate: "",
+  caseSummary: "", disposition: TEXT_POOL_DISPOSITIONS[6], dispositionDate: "", significance: "", emphasis: "", futurePlan: "",
 };
 const ta = "w-full rounded-md border border-line bg-white px-3 py-2 text-body-s text-ink-title outline-none focus:border-primary focus:ring-1 focus:ring-ring";
 
@@ -30,6 +32,7 @@ export function PressReleaseSimple() {
   function loadSample() {
     setForm({
       officeName: "서울중앙지방검찰청", division: "반부패수사1부", chief: "이○○",
+      spokesperson: "권내건", contactPhone: "02-530-4780", contactFax: "02-536-5410", releaseDate: "2026. 6. 30.(화)",
       crimeName: "특정경제범죄가중처벌등에관한법률위반(사기)·유사수신행위의규제에관한법률위반",
       caseSummary: "투자 리딩방을 운영하며 불특정 다수 투자자로부터 원금 보장을 약속하고 약 320억원을 받아 가로챈 피의자를 구속하여",
       disposition: "구속 기소", dispositionDate: "2026. 6. 30.",
@@ -63,6 +66,14 @@ export function PressReleaseSimple() {
           <div className="grid grid-cols-2 gap-3">
             <div><Label htmlFor="pr-chief">부장검사</Label><Input id="pr-chief" value={form.chief} onChange={(e) => set("chief", e.target.value)} placeholder="예: 홍길동" /></div>
             <div><Label htmlFor="pr-crime">죄명</Label><Input id="pr-crime" value={form.crimeName} onChange={(e) => set("crimeName", e.target.value)} placeholder="예: 특정경제범죄가중처벌등에관한법률위반(사기)" /></div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label htmlFor="pr-spox">전문공보관</Label><Input id="pr-spox" value={form.spokesperson} onChange={(e) => set("spokesperson", e.target.value)} placeholder="예: 권내건" /></div>
+            <div><Label htmlFor="pr-rdate">배포일</Label><Input id="pr-rdate" value={form.releaseDate} onChange={(e) => set("releaseDate", e.target.value)} placeholder="예: 2026. 6. 30.(화)" /></div>
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div><Label htmlFor="pr-tel">공보 전화</Label><Input id="pr-tel" value={form.contactPhone} onChange={(e) => set("contactPhone", e.target.value)} placeholder="예: 031-739-4301" /></div>
+            <div><Label htmlFor="pr-fax">공보 팩스</Label><Input id="pr-fax" value={form.contactFax} onChange={(e) => set("contactFax", e.target.value)} placeholder="예: 031-739-4399" /></div>
           </div>
           <div><Label htmlFor="pr-sum">사건 개요·경위 *</Label><textarea id="pr-sum" value={form.caseSummary} onChange={(e) => set("caseSummary", e.target.value)} rows={3} className={ta} placeholder="'~한 피의자를' 형태로 (예: …약 320억원을 가로챈 피의자를 구속하여)" /></div>
           <div className="grid grid-cols-2 gap-3">
