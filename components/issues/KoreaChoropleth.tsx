@@ -163,7 +163,7 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
           {nationalCount > 0 && (
             <div className="flex w-full items-center gap-2 pb-1">
               <span className="h-3.5 w-3.5 shrink-0" />
-              <span className="w-14 shrink-0 whitespace-nowrap text-left text-[11px] font-bold leading-none tracking-[-0.06em] text-ink-title">법무부·대검</span>
+              <span className="w-[4.75rem] shrink-0 whitespace-nowrap text-left text-body-s font-bold leading-none tracking-[-0.03em] text-ink-title">법무부·대검</span>
               <Bar count={nationalCount} max={orgMax} /><span className="w-8 shrink-0 text-right text-body-s font-semibold text-primary">{nationalCount}</span>
             </div>
           )}
@@ -173,7 +173,7 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
               <div key={h.id} className={cn(idx > 0 && "border-t border-line pt-2.5")}>
                 <button onClick={() => toggle(h.id)} className="flex w-full items-center gap-2">
                   <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-ink-muted transition-transform", !hOpen && "-rotate-90")} />
-                  <span className="w-14 shrink-0 text-left text-body-s font-bold text-ink-title">{h.name.replace("고등검찰청", "고검")}</span>
+                  <span className="w-[4.75rem] shrink-0 text-left text-body-s font-bold text-ink-title">{h.name.replace("고등검찰청", "고검")}</span>
                   <Bar count={hc} max={orgMax} /><span className="w-8 shrink-0 text-right text-body-s font-semibold text-primary">{hc}</span>
                 </button>
                 {hOpen && (

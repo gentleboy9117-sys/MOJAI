@@ -57,6 +57,10 @@ export default function OfficesPage() {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
   const [period, setPeriod] = useState<CalPeriod>("month");
   const [selectedOffice, setSelectedOffice] = useState<{ id: string; name: string } | null>(null);
+  const [open, setOpen] = useState<Set<string>>(new Set());
+  const toggle = (id: string) => setOpen((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const [showAllRank, setShowAllRank] = useState(false);
+  const RANK_PREVIEW = 8;
   const { data: heatmap, loading: lh } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${period}`);
 
   const heatById = useMemo(() => {
@@ -150,19 +154,30 @@ export default function OfficesPage() {
                   {tree.daegeom.map((o) => (
                     <OfficeLink key={o.id} o={o} indent={0} />
                   ))}
-                  {tree.highs.map((h) => (
-                    <div key={h.id}>
-                      <OfficeLink o={h} indent={0} />
-                      {tree.districtsByParent(h.id).map((d) => (
-                        <div key={d.id}>
-                          <OfficeLink o={d} indent={1} />
-                          {tree.branchesByParent(d.id).map((b) => (
-                            <OfficeLink key={b.id} o={b} indent={2} />
-                          ))}
+                  {tree.highs.map((h) => {
+                    const isOpen = open.has(h.id);
+                    return (
+                      <div key={h.id}>
+                        <div className="flex items-center">
+                          <button onClick={() => toggle(h.id)} className="shrink-0 rounded p-1 text-ink-disabled hover:text-primary" aria-label="펼치기">
+                            <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isOpen && "rotate-90")} />
+                          </button>
+                          <button onClick={() => setSelectedOffice({ id: h.id, name: h.name })} className="flex flex-1 items-center justify-between gap-3 rounded-md px-1 py-1.5 text-left hover:bg-gray-5">
+                            <span className="truncate text-body-s font-medium text-ink-title">{h.name}</span>
+                            <Counts heat={heatById.get(h.id)} />
+                          </button>
                         </div>
-                      ))}
-                    </div>
-                  ))}
+                        {isOpen && tree.districtsByParent(h.id).map((d) => (
+                          <div key={d.id}>
+                            <OfficeLink o={d} indent={1} />
+                            {tree.branchesByParent(d.id).map((b) => (
+                              <OfficeLink key={b.id} o={b} indent={2} />
+                            ))}
+                          </div>
+                        ))}
+                      </div>
+                    );
+                  })}
                   {tree.orphanDistricts.map((d) => (
                     <div key={d.id}>
                       <OfficeLink o={d} indent={0} />
@@ -171,6 +186,7 @@ export default function OfficesPage() {
                       ))}
                     </div>
                   ))}
+                  <p className="px-2 pt-1 text-detail text-ink-disabled">· 고검을 누르면 산하 지검·지청이 펼쳐집니다</p>
                 </>
               )}
             </CardContent>
@@ -211,7 +227,7 @@ export default function OfficesPage() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-line">
-                      {ranking.map((r) => (
+                      {(showAllRank ? ranking : ranking.slice(0, RANK_PREVIEW)).map((r) => (
                         <tr key={r.officeId} className="cursor-pointer hover:bg-gray-5" onClick={() => setSelectedOffice({ id: r.officeId, name: r.officeName })}>
                           <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">
                             {r.officeName}
@@ -231,6 +247,12 @@ export default function OfficesPage() {
                       ))}
                     </tbody>
                   </table>
+                  {ranking.length > RANK_PREVIEW && (
+                    <button onClick={() => setShowAllRank((v) => !v)} className="flex w-full items-center justify-center gap-1 border-t border-line py-2 text-detail font-medium text-blue-60 hover:bg-gray-5">
+                      {showAllRank ? "접기" : `더보기 (+${ranking.length - RANK_PREVIEW})`}
+                      <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", showAllRank ? "-rotate-90" : "rotate-90")} />
+                    </button>
+                  )}
                 </div>
               )}
             </CardContent>
