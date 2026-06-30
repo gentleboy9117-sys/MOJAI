@@ -14,7 +14,8 @@ function CrimeNewsInner() {
   const type = sp.get("type") ?? "";
   const subtype = sp.get("subtype") ?? undefined;
   const scope = sp.get("scope") ?? (type === "공판" ? "trial" : "issue");
-  const label = subtype ? `${type} · ${subtype}` : type;
+  // 공판 범죄유형별 보기는 'type'이 항상 "공판"이고 subtype이 실제 범죄유형 → "공판 · " 접두 제거
+  const label = scope === "trial" ? (subtype || type) : subtype ? `${type} · ${subtype}` : type;
   const title = `${label} 보도`;
   const backHref = scope === "trial" ? "/trials/crime-types" : "/crime-types";
 

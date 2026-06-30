@@ -6,7 +6,7 @@ export const ROLES = ["VIEWER", "ANALYST", "ADMIN"] as const;
 export type Role = (typeof ROLES)[number];
 
 export const ROLE_LABEL: Record<Role, string> = {
-  VIEWER: "일반 사용자",
+  VIEWER: "사용자",
   ANALYST: "분석관",
   ADMIN: "관리자",
 };

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { UserRound } from "lucide-react";
 import { getDevUser, type DevUser } from "@/lib/client/api";
 
-const ROLE_LABEL: Record<DevUser["role"], string> = { VIEWER: "일반 사용자", ANALYST: "분석관", ADMIN: "관리자" };
+const ROLE_LABEL: Record<DevUser["role"], string> = { VIEWER: "사용자", ANALYST: "분석관", ADMIN: "관리자" };
 
 export function UserChip() {
   const [u, setU] = useState<DevUser | null>(null);
