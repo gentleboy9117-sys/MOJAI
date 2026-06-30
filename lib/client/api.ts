@@ -8,8 +8,7 @@ export interface DevUser {
 }
 
 export const DEV_USERS: DevUser[] = [
-  { email: "viewer@example.go.kr", name: "일반 사용자", role: "VIEWER" },
-  { email: "analyst@example.go.kr", name: "분석관", role: "ANALYST" },
+  { email: "viewer@example.go.kr", name: "사용자", role: "VIEWER" },
   { email: "admin@example.go.kr", name: "관리자", role: "ADMIN" },
 ];
 
@@ -21,7 +20,7 @@ export function getDevUser(): DevUser {
     const raw = localStorage.getItem(KEY);
     if (raw) return JSON.parse(raw);
   } catch {}
-  return DEV_USERS[1]; // 기본: 분석관
+  return DEV_USERS[1]; // 기본: 관리자
 }
 
 export function setDevUser(u: DevUser) {

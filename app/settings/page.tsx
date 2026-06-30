@@ -8,9 +8,9 @@ import { Spinner } from "@/components/ui/misc";
 import { apiPost, getDevUser, setDevUser, DEV_USERS, type DevUser } from "@/lib/client/api";
 
 const ROLE_DESC: Record<DevUser["role"], string> = {
-  VIEWER: "조회 전용 — 대시보드·이슈·보고서 열람",
-  ANALYST: "분석관 — 보고서/보도자료 생성, 레퍼런스 수집·분석",
-  ADMIN: "관리자 — 모든 권한 + 감사 로그·동기화·일괄 처리",
+  VIEWER: "조회 전용 — 대시보드·이슈·검찰청별 보기 열람",
+  ANALYST: "분석관",
+  ADMIN: "관리자 — 모든 권한 + 보도자료·문자풀 생성, 감사 로그·동기화·일괄 처리",
 };
 
 interface ActionDef {
@@ -201,7 +201,7 @@ export default function SettingsPage() {
             <p>· SSRF 방지: 외부 요청은 허용 도메인(allowlist)으로 제한합니다.</p>
             <p>· 입력 정제(sanitize): 저장·렌더링 전 HTML/스크립트를 무력화합니다.</p>
             <p>· 감사 로그(audit): 조회·생성·다운로드 등 활동을 기록합니다.</p>
-            <p>· 권한 제어(RBAC): 역할(VIEWER/ANALYST/ADMIN)에 따라 기능을 제한합니다.</p>
+            <p>· 권한 제어(RBAC): 역할(사용자·관리자)에 따라 기능을 제한합니다.</p>
           </CardContent>
         </Card>
       </div>

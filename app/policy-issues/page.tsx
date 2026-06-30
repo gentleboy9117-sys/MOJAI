@@ -87,7 +87,7 @@ export default function PolicyIssuesPage() {
       <div>
         <h1 className="text-heading-m text-ink-title">제도/정책 이슈</h1>
         <p className="text-body-s text-ink-muted">
-          형사사법제도·정책 관련 언론기사를 주요 주제별로 정리한 화면입니다. {!loading && `· ${total}건`}
+          형사사법제도·정책 관련 언론기사를 주요 주제별로 정리한 화면입니다.
         </p>
       </div>
       <IssueSubNav />
