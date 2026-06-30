@@ -1,6 +1,6 @@
 "use client";
 import { useMemo, useState } from "react";
-import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react";
+import { CalendarDays, ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { appToday } from "@/lib/appToday";
 import { AssemblyByOfficeView } from "./AssemblyByOfficeView";
@@ -33,6 +33,7 @@ export function AssemblyScheduleSection() {
     ];
   }, []);
   const [date, setDate] = useState<string>(today);
+  const [openOverview, setOpenOverview] = useState(false);
 
   function shift(n: number) {
     const [y, m, d] = date.split("-").map(Number);
@@ -80,7 +81,15 @@ export function AssemblyScheduleSection() {
       </div>
 
       <AssemblyByOfficeView date={date} />
-      <AssemblySchedulePageClient date={date} />
+
+      {/* 집회·시위 개요 — 기본 접힘(첫 화면 세로 스크롤 축소) */}
+      <div className="rounded-lg border border-line bg-white">
+        <button onClick={() => setOpenOverview((v) => !v)} className="flex w-full items-center justify-between gap-2 px-4 py-2.5 text-body-s font-bold text-ink-title hover:bg-gray-5">
+          <span className="flex items-center gap-1.5"><CalendarDays className="h-4 w-4 text-primary" /> 집회·시위 개요</span>
+          <span className="flex items-center gap-1 text-detail font-normal text-ink-muted">{openOverview ? "접기" : "펼치기"} <ChevronDown className={cn("h-4 w-4 transition-transform", !openOverview && "-rotate-90")} /></span>
+        </button>
+        {openOverview && <div className="border-t border-line p-3"><AssemblySchedulePageClient date={date} /></div>}
+      </div>
     </div>
   );
 }

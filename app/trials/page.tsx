@@ -63,7 +63,9 @@ function BarRow({ label, value, max }: { label: string; value: number; max: numb
 }
 
 export default function TrialMonitoringPage() {
-  const { data, loading } = useApi<ArticleRow[]>("/api/articles?crimeType=공판&period=all&limit=300");
+  // 금일/금주/금월 토글은 모두 '금월' 범위 안에 포함 → 월 범위를 넉넉히 받아와 클라이언트에서 정확히 필터
+  const monthRange = useMemo(() => calendarRange("month"), []);
+  const { data, loading } = useApi<ArticleRow[]>(`/api/articles?crimeType=공판&startDate=${monthRange.start.toISOString()}&endDate=${monthRange.end.toISOString()}&limit=3000&sort=score`);
   const [pTop, setPTop] = useState<CalPeriod>("month");
   const [pOffice, setPOffice] = useState<CalPeriod>("month");
   const [pCrime, setPCrime] = useState<CalPeriod>("month");

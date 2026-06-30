@@ -38,6 +38,7 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
   const [open, setOpen] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setOpen((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const [showAllRank, setShowAllRank] = useState(false);
+  const [rankQuery, setRankQuery] = useState("");
   const RANK_PREVIEW = 8;
   const loading = lo || la;
 
@@ -194,8 +195,14 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
 
         {/* 검찰청 순위 */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex-wrap gap-2">
             <CardTitle>검찰청 순위</CardTitle>
+            <input
+              value={rankQuery}
+              onChange={(e) => setRankQuery(e.target.value)}
+              placeholder="검찰청 검색 (예: 성남)"
+              className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-detail outline-none focus:border-primary"
+            />
             <div className="flex rounded-md border border-line p-0.5">
               {(["today", "week", "month"] as const).map((v) => (
                 <button
@@ -223,19 +230,25 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-line">
-                    {(showAllRank ? ranking : ranking.slice(0, RANK_PREVIEW)).map((r, i) => (
-                      <tr key={r.name} className={cn("cursor-pointer hover:bg-gray-5", selected === r.name && "bg-blue-5")} onClick={() => setSelected(r.name)}>
-                        <td className="px-3 py-2 text-ink-disabled">{i + 1}</td>
-                        <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">{r.name}</td>
-                        <td className="px-3 py-2 text-right text-ink-body">{r.count}</td>
-                        <td className={cn("px-3 py-2 text-right font-medium tabular-nums", r.delta > 0 ? "text-danger" : r.delta < 0 ? "text-blue-60" : "text-ink-disabled")}>
-                          {r.delta > 0 ? `+${r.delta}` : r.delta}
-                        </td>
-                      </tr>
-                    ))}
+                    {(() => {
+                      const ranked = ranking.map((r, i) => ({ ...r, rank: i + 1 }));
+                      const q = rankQuery.trim();
+                      const rows = q ? ranked.filter((r) => r.name.includes(q)) : (showAllRank ? ranked : ranked.slice(0, RANK_PREVIEW));
+                      if (q && !rows.length) return <tr><td colSpan={4} className="px-3 py-4 text-center text-detail text-ink-disabled">‘{q}’ 검색 결과가 없습니다(해당 기간 보도 없음).</td></tr>;
+                      return rows.map((r) => (
+                        <tr key={r.name} className={cn("cursor-pointer hover:bg-gray-5", selected === r.name && "bg-blue-5")} onClick={() => setSelected(r.name)}>
+                          <td className="px-3 py-2 tabular-nums text-ink-disabled">{r.rank}</td>
+                          <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">{r.name}</td>
+                          <td className="px-3 py-2 text-right text-ink-body">{r.count}</td>
+                          <td className={cn("px-3 py-2 text-right font-medium tabular-nums", r.delta > 0 ? "text-danger" : r.delta < 0 ? "text-blue-60" : "text-ink-disabled")}>
+                            {r.delta > 0 ? `+${r.delta}` : r.delta}
+                          </td>
+                        </tr>
+                      ));
+                    })()}
                   </tbody>
                 </table>
-                {ranking.length > RANK_PREVIEW && (
+                {!rankQuery.trim() && ranking.length > RANK_PREVIEW && (
                   <button onClick={() => setShowAllRank((v) => !v)} className="flex w-full items-center justify-center gap-1 border-t border-line py-2 text-detail font-medium text-blue-60 hover:bg-gray-5">
                     {showAllRank ? "접기" : `더보기 (+${ranking.length - RANK_PREVIEW})`}
                     <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", showAllRank ? "-rotate-90" : "rotate-90")} />

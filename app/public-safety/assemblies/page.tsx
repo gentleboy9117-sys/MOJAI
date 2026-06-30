@@ -11,7 +11,7 @@ export default function AssembliesPage() {
       <div>
         <h1 className="text-heading-m text-ink-title">집회·시위 일정</h1>
         <p className="text-body-s text-ink-muted">
-          전국 지방경찰청 공개 게시판 기준 집회·시위 일정을 검찰청 관할별로 정리합니다. 날짜(오늘/내일/모레 또는 임의 날짜)를 선택하면 검찰청별 현황과 개요가 함께 갱신됩니다.
+          집회·시위 일정 및 개요를 날짜별, 관할별로 정리합니다.
         </p>
       </div>
       <PublicSafetySubNav />

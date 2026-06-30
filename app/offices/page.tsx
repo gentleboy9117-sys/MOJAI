@@ -60,6 +60,7 @@ export default function OfficesPage() {
   const [open, setOpen] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setOpen((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const [showAllRank, setShowAllRank] = useState(false);
+  const [rankQuery, setRankQuery] = useState("");
   const RANK_PREVIEW = 8;
   const { data: heatmap, loading: lh } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${period}`);
 
@@ -194,20 +195,24 @@ export default function OfficesPage() {
 
           {/* 순위 표 */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex-wrap gap-2">
               <CardTitle>검찰청 순위</CardTitle>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <div className="flex rounded-md border border-line p-0.5">
-                  {(["today", "week", "month"] as const).map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setPeriod(v)}
-                      className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
-                    >
-                      {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
-                    </button>
-                  ))}
-                </div>
+              <input
+                value={rankQuery}
+                onChange={(e) => setRankQuery(e.target.value)}
+                placeholder="검찰청 검색 (예: 성남)"
+                className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-detail outline-none focus:border-primary"
+              />
+              <div className="flex rounded-md border border-line p-0.5">
+                {(["today", "week", "month"] as const).map((v) => (
+                  <button
+                    key={v}
+                    onClick={() => setPeriod(v)}
+                    className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
+                  >
+                    {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
+                  </button>
+                ))}
               </div>
             </CardHeader>
             <CardContent className="p-0">
@@ -215,44 +220,52 @@ export default function OfficesPage() {
                 <EmptyState title="집계된 활동이 없습니다" />
               ) : (
                 <div className="overflow-x-auto scrollbar-thin">
-                  <table className="w-full text-body-s">
-                    <thead>
-                      <tr className="border-b border-line bg-gray-5 text-left text-detail text-ink-muted">
-                        <th className="px-3 py-2 font-medium">검찰청</th>
-                        <th className="px-3 py-2 font-medium">지역</th>
-                        <th className="px-3 py-2 text-right font-medium">기사</th>
-                        <th className="px-3 py-2 text-right font-medium">이슈</th>
-                        <th className="px-3 py-2 font-medium">주요 유형</th>
-                        <th className="px-3 py-2 text-right font-medium">{DELTA_LABEL[period]}</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-line">
-                      {(showAllRank ? ranking : ranking.slice(0, RANK_PREVIEW)).map((r) => (
-                        <tr key={r.officeId} className="cursor-pointer hover:bg-gray-5" onClick={() => setSelectedOffice({ id: r.officeId, name: r.officeName })}>
-                          <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">
-                            {r.officeName}
-                          </td>
-                          <td className="px-3 py-2 text-ink-muted">{r.region}</td>
-                          <td className="px-3 py-2 text-right text-ink-body">{r.articleCount}</td>
-                          <td className="px-3 py-2 text-right text-ink-body">{r.issueCount}</td>
-                          <td className="px-3 py-2 text-ink-body">{r.mainCrimeType ?? "-"}</td>
-                          <td
-                            className={`px-3 py-2 text-right font-medium ${
-                              r.deltaPrev > 0 ? "text-danger" : r.deltaPrev < 0 ? "text-blue-60" : "text-ink-disabled"
-                            }`}
-                          >
-                            {r.deltaPrev > 0 ? `+${r.deltaPrev}` : r.deltaPrev}
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  {ranking.length > RANK_PREVIEW && (
-                    <button onClick={() => setShowAllRank((v) => !v)} className="flex w-full items-center justify-center gap-1 border-t border-line py-2 text-detail font-medium text-blue-60 hover:bg-gray-5">
-                      {showAllRank ? "접기" : `더보기 (+${ranking.length - RANK_PREVIEW})`}
-                      <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", showAllRank ? "-rotate-90" : "rotate-90")} />
-                    </button>
-                  )}
+                  {(() => {
+                    const ranked = ranking.map((r, i) => ({ ...r, rank: i + 1 }));
+                    const q = rankQuery.trim();
+                    const rows = q ? ranked.filter((r) => r.officeName.includes(q)) : (showAllRank ? ranked : ranked.slice(0, RANK_PREVIEW));
+                    return (
+                      <>
+                        <table className="w-full text-body-s">
+                          <thead>
+                            <tr className="border-b border-line bg-gray-5 text-left text-detail text-ink-muted">
+                              <th className="px-3 py-2 text-right font-medium">순위</th>
+                              <th className="px-3 py-2 font-medium">검찰청</th>
+                              <th className="px-3 py-2 font-medium">지역</th>
+                              <th className="px-3 py-2 text-right font-medium">기사</th>
+                              <th className="px-3 py-2 text-right font-medium">이슈</th>
+                              <th className="px-3 py-2 font-medium">주요 유형</th>
+                              <th className="px-3 py-2 text-right font-medium">{DELTA_LABEL[period]}</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-line">
+                            {rows.map((r) => (
+                              <tr key={r.officeId} className="cursor-pointer hover:bg-gray-5" onClick={() => setSelectedOffice({ id: r.officeId, name: r.officeName })}>
+                                <td className="px-3 py-2 text-right tabular-nums text-ink-disabled">{r.rank}</td>
+                                <td className="px-3 py-2 font-medium text-ink-title hover:text-primary">{r.officeName}</td>
+                                <td className="px-3 py-2 text-ink-muted">{r.region}</td>
+                                <td className="px-3 py-2 text-right text-ink-body">{r.articleCount}</td>
+                                <td className="px-3 py-2 text-right text-ink-body">{r.issueCount}</td>
+                                <td className="px-3 py-2 text-ink-body">{r.mainCrimeType ?? "-"}</td>
+                                <td className={`px-3 py-2 text-right font-medium ${r.deltaPrev > 0 ? "text-danger" : r.deltaPrev < 0 ? "text-blue-60" : "text-ink-disabled"}`}>
+                                  {r.deltaPrev > 0 ? `+${r.deltaPrev}` : r.deltaPrev}
+                                </td>
+                              </tr>
+                            ))}
+                            {q && !rows.length && (
+                              <tr><td colSpan={7} className="px-3 py-4 text-center text-detail text-ink-disabled">‘{q}’ 검색 결과가 없습니다(해당 기간 활동 없음).</td></tr>
+                            )}
+                          </tbody>
+                        </table>
+                        {!q && ranking.length > RANK_PREVIEW && (
+                          <button onClick={() => setShowAllRank((v) => !v)} className="flex w-full items-center justify-center gap-1 border-t border-line py-2 text-detail font-medium text-blue-60 hover:bg-gray-5">
+                            {showAllRank ? "접기" : `더보기 (+${ranking.length - RANK_PREVIEW})`}
+                            <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", showAllRank ? "-rotate-90" : "rotate-90")} />
+                          </button>
+                        )}
+                      </>
+                    );
+                  })()}
                 </div>
               )}
             </CardContent>

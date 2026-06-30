@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
     const sp = req.nextUrl.searchParams;
     const f = parseArticleFilters(sp);
     const where = buildArticleWhere(f);
-    const limit = Math.min(300, Number(sp.get("limit") || 100));
+    const limit = Math.min(3000, Number(sp.get("limit") || 100));
 
     const articles = await prisma.article.findMany({
       where,
