@@ -83,6 +83,13 @@ export default function IssueMonitoringPage() {
   );
   const crimes = useMemo(() => rank(inRange(pCrime).map((r) => r.crimeType || "기타")), [rows, pCrime]);
   const crimeMax = crimes[0]?.count ?? 0;
+  // 파급도 등급 분포(우측 하단 보강 차트)
+  const levelDist = useMemo(() => {
+    const c = { critical: 0, high: 0, medium: 0, low: 0 };
+    for (const a of inRange(pCrime)) { const s = a.issueScore ?? 0; if (s >= 80) c.critical++; else if (s >= 55) c.high++; else if (s >= 30) c.medium++; else c.low++; }
+    return [{ name: "매우 높음", count: c.critical }, { name: "높음", count: c.high }, { name: "보통", count: c.medium }, { name: "낮음", count: c.low }];
+  }, [rows, pCrime]);
+  const levelMax = Math.max(1, ...levelDist.map((l) => l.count));
 
   return (
     <div className="mx-auto max-w-content space-y-5 p-5">
@@ -149,22 +156,35 @@ export default function IssueMonitoringPage() {
               </CardContent>
             </Card>
 
-            {/* 범죄유형 분류(전체) */}
-            <Card>
-              <CardHeader>
-                <CardTitle>범죄유형 분류 (전체)</CardTitle>
-                <Periods value={pCrime} onChange={setPCrime} />
-              </CardHeader>
-              <CardContent>
-                {crimes.length ? (
+            {/* 우측: 범죄유형 분류 + 파급도 등급 분포 */}
+            <div className="space-y-4">
+              <Card>
+                <CardHeader>
+                  <CardTitle>범죄유형 분류 (전체)</CardTitle>
+                  <Periods value={pCrime} onChange={setPCrime} />
+                </CardHeader>
+                <CardContent>
+                  {crimes.length ? (
+                    <div className="space-y-1.5">
+                      {crimes.map((c) => <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} tone="bg-primary" />)}
+                    </div>
+                  ) : (
+                    <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
+                  )}
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader>
+                  <CardTitle>파급도 등급 분포</CardTitle>
+                </CardHeader>
+                <CardContent>
                   <div className="space-y-1.5">
-                    {crimes.map((c) => <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} tone="bg-blue-60" />)}
+                    {levelDist.map((l) => <BarRow key={l.name} label={l.name} value={l.count} max={levelMax} tone="bg-primary" />)}
                   </div>
-                ) : (
-                  <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
-                )}
-              </CardContent>
-            </Card>
+                  <p className="mt-2 text-detail text-ink-disabled">· 매우 높음 80↑ · 높음 55↑ · 보통 30↑ · 낮음 (공개 보도 파급도)</p>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       )}
