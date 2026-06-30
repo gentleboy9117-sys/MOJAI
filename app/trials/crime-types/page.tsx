@@ -80,7 +80,7 @@ export default function TrialCrimeTypesPage() {
       <div>
         <h1 className="text-heading-m text-ink-title">범죄유형별 보기</h1>
         <p className="text-body-s text-ink-muted">
-          공판 기사를 기저 범죄유형별로 집계 — 대표 헤드라인 (공개 보도 기준)
+          공판 관련 기사를 범죄유형별로 정리한 화면입니다.
         </p>
       </div>
       <TrialSubNav />

@@ -1,12 +1,12 @@
 "use client";
 import { Fragment, useMemo, useState } from "react";
-import { Newspaper, ExternalLink, Building2, CalendarDays } from "lucide-react";
+import { Newspaper, ExternalLink, Building2, CalendarDays, ChevronDown } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Select } from "@/components/ui/field";
 import { Spinner, EmptyState } from "@/components/ui/misc";
 import { useApi } from "@/lib/client/useApi";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 interface NewsArticle {
   id: string;
@@ -47,6 +47,9 @@ export function AssemblyNewsByOfficePanel({
 } = {}) {
   const [date, setDate] = useState<string>(""); // "" → API가 오늘로 기본 처리
   const [office, setOffice] = useState<string>("all");
+  const [query, setQuery] = useState("");
+  const [open, setOpen] = useState<Set<string>>(new Set());
+  const toggle = (k: string) => setOpen((p) => { const n = new Set(p); if (n.has(k)) n.delete(k); else n.add(k); return n; });
   const qs = new URLSearchParams(crimeType ? {} : { kind });
   if (crimeType) qs.set("crimeType", crimeType);
   if (crimeSubtype) qs.set("crimeSubtype", crimeSubtype);
@@ -73,10 +76,16 @@ export function AssemblyNewsByOfficePanel({
 
   return (
     <Card>
-      <CardHeader>
+      <CardHeader className="flex-wrap gap-2">
         <CardTitle className="flex items-center gap-1.5">
           <Newspaper className="h-4 w-4 text-primary" /> {title}
         </CardTitle>
+        <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="기사 제목 검색"
+          className="order-3 min-w-0 flex-1 basis-full rounded-md border border-line px-2 py-1 text-detail outline-none focus:border-primary lg:order-none lg:basis-auto"
+        />
         <div className="flex flex-wrap items-center gap-2">
           <span className="flex items-center gap-1 text-detail text-ink-muted">
             <CalendarDays className="h-3.5 w-3.5" /> 날짜
@@ -107,19 +116,30 @@ export function AssemblyNewsByOfficePanel({
           공개 언론기사를 <b>기사상 발생 지역</b> 기준으로 검찰청 관할(고검-지검-지청 순)별로 정리합니다. 동일 기사는 1건으로 묶고, 제목을 누르면 원문으로 이동합니다.
         </p>
 
-        {loading ? (
-          <div className="py-8 text-center"><Spinner /></div>
-        ) : !groups.length ? (
-          <EmptyState
-            title={isToday ? `오늘 ${title}가 없습니다` : `${selected} ${title}가 없습니다`}
-            desc="상단에서 다른 날짜를 선택해 보세요."
-          />
-        ) : (
-          <div className="space-y-4">
-            {groups.map((g, i) => {
-              const prev = groups[i - 1];
+        {(() => {
+          const q = query.trim();
+          const display = groups
+            .map((g) => ({ ...g, arts: q ? g.articles.filter((a) => a.title.includes(q)) : g.articles }))
+            .filter((g) => !q || g.arts.length > 0);
+          if (loading) return <div className="py-8 text-center"><Spinner /></div>;
+          if (!display.length) {
+            return q ? (
+              <EmptyState title={`‘${q}’ 검색 결과가 없습니다`} desc="다른 검색어나 날짜를 시도해 보세요." />
+            ) : (
+              <EmptyState
+                title={isToday ? `오늘 ${title}가 없습니다` : `${selected} ${title}가 없습니다`}
+                desc="상단에서 다른 날짜를 선택해 보세요."
+              />
+            );
+          }
+          return (
+          <div className="space-y-3">
+            {display.map((g, i) => {
+              const prev = display[i - 1];
               const showHigh = office === "all" && g.highOffice && g.highOffice !== prev?.highOffice;
-              const showEtc = office === "all" && !g.highOffice && (i === 0 || groups[i - 1].highOffice);
+              const showEtc = office === "all" && !g.highOffice && (i === 0 || display[i - 1].highOffice);
+              const key = g.officeId ?? "__none__";
+              const isOpen = q ? true : open.has(key);
               return (
                 <Fragment key={g.officeId ?? "none"}>
                   {showHigh && (
@@ -133,13 +153,15 @@ export function AssemblyNewsByOfficePanel({
                     </h3>
                   )}
                   <div className="rounded-lg border border-line">
-                    <div className="flex items-center gap-1.5 border-b border-line bg-gray-5 px-3 py-2">
-                      <Building2 className="h-3.5 w-3.5 text-primary" />
+                    <button onClick={() => toggle(key)} className="flex w-full items-center gap-1.5 border-b border-line bg-gray-5 px-3 py-2 text-left hover:bg-gray-10">
+                      <Building2 className="h-3.5 w-3.5 shrink-0 text-primary" />
                       <span className="text-body-s font-bold text-ink-title">{g.officeName}</span>
-                      <Badge tone="outline">{g.count}건</Badge>
-                    </div>
+                      <Badge tone="outline">{g.arts.length}건</Badge>
+                      <ChevronDown className={cn("ml-auto h-4 w-4 shrink-0 text-ink-disabled transition-transform", !isOpen && "-rotate-90")} />
+                    </button>
+                    {isOpen && (
                     <ul className="divide-y divide-line">
-                      {g.articles.map((a) => (
+                      {g.arts.map((a) => (
                         <li key={a.id} className="px-3 py-2.5">
                           <a
                             href={a.url}
@@ -174,12 +196,14 @@ export function AssemblyNewsByOfficePanel({
                         </li>
                       ))}
                     </ul>
+                    )}
                   </div>
                 </Fragment>
               );
             })}
           </div>
-        )}
+          );
+        })()}
       </CardContent>
     </Card>
   );
