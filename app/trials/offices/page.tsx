@@ -134,7 +134,7 @@ export default function TrialOfficesPage() {
     <div className="mx-auto max-w-content space-y-5 p-5">
       <div>
         <h1 className="text-heading-m text-ink-title">검찰청별 보기</h1>
-        <p className="text-body-s text-ink-muted">공판(선고) 보도 현황 및 순위 — 검찰청을 누르면 해당 청의 공판 보도가 표시됩니다 (공개 보도 기준)</p>
+        <p className="text-body-s text-ink-muted">언론기사 중 공판 관련 보도를 검찰청 관할별로 정리합니다. 검찰청을 누르면 해당 청 보도가 표시됩니다.</p>
       </div>
       <TrialSubNav />
 
