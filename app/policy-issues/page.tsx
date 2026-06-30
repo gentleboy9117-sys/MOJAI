@@ -85,11 +85,9 @@ export default function PolicyIssuesPage() {
   return (
     <div className="mx-auto max-w-content space-y-4 p-5">
       <div>
-        <h1 className="flex items-center gap-2 text-heading-m text-ink-title">
-          <Landmark className="h-5 w-5 text-primary" /> 제도/정책 이슈
-        </h1>
+        <h1 className="text-heading-m text-ink-title">제도/정책 이슈</h1>
         <p className="text-body-s text-ink-muted">
-          검찰개혁·보완수사권·공소청·입법 등 <b>형사사법제도·정책</b> 보도를 그날의 <b>주요 주제별</b>로 묶어 표시 {!loading && `· ${total}건`}
+          형사사법제도·정책 관련 언론기사를 주요 주제별로 정리한 화면입니다. {!loading && `· ${total}건`}
         </p>
       </div>
       <IssueSubNav />
