@@ -26,7 +26,8 @@ const logPct = (c: number, max: number) => (c <= 0 ? 0 : Math.max(3, Math.round(
 // 단일 파랑 히트맵 — 색 레인지 크게(제곱근 스케일: 옅은 파랑 → 진한 남색)
 function lerp(a: number[], b: number[], t: number) { return `rgb(${a.map((v, i) => Math.round(v + (b[i] - v) * t)).join(",")})`; }
 const heatColor = (c: number, max: number) => (c <= 0 ? "#eef2f9" : lerp([226, 238, 251], [0, 34, 84], 0.08 + 0.92 * Math.sqrt(max > 0 ? c / max : 0)));
-const BAR_GRAD = "linear-gradient(90deg, #8fb8ec, #003675)";
+// 막대 단일 색 = 서울(최대값) 히트맵 색
+const BAR_COLOR = "rgb(0,34,84)";
 
 interface Office { id: string; name: string; type: string; region: string; parentId: string | null }
 interface Feature { properties: { code: string; name: string }; geometry: { type: string; coordinates: any } }
@@ -51,22 +52,26 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
   const sidoCounts = useMemo(() => { const m = new Map<string, number>(); for (const o of offices) { const s = sidoOfName(o.name); if (s) m.set(s, (m.get(s) ?? 0) + o.count); } return m; }, [offices]);
   const sidoMax = Math.max(1, ...[...sidoCounts.values()]);
 
-  // 조직도 트리(고검 → 지검 → 지청)
+  // 조직도 트리(고검 상위 → 펼치면 산하 지검+지청 평면 나열)
   const tree = useMemo(() => {
     const highs = orgs.filter((o) => o.type === "고등검찰청").sort((a, b) => (HIGH_ORDER[a.name] ?? 99) - (HIGH_ORDER[b.name] ?? 99));
     const dists = orgs.filter((o) => o.type === "지방검찰청");
     const branches = orgs.filter((o) => o.type === "지청");
-    const distOf = (highId: string) => dists.filter((d) => d.parentId === highId);
-    const branchOf = (distId: string) => branches.filter((b) => b.parentId === distId);
     const ownCount = (name: string) => countByName.get(name) ?? 0;
-    const subCount = (o: Office): number => {
-      if (o.type === "지청") return ownCount(o.name);
-      if (o.type === "지방검찰청") return ownCount(o.name) + branchOf(o.id).reduce((s, b) => s + ownCount(b.name), 0);
-      return distOf(o.id).reduce((s, d) => s + subCount(d), 0); // 고검
+    // 고검 산하: 지검 + 그 지검의 지청들(평면)
+    const childrenOf = (highId: string) => {
+      const out: { office: Office; branch: boolean }[] = [];
+      for (const d of dists.filter((d) => d.parentId === highId)) {
+        out.push({ office: d, branch: false });
+        for (const b of branches.filter((b) => b.parentId === d.id)) out.push({ office: b, branch: true });
+      }
+      return out;
     };
-    return { highs, distOf, branchOf, ownCount, subCount };
+    const subCount = (highId: string) => childrenOf(highId).reduce((s, c) => s + ownCount(c.office.name), 0);
+    return { highs, childrenOf, ownCount, subCount };
   }, [orgs, countByName]);
-  const orgMax = Math.max(1, ...tree.highs.map((h) => tree.subCount(h)));
+  const orgMax = Math.max(1, ...tree.highs.map((h) => tree.subCount(h.id)));
+  const ownMax = Math.max(1, ...orgs.filter((o) => o.type === "지방검찰청" || o.type === "지청").map((o) => countByName.get(o.name) ?? 0));
 
   const toggle = (id: string) => setOpen((p) => { const n = new Set(p); n.has(id) ? n.delete(id) : n.add(id); return n; });
   const drillName = (officeName: string) => { const s = sidoOfName(officeName); const f = s ? sidoByName.get(s) : null; if (f) setDrill({ code: f.properties.code, name: f.properties.name }); };
@@ -111,7 +116,7 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
 
   // 막대(단일 파랑)
   const Bar = ({ count, max }: { count: number; max: number }) => (
-    <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5"><div className="h-full rounded" style={{ width: `${logPct(count, max)}%`, background: BAR_GRAD }} /></div>
+    <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5"><div className="h-full rounded" style={{ width: `${logPct(count, max)}%`, background: BAR_COLOR }} /></div>
   );
 
   return (
@@ -119,11 +124,7 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
       {/* 지도 */}
       <div className="flex-1">
         <div className="mb-1 flex items-center gap-2">
-          {drill ? (
-            <button onClick={() => setDrill(null)} className="flex items-center gap-1 text-detail text-ink-muted hover:text-primary"><ArrowLeft className="h-4 w-4" /> 전국</button>
-          ) : (
-            <span className="text-detail text-ink-muted">조직도(우측)에서 검찰청을 누르면 해당 지역 시군구·검찰청으로 드릴다운</span>
-          )}
+          {drill && <button onClick={() => setDrill(null)} className="flex items-center gap-1 text-detail text-ink-muted hover:text-primary"><ArrowLeft className="h-4 w-4" /> 전국</button>}
           {drill && <span className="ml-auto text-detail font-medium text-ink-title">{drill.name}</span>}
         </div>
         {loading ? (
@@ -154,40 +155,31 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
         </div>
       </div>
 
-      {/* 조직도 아코디언(고검 > 지검 > 지청) */}
-      <div className="w-full shrink-0 lg:w-72">
-        <div className="max-h-[460px] space-y-1 overflow-y-auto scrollbar-thin pr-1">
-          {tree.highs.map((h) => {
-            const hOpen = open.has(h.id); const hc = tree.subCount(h);
+      {/* 조직도 아코디언(고검 상위 → 펼치면 산하 지검+지청 평면) */}
+      <div className="w-full shrink-0 overflow-hidden lg:flex lg:w-72 lg:items-center">
+        <div className="w-full space-y-2.5 overflow-y-auto overflow-x-hidden scrollbar-thin pr-1 lg:max-h-[440px]">
+          {tree.highs.map((h, idx) => {
+            const hOpen = open.has(h.id); const hc = tree.subCount(h.id);
             return (
-              <div key={h.id}>
+              <div key={h.id} className={cn(idx > 0 && "border-t border-line pt-2.5")}>
                 <button onClick={() => toggle(h.id)} className="flex w-full items-center gap-2">
                   <ChevronDown className={cn("h-3.5 w-3.5 shrink-0 text-ink-muted transition-transform", !hOpen && "-rotate-90")} />
-                  <span className="w-16 shrink-0 text-left text-body-s font-bold text-ink-title">{h.name.replace("고등검찰청", "고검")}</span>
-                  <Bar count={hc} max={orgMax} /><span className="w-7 shrink-0 text-right text-body-s font-semibold text-primary">{hc}</span>
+                  <span className="w-14 shrink-0 text-left text-body-s font-bold text-ink-title">{h.name.replace("고등검찰청", "고검")}</span>
+                  <Bar count={hc} max={orgMax} /><span className="w-8 shrink-0 text-right text-body-s font-semibold text-primary">{hc}</span>
                 </button>
-                {hOpen && tree.distOf(h.id).map((d) => {
-                  const dOpen = open.has(d.id); const dc = tree.subCount(d); const branches = tree.branchOf(d.id);
-                  return (
-                    <div key={d.id} className="pl-4">
-                      <div className="flex items-center gap-1.5">
-                        <button onClick={() => branches.length && toggle(d.id)} className={cn("shrink-0", !branches.length && "invisible")}>
-                          <ChevronDown className={cn("h-3 w-3 text-ink-muted transition-transform", !dOpen && "-rotate-90")} />
+                {hOpen && (
+                  <div className="mt-1 space-y-0.5 pl-5">
+                    {tree.childrenOf(h.id).map(({ office, branch }) => {
+                      const c = tree.ownCount(office.name);
+                      return (
+                        <button key={office.id} onClick={() => drillName(office.name)} className="flex w-full items-center gap-2 hover:opacity-80">
+                          <span className={cn("w-16 shrink-0 truncate text-left text-detail", branch ? "pl-2 text-ink-muted" : "text-ink-title")}>{branch ? office.name : office.name.replace("지방검찰청", "지검")}</span>
+                          <Bar count={c} max={ownMax} /><span className="w-6 shrink-0 text-right text-detail font-semibold text-primary/80">{c}</span>
                         </button>
-                        <button onClick={() => drillName(d.name)} className="flex flex-1 items-center gap-2 hover:opacity-80">
-                          <span className="w-[4.5rem] shrink-0 truncate text-left text-detail text-ink-title">{d.name.replace("지방검찰청", "지검")}</span>
-                          <Bar count={dc} max={orgMax} /><span className="w-6 shrink-0 text-right text-detail font-semibold text-primary">{dc}</span>
-                        </button>
-                      </div>
-                      {dOpen && branches.map((b) => { const bc = tree.ownCount(b.name); return (
-                        <button key={b.id} onClick={() => drillName(b.name)} className="flex w-full items-center gap-2 py-0.5 pl-6 hover:opacity-80">
-                          <span className="w-16 shrink-0 truncate text-left text-detail text-ink-muted">{b.name}</span>
-                          <Bar count={bc} max={orgMax} /><span className="w-6 shrink-0 text-right text-detail font-semibold text-primary/80">{bc}</span>
-                        </button>
-                      ); })}
-                    </div>
-                  );
-                })}
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             );
           })}

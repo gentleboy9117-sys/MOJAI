@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { ExternalLink, LayoutDashboard, ArrowLeft, ChevronRight } from "lucide-react";
+import { ExternalLink, LayoutDashboard, ChevronRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Spinner, EmptyState } from "@/components/ui/misc";
@@ -12,6 +12,7 @@ import { pickDistinctTop } from "@/lib/client/dedupeSimilar";
 import { calendarRange, type CalPeriod } from "@/lib/periodRange";
 import { KoreaChoropleth } from "@/components/issues/KoreaChoropleth";
 import { REPORT_TYPES } from "@/lib/report/reportTemplates";
+import { ALL_CRIME_TYPES } from "@/lib/classifiers/taxonomy";
 
 interface ArticleRow {
   id: string;
@@ -26,8 +27,9 @@ interface ArticleRow {
   issueScore: number;
 }
 interface HeatRow { officeName: string; issueCount: number; articleCount: number }
+interface IssueRow { id: string; title: string; crimeType?: string | null; issueScore?: number; articleCount?: number }
 
-const BAR_GRAD = "linear-gradient(90deg, #8fb8ec, #003675)";
+const BAR_COLOR = "rgb(0,34,84)"; // 서울(최대) 히트맵 색 단일
 
 const POLICY_TOPICS = [
   { key: "검찰개혁·수사권", re: /검찰\s*개혁|검찰개혁|수사권|검수완박|검수원복|수사지휘|검찰\s*폐지/ },
@@ -59,18 +61,18 @@ function Periods({ value, onChange }: { value: CalPeriod; onChange: (p: CalPerio
   );
 }
 
-/** 그라디언트 가로 막대 행(클릭 가능) */
-function BarRow({ label, value, max, onClick }: { label: string; value: number; max: number; onClick?: () => void }) {
+/** 가로 막대 행(단일 색, 링크 가능) */
+function BarRow({ label, value, max, href }: { label: string; value: number; max: number; href?: string }) {
   const pct = value > 0 && max > 0 ? Math.max(3, Math.round((Math.log(value + 1) / Math.log(max + 1)) * 100)) : 0;
   const inner = (
     <>
       <span className="w-28 shrink-0 truncate text-left text-body-s text-ink-title sm:w-36">{label} <span className="text-ink-muted">({value})</span></span>
-      <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5"><div className="h-full rounded" style={{ width: `${pct}%`, background: BAR_GRAD }} /></div>
-      {onClick && <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ink-disabled" />}
+      <div className="h-3.5 flex-1 overflow-hidden rounded bg-gray-5"><div className="h-full rounded" style={{ width: `${pct}%`, background: BAR_COLOR }} /></div>
+      {href && <ChevronRight className="h-3.5 w-3.5 shrink-0 text-ink-disabled" />}
     </>
   );
-  return onClick ? (
-    <button onClick={onClick} className="flex w-full items-center gap-2 rounded py-0.5 hover:bg-gray-5">{inner}</button>
+  return href ? (
+    <Link href={href} className="flex w-full items-center gap-2 rounded py-0.5 hover:bg-gray-5">{inner}</Link>
   ) : (
     <div className="flex items-center gap-2">{inner}</div>
   );
@@ -80,9 +82,9 @@ export default function IssueMonitoringPage() {
   const { data, loading } = useApi<ArticleRow[]>("/api/articles?period=all&limit=300&sort=score");
   const [pTop, setPTop] = useState<CalPeriod>("month");
   const [pOffice, setPOffice] = useState<CalPeriod>("month");
-  const [pCrime, setPCrime] = useState<CalPeriod>("month");
-  const [crimeDrill, setCrimeDrill] = useState<string | null>(null);
   const { data: heat } = useApi<HeatRow[]>(`/api/dashboard/office-heatmap?period=${pOffice}`);
+  // 범죄유형·제도정책은 '범죄유형별 보기'와 동일 소스(/api/issues?period=30d, 이슈 단위)로 집계 → 숫자 일치
+  const { data: issuesData } = useApi<IssueRow[]>("/api/issues?period=30d");
 
   const rows = useMemo(() => data ?? [], [data]);
   const inRange = (period: CalPeriod) => {
@@ -96,19 +98,22 @@ export default function IssueMonitoringPage() {
     () => [...(heat ?? [])].map((h) => ({ name: h.officeName, count: h.issueCount })).filter((o) => o.count > 0).sort((a, b) => b.count - a.count),
     [heat],
   );
-  // 범죄유형: 기본은 유형별, 드릴다운 시 하위유형별
+  // 범죄유형(이슈 수) — 공판·제도정책 제외, 전체 유형(0 포함). /crime-types 와 동일
   const crimeRows = useMemo(() => {
-    const arts = inRange(pCrime);
-    if (crimeDrill) return rank(arts.filter((a) => (a.crimeType || "기타") === crimeDrill).map((a) => a.crimeSubtype || "기타"));
-    return rank(arts.map((a) => a.crimeType || "기타"));
-  }, [rows, pCrime, crimeDrill]);
+    const counts = new Map<string, number>();
+    for (const it of issuesData ?? []) { const t = it.crimeType || "기타"; if (t === "공판" || t === "형사사법제도/정책") continue; counts.set(t, (counts.get(t) ?? 0) + 1); }
+    const base = ALL_CRIME_TYPES.filter((t) => t !== "공판" && t !== "형사사법제도/정책");
+    const names = Array.from(new Set([...base, ...counts.keys()]));
+    return names.map((n) => ({ name: n, count: counts.get(n) ?? 0 })).sort((a, b) => b.count - a.count);
+  }, [issuesData]);
   const crimeMax = crimeRows[0]?.count ?? 0;
 
   const policy = useMemo(() => {
-    const arts = inRange(pCrime).filter((a) => (a.crimeType || "") === "형사사법제도/정책");
-    const list = POLICY_TOPICS.map((t) => ({ name: t.key, count: arts.filter((a) => t.re.test(a.title)).length })).filter((x) => x.count > 0).sort((a, b) => b.count - a.count);
-    return { total: arts.length, list };
-  }, [rows, pCrime]);
+    const arts = (issuesData ?? []).filter((it) => (it.crimeType || "") === "형사사법제도/정책");
+    const counts = new Map<string, number>();
+    for (const a of arts) { const topic = POLICY_TOPICS.find((t) => t.re.test(a.title))?.key ?? "기타 제도/정책"; counts.set(topic, (counts.get(topic) ?? 0) + 1); }
+    return { total: arts.length, list: [...counts.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count) };
+  }, [issuesData]);
   const policyMax = policy.list[0]?.count ?? 0;
 
   return (
@@ -178,26 +183,19 @@ export default function IssueMonitoringPage() {
 
             {/* 우측: 범죄유형 드릴다운 + 제도/정책 + 이슈 브리핑 */}
             <div className="space-y-4">
-              {/* 범죄유형 분류(드릴다운) */}
+              {/* 범죄유형 분류(이슈 수, 최근 30일) — 막대 클릭 시 기사 목록. 범죄유형별 보기와 동일 집계 */}
               <Card>
                 <CardHeader>
-                  <div className="flex items-center gap-1.5">
-                    {crimeDrill && <button onClick={() => setCrimeDrill(null)} className="text-ink-muted hover:text-primary"><ArrowLeft className="h-4 w-4" /></button>}
-                    <CardTitle>{crimeDrill ? `${crimeDrill} 세부` : "범죄유형 분류"}</CardTitle>
-                  </div>
-                  <Periods value={pCrime} onChange={setPCrime} />
+                  <CardTitle>범죄유형 분류</CardTitle>
+                  <span className="text-detail text-ink-muted">최근 30일 · 이슈 수</span>
                 </CardHeader>
                 <CardContent>
-                  {crimeRows.length ? (
-                    <div className="space-y-1">
-                      {crimeRows.map((c) => (
-                        <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} onClick={crimeDrill ? undefined : () => setCrimeDrill(c.name)} />
-                      ))}
-                      {!crimeDrill && <p className="mt-1 text-detail text-ink-disabled">· 막대를 누르면 하위 유형으로 드릴다운</p>}
-                    </div>
-                  ) : (
-                    <p className="text-body-s text-ink-muted">집계된 범죄유형이 없습니다.</p>
-                  )}
+                  <div className="max-h-[220px] space-y-1 overflow-y-auto scrollbar-thin pr-1">
+                    {crimeRows.map((c) => (
+                      <BarRow key={c.name} label={c.name} value={c.count} max={crimeMax} href={`/crime-news?type=${encodeURIComponent(c.name)}&scope=issue`} />
+                    ))}
+                  </div>
+                  <p className="mt-1 text-detail text-ink-disabled">· 막대를 누르면 관련 기사 목록으로 이동</p>
                 </CardContent>
               </Card>
 
@@ -209,11 +207,11 @@ export default function IssueMonitoringPage() {
                 </CardHeader>
                 <CardContent>
                   {policy.list.length ? (
-                    <div className="space-y-1">
+                    <div className="max-h-[160px] space-y-1 overflow-y-auto scrollbar-thin pr-1">
                       {policy.list.map((p) => <BarRow key={p.name} label={p.name} value={p.count} max={policyMax} />)}
                     </div>
                   ) : (
-                    <p className="text-body-s text-ink-muted">해당 기간 제도/정책 이슈가 없습니다.</p>
+                    <p className="text-body-s text-ink-muted">최근 30일 제도/정책 이슈가 없습니다.</p>
                   )}
                 </CardContent>
               </Card>
