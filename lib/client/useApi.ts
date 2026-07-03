@@ -1,13 +1,14 @@
 "use client";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { apiGet } from "./api";
-import { snapName, SNAP_DIR } from "./snap";
+import { snapName, SNAP_DIR, SNAP_VERSION } from "./snap";
 
 // 정적 스냅샷(고정 데이터) 우선 로드 → 없으면 라이브 API 폴백.
 //  스냅샷은 CDN에서 즉시 응답하므로 첫 화면 로딩이 빨라진다.
+//  ?v= 버전으로 캐시 무효화 + must-revalidate 로 최신본 보장(옛 데이터 재사용 방지).
 async function loadUrl<T>(url: string): Promise<T> {
   try {
-    const r = await fetch(`${SNAP_DIR}/${snapName(url)}`, { cache: "force-cache" });
+    const r = await fetch(`${SNAP_DIR}/${snapName(url)}?v=${SNAP_VERSION}`);
     if (r.ok) {
       const j = await r.json();
       return j as T; // 스냅샷은 이미 unwrap 된 data
