@@ -1,0 +1,137 @@
+[
+  {
+    "url": "/api/public-safety/dashboard/summary",
+    "file": "sndu08n.json",
+    "bytes": 131
+  },
+  {
+    "url": "/api/articles?period=all&limit=300&sort=score",
+    "file": "s1u58xgg.json",
+    "bytes": 310241
+  },
+  {
+    "url": "/api/articles?crimeType=%EA%B3%B5%ED%8C%90&period=all&limit=300&sort=score",
+    "file": "sr7lwr6.json",
+    "bytes": 311762
+  },
+  {
+    "url": "/api/articles?keyword=%EC%A7%91%ED%9A%8C&period=all&limit=300&sort=score",
+    "file": "s1dp8au0.json",
+    "bytes": 304843
+  },
+  {
+    "url": "/api/issues?period=30d",
+    "file": "s1av592h.json",
+    "bytes": 72257
+  },
+  {
+    "url": "/api/articles?crimeType=공판&period=all&limit=300",
+    "file": "sa44g43.json",
+    "bytes": 311132
+  },
+  {
+    "url": "/api/offices",
+    "file": "s154y59s.json",
+    "bytes": 19042
+  },
+  {
+    "url": "/api/dashboard/office-heatmap?period=month",
+    "file": "s1sp3ra.json",
+    "bytes": 12780
+  },
+  {
+    "url": "/api/dashboard/office-heatmap?period=today",
+    "file": "s1yrz7eh.json",
+    "bytes": 10515
+  },
+  {
+    "url": "/api/dashboard/office-heatmap?period=week",
+    "file": "s1ygkts4.json",
+    "bytes": 10510
+  },
+  {
+    "url": "/api/dashboard/office-heatmap?period=7d",
+    "file": "sloyktn.json",
+    "bytes": 12780
+  },
+  {
+    "url": "/api/public-safety/sources",
+    "file": "s7cncq2.json",
+    "bytes": 5591
+  },
+  {
+    "url": "/api/articles?keyword=집회&period=all&limit=300&sort=score",
+    "file": "s1f3f5i3.json",
+    "bytes": 304843
+  },
+  {
+    "url": "/api/articles?crimeType=선거범죄&period=all&limit=300&sort=score",
+    "file": "st5ie4h.json",
+    "bytes": 309830
+  },
+  {
+    "url": "/api/articles?crimeType=%EB%85%B8%EB%8F%99%2F%EC%A4%91%EB%8C%80%EC%9E%AC%ED%95%B4%EB%B2%94%EC%A3%84&period=all&limit=300&sort=score",
+    "file": "saht92l.json",
+    "bytes": 302627
+  },
+  {
+    "url": "/api/articles?crimeType=%ED%98%95%EC%82%AC%EC%82%AC%EB%B2%95%EC%A0%9C%EB%8F%84%2F%EC%A0%95%EC%B1%85&period=all&limit=300",
+    "file": "s1etxnyt.json",
+    "bytes": 305449
+  },
+  {
+    "url": "/api/press-releases/references",
+    "file": "s6gjmke.json",
+    "bytes": 4375
+  },
+  {
+    "url": "/api/press-releases/style-guide",
+    "file": "sf10zw.json",
+    "bytes": 2511
+  },
+  {
+    "url": "/api/articles?crimeType=공판&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-29T14:59:59.999Z&limit=3000&sort=score",
+    "file": "s1giwg02.json",
+    "bytes": 1171585
+  },
+  {
+    "url": "/api/articles?crimeType=공판&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-29T14:59:59.999Z&limit=3000",
+    "file": "sdzb5i5.json",
+    "bytes": 1171585
+  },
+  {
+    "url": "/api/articles?crimeType=공판&startDate=2026-04-30T15:00:00.000Z&endDate=2026-05-29T14:59:59.999Z&limit=3000",
+    "file": "s12it2mm.json",
+    "bytes": 19548
+  },
+  {
+    "url": "/api/articles?keyword=집회&limit=3000&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-29T14:59:59.999Z",
+    "file": "s1xtk4qm.json",
+    "bytes": 418117
+  },
+  {
+    "url": "/api/articles?keyword=집회&limit=3000&startDate=2026-04-30T15:00:00.000Z&endDate=2026-05-29T14:59:59.999Z",
+    "file": "s1lqrxm7.json",
+    "bytes": 2900
+  },
+  {
+    "url": "/api/articles?crimeType=선거범죄&limit=3000&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-29T14:59:59.999Z",
+    "file": "sbtwue4.json",
+    "bytes": 630959
+  },
+  {
+    "url": "/api/articles?crimeType=선거범죄&limit=3000&startDate=2026-04-30T15:00:00.000Z&endDate=2026-05-29T14:59:59.999Z",
+    "file": "s1mopai1.json",
+    "bytes": 4021
+  },
+  {
+    "url": "/api/articles?crimeType=%EB%85%B8%EB%8F%99%2F%EC%A4%91%EB%8C%80%EC%9E%AC%ED%95%B4%EB%B2%94%EC%A3%84&limit=3000&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-29T14:59:59.999Z",
+    "file": "szbhvsg.json",
+    "bytes": 610987
+  },
+  {
+    "url": "/api/articles?crimeType=%EB%85%B8%EB%8F%99%2F%EC%A4%91%EB%8C%80%EC%9E%AC%ED%95%B4%EB%B2%94%EC%A3%84&limit=3000&startDate=2026-04-30T15:00:00.000Z&endDate=2026-05-29T14:59:59.999Z",
+    "file": "s1xws68d.json",
+    "bytes": 1921
+  }
+]

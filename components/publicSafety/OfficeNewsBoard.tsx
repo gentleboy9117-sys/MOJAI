@@ -69,10 +69,21 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
     return { daegeom, highs, districtsByParent, branchesByParent, orphanDistricts };
   }, [offices]);
 
+  // 조직도(트리)에 실제로 표시되는 검찰청 집합 — 순위/총계를 이 집합으로 통일해 조직도와 수치 일치
+  const allTreeOffices = useMemo(() => {
+    const out: Office[] = [...tree.daegeom, ...tree.highs];
+    for (const h of tree.highs) for (const d of tree.districtsByParent(h.id)) { out.push(d); out.push(...tree.branchesByParent(d.id)); }
+    for (const d of tree.orphanDistricts) { out.push(d); out.push(...tree.branchesByParent(d.id)); }
+    return out;
+  }, [tree]);
   const ranking = useMemo(
-    () => [...countByOffice.entries()].map(([name, count]) => ({ name, count, delta: count - (prevCountByOffice.get(name) ?? 0) })).sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
-    [countByOffice, prevCountByOffice],
+    () => allTreeOffices
+      .map((o) => { const count = countByOffice.get(o.name) ?? 0; return { name: o.name, count, delta: count - (prevCountByOffice.get(o.name) ?? 0) }; })
+      .filter((r) => r.count > 0)
+      .sort((a, b) => b.count - a.count || ord(a.name) - ord(b.name)),
+    [allTreeOffices, countByOffice, prevCountByOffice],
   );
+  const total = useMemo(() => ranking.reduce((s, r) => s + r.count, 0), [ranking]);
 
   const selectedDeduped = useMemo(() => {
     if (!selected) return [];
@@ -153,7 +164,7 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
         {/* 조직도 */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-1.5"><Building2 className="h-4 w-4 text-primary" /> 조직도</CardTitle>
+            <CardTitle className="flex items-center gap-1.5"><Building2 className="h-4 w-4 text-primary" /> 조직도 <Badge tone="outline">총 {total}건</Badge></CardTitle>
             <span className="text-detail text-ink-muted">{clickHint}</span>
           </CardHeader>
           <CardContent className="space-y-1">
@@ -196,7 +207,7 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
         {/* 검찰청 순위 */}
         <Card>
           <CardHeader className="flex-wrap gap-2">
-            <CardTitle>검찰청 순위</CardTitle>
+            <CardTitle className="flex items-center gap-1.5">검찰청 순위 <Badge tone="outline">총 {total}건</Badge></CardTitle>
             <input
               value={rankQuery}
               onChange={(e) => setRankQuery(e.target.value)}

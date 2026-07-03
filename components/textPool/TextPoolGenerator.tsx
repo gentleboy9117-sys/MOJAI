@@ -144,7 +144,7 @@ export function TextPoolGenerator() {
             <div className="flex rounded-md border border-line p-0.5">
               {(["formal", "concise"] as const).map((v) => (
                 <button key={v} onClick={() => set("style", v)} className={cn("rounded px-2 py-0.5 text-caption transition-colors", form.style === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}>
-                  {v === "formal" ? "정중체(~합니다)" : "개조식(~함)"}
+                  {v === "formal" ? "서술식" : "개조식"}
                 </button>
               ))}
             </div>
