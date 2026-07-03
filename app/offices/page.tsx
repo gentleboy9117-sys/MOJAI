@@ -40,9 +40,10 @@ interface HeatRow {
   deltaPrev: number;
 }
 
-function Counts({ heat }: { heat?: HeatRow }) {
+interface AggCounts { articleCount: number; issueCount: number; importantIssues: number }
+function Counts({ heat }: { heat?: AggCounts }) {
   if (!heat || (heat.articleCount === 0 && heat.issueCount === 0)) {
-    return <span className="text-detail text-ink-disabled">최근 30일 활동 없음</span>;
+    return <span className="text-detail text-ink-disabled">활동 없음</span>;
   }
   return (
     <span className="flex flex-wrap items-center gap-1">
@@ -100,6 +101,26 @@ export default function OfficesPage() {
 
   const loading = lo || lh;
 
+  // 조직도 롤업: 부모(고검·지검)는 산하 검찰청 합계를 표시
+  const aggHeat = (o: Office): AggCounts => {
+    let ac = 0, ic = 0, imp = 0;
+    const add = (of?: Office) => { if (!of) return; const h = heatById.get(of.id); if (h) { ac += h.articleCount; ic += h.issueCount; imp += h.importantIssues; } };
+    add(o);
+    if (o.type === "고등검찰청") { for (const d of tree.districtsByParent(o.id)) { add(d); for (const b of tree.branchesByParent(d.id)) add(b); } }
+    else if (o.type === "지방검찰청") { for (const b of tree.branchesByParent(o.id)) add(b); }
+    return { articleCount: ac, issueCount: ic, importantIssues: imp };
+  };
+
+  const PeriodToggle = () => (
+    <div className="flex rounded-md border border-line p-0.5">
+      {(["today", "week", "month"] as const).map((v) => (
+        <button key={v} onClick={() => setPeriod(v)} className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}>
+          {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
+        </button>
+      ))}
+    </div>
+  );
+
   function OfficeLink({ o, indent }: { o: Office; indent: number }) {
     return (
       <button
@@ -111,7 +132,7 @@ export default function OfficesPage() {
           <ChevronRight className="h-3 w-3 shrink-0 text-ink-disabled" />
           <span className="truncate text-body-s text-ink-title">{o.name}</span>
         </span>
-        <Counts heat={heatById.get(o.id)} />
+        <Counts heat={aggHeat(o)} />
       </button>
     );
   }
@@ -141,11 +162,12 @@ export default function OfficesPage() {
         <div className="grid gap-4 lg:grid-cols-2">
           {/* 조직 트리 */}
           <Card>
-            <CardHeader>
+            <CardHeader className="flex-wrap gap-2">
               <CardTitle className="flex items-center gap-1.5">
                 <Building2 className="h-4 w-4 text-primary" /> 조직도
               </CardTitle>
-              <span className="text-detail text-ink-muted">클릭 시 해당 검찰청 이슈 관련 기사로 이동</span>
+              <PeriodToggle />
+              <span className="basis-full text-detail text-ink-muted">클릭 시 해당 검찰청 이슈 관련 기사로 이동</span>
             </CardHeader>
             <CardContent className="space-y-1">
               {!offices?.length ? (
@@ -165,7 +187,7 @@ export default function OfficesPage() {
                           </button>
                           <button onClick={() => setSelectedOffice({ id: h.id, name: h.name })} className="flex flex-1 items-center justify-between gap-3 rounded-md px-1 py-1.5 text-left hover:bg-gray-5">
                             <span className="truncate text-body-s font-medium text-ink-title">{h.name}</span>
-                            <Counts heat={heatById.get(h.id)} />
+                            <Counts heat={aggHeat(h)} />
                           </button>
                         </div>
                         {isOpen && tree.districtsByParent(h.id).map((d) => (
@@ -203,17 +225,7 @@ export default function OfficesPage() {
                 placeholder="검찰청 검색 (예: 성남)"
                 className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-detail outline-none focus:border-primary"
               />
-              <div className="flex rounded-md border border-line p-0.5">
-                {(["today", "week", "month"] as const).map((v) => (
-                  <button
-                    key={v}
-                    onClick={() => setPeriod(v)}
-                    className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
-                  >
-                    {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
-                  </button>
-                ))}
-              </div>
+              <PeriodToggle />
             </CardHeader>
             <CardContent className="p-0">
               {!ranking.length ? (

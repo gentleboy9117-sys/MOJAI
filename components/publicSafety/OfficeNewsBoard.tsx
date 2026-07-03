@@ -85,6 +85,32 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
   );
   const total = useMemo(() => ranking.reduce((s, r) => s + r.count, 0), [ranking]);
 
+  // 조직도 롤업: 부모(고검·지검)는 산하 보도 합계를 표시 → 접힌 상태 총합이 전체와 일치
+  const agg = (o: Office): number => {
+    const own = countByOffice.get(o.name) ?? 0;
+    if (o.type === "고등검찰청") {
+      let s = own;
+      for (const d of tree.districtsByParent(o.id)) { s += countByOffice.get(d.name) ?? 0; for (const b of tree.branchesByParent(d.id)) s += countByOffice.get(b.name) ?? 0; }
+      return s;
+    }
+    if (o.type === "지방검찰청") {
+      let s = own;
+      for (const b of tree.branchesByParent(o.id)) s += countByOffice.get(b.name) ?? 0;
+      return s;
+    }
+    return own;
+  };
+
+  const PeriodToggle = () => (
+    <div className="flex rounded-md border border-line p-0.5">
+      {(["today", "week", "month"] as const).map((v) => (
+        <button key={v} onClick={() => setPeriod(v)} className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}>
+          {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
+        </button>
+      ))}
+    </div>
+  );
+
   const selectedDeduped = useMemo(() => {
     if (!selected) return [];
     return dedupeArticles((data ?? []).filter((r) => r.primaryOfficeName === selected))
@@ -92,7 +118,7 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
   }, [data, selected]);
 
   function OfficeRow({ o, indent }: { o: Office; indent: number }) {
-    const c = countByOffice.get(o.name) ?? 0;
+    const c = agg(o);
     return (
       <button
         onClick={() => c > 0 && setSelected(o.name)}
@@ -163,9 +189,10 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
     <div className="grid gap-4 lg:grid-cols-2">
         {/* 조직도 */}
         <Card>
-          <CardHeader>
+          <CardHeader className="flex-wrap gap-2">
             <CardTitle className="flex items-center gap-1.5"><Building2 className="h-4 w-4 text-primary" /> 조직도 <Badge tone="outline">총 {total}건</Badge></CardTitle>
-            <span className="text-detail text-ink-muted">{clickHint}</span>
+            <PeriodToggle />
+            <span className="basis-full text-detail text-ink-muted">{clickHint}</span>
           </CardHeader>
           <CardContent className="space-y-1">
             {!offices?.length ? (
@@ -214,17 +241,7 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
               placeholder="검찰청 검색 (예: 성남)"
               className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-detail outline-none focus:border-primary"
             />
-            <div className="flex rounded-md border border-line p-0.5">
-              {(["today", "week", "month"] as const).map((v) => (
-                <button
-                  key={v}
-                  onClick={() => setPeriod(v)}
-                  className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
-                >
-                  {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
-                </button>
-              ))}
-            </div>
+            <PeriodToggle />
           </CardHeader>
           <CardContent className="p-0">
             {!ranking.length ? (

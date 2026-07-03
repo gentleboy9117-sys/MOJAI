@@ -100,9 +100,28 @@ export default function TrialOfficesPage() {
       .sort((a, b) => new Date(b.rep.publishedAt).getTime() - new Date(a.rep.publishedAt).getTime());
   }, [data, selected]);
 
+  // 조직도 롤업: 부모(고검·지검)는 산하 공판 보도 합계를 표시
+  const aggCount = (o: Office): number => {
+    const own = statsByOffice.get(o.name)?.count ?? 0;
+    if (o.type === "고등검찰청") { let s = own; for (const d of tree.districtsByParent(o.id)) { s += statsByOffice.get(d.name)?.count ?? 0; for (const b of tree.branchesByParent(d.id)) s += statsByOffice.get(b.name)?.count ?? 0; } return s; }
+    if (o.type === "지방검찰청") { let s = own; for (const b of tree.branchesByParent(o.id)) s += statsByOffice.get(b.name)?.count ?? 0; return s; }
+    return own;
+  };
+  const total = useMemo(() => ranking.reduce((s, r) => s + r.count, 0), [ranking]);
+
+  const PeriodToggle = () => (
+    <div className="flex rounded-md border border-line p-0.5">
+      {(["today", "week", "month"] as const).map((v) => (
+        <button key={v} onClick={() => setPeriod(v)} className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}>
+          {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
+        </button>
+      ))}
+    </div>
+  );
+
   function OfficeRow({ o, indent }: { o: Office; indent: number }) {
     const st = statsByOffice.get(o.name);
-    const c = st?.count ?? 0;
+    const c = aggCount(o);
     return (
       <button
         onClick={() => c > 0 && setSelected(o.name)}
@@ -184,9 +203,10 @@ export default function TrialOfficesPage() {
         <div className="grid gap-4 lg:grid-cols-2">
             {/* 조직도 */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-1.5"><Building2 className="h-4 w-4 text-primary" /> 조직도</CardTitle>
-                <span className="text-detail text-ink-muted">클릭시 해당 검찰청 공판 관련 기사로 이동</span>
+              <CardHeader className="flex-wrap gap-2">
+                <CardTitle className="flex items-center gap-1.5"><Building2 className="h-4 w-4 text-primary" /> 조직도 <Badge tone="outline">총 {total}건</Badge></CardTitle>
+                <PeriodToggle />
+                <span className="basis-full text-detail text-ink-muted">클릭시 해당 검찰청 공판 관련 기사로 이동</span>
               </CardHeader>
               <CardContent className="space-y-1">
                 {!offices?.length ? (
@@ -228,24 +248,14 @@ export default function TrialOfficesPage() {
             {/* 검찰청 순위 */}
             <Card>
               <CardHeader className="flex-wrap gap-2">
-                <CardTitle>검찰청 순위</CardTitle>
+                <CardTitle className="flex items-center gap-1.5">검찰청 순위 <Badge tone="outline">총 {total}건</Badge></CardTitle>
                 <input
                   value={rankQuery}
                   onChange={(e) => setRankQuery(e.target.value)}
                   placeholder="검찰청 검색 (예: 성남)"
                   className="min-w-0 flex-1 rounded-md border border-line px-2 py-1 text-detail outline-none focus:border-primary"
                 />
-                <div className="flex rounded-md border border-line p-0.5">
-                  {(["today", "week", "month"] as const).map((v) => (
-                    <button
-                      key={v}
-                      onClick={() => setPeriod(v)}
-                      className={cn("rounded px-2 py-0.5 text-caption transition-colors", period === v ? "bg-primary font-medium text-white" : "text-ink-muted hover:text-ink-title")}
-                    >
-                      {v === "today" ? "금일" : v === "week" ? "금주" : "금월"}
-                    </button>
-                  ))}
-                </div>
+                <PeriodToggle />
               </CardHeader>
               <CardContent className="p-0">
                 {!ranking.length ? (
