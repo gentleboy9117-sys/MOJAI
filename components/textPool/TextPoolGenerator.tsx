@@ -149,10 +149,10 @@ export function TextPoolGenerator() {
               ))}
             </div>
             <label className="flex cursor-pointer items-center gap-1.5 text-detail text-ink-body">
-              <input type="checkbox" checked={form.includeHeader} onChange={(e) => set("includeHeader", e.target.checked)} className="h-4 w-4 rounded border-line-strong text-primary" /> 머리표[알림]
+              <input type="checkbox" checked={form.includeHeader} onChange={(e) => set("includeHeader", e.target.checked)} className="h-4 w-4 rounded border-line-strong text-primary" /> 머리글[알림문구]
             </label>
             <label className="flex cursor-pointer items-center gap-1.5 text-detail text-ink-body">
-              <input type="checkbox" checked={form.includeDisclaimer} onChange={(e) => set("includeDisclaimer", e.target.checked)} className="h-4 w-4 rounded border-line-strong text-primary" /> 확정 아님 고지
+              <input type="checkbox" checked={form.includeDisclaimer} onChange={(e) => set("includeDisclaimer", e.target.checked)} className="h-4 w-4 rounded border-line-strong text-primary" /> 꼬리글[미확정고지]
             </label>
           </div>
           {error && <p className="text-detail text-danger">{error}</p>}
