@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import "./globals.css";
 import { AppShell } from "@/components/layout/AppShell";
+import { PrefetchSnapshots } from "@/components/PrefetchSnapshots";
 
 export const metadata: Metadata = {
   title: "AI 기반 검찰 기획업무 자동화 플랫폼",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <AppShell>
           <Suspense fallback={null}>{children}</Suspense>
         </AppShell>
+        <PrefetchSnapshots />
       </body>
     </html>
   );

@@ -30,6 +30,12 @@ export function refreshApiCache() {
   listeners.forEach((l) => l());
 }
 
+/** 백그라운드 프리페치 — 스냅샷을 미리 받아 메모리 캐시에 저장(탭 클릭 시 즉시 표시) */
+export function prefetchApi(url: string) {
+  if (cache.has(url)) return;
+  loadUrl<unknown>(url).then((d) => { if (!cache.has(url)) cache.set(url, d); }).catch(() => {});
+}
+
 export function useApi<T>(url: string | null) {
   const [data, setData] = useState<T | null>(url && cache.has(url) ? (cache.get(url) as T) : null);
   const [loading, setLoading] = useState(!!url && !cache.has(url));
