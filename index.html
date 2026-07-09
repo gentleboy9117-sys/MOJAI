@@ -33,7 +33,8 @@
   .body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;margin-top:8px;
     width:100%;max-width:1180px;align-self:center}
   /* 중앙 배치형(이미지 없는) 슬라이드 콘텐츠 확대 */
-  .body.zoomup{zoom:1.28;max-width:1120px}
+  .body.zoomup{zoom:1.38;max-width:1060px}
+  .body.zoomup.dense{zoom:1.26;max-width:1150px}
 
   /* ---------- 좌 설명 + 우 이미지 (5:5) ---------- */
   .split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
@@ -233,6 +234,7 @@
       </div>
     </div>
   </div>
+  <div class="fnote" style="max-width:1060px;align-self:center;width:100%;zoom:1.38;margin-top:14px"><b>용어 안내</b> — 기획: 전국·관할 동향을 정리해 내부 보고 / 공안: 집회·시위, 선거, 노동 분야 대응 / 공보: 보도자료·기자단 공지 등 언론 대응</div>
   <div class="foot"><span class="brand"><i></i>1. 개발 배경</span><span class="pg">3</span></div>
 </section>
 
@@ -267,6 +269,7 @@
         </ul>
       </div>
     </div>
+    <div class="fnote" style="margin-top:14px">세 문제 모두 <b>판단이 필요한 일</b>이 아니라 <b>자료를 찾고 옮겨 적는 일</b>에서 생깁니다 — 자동화로 해결할 수 있는 영역입니다.</div>
   </div>
   <div class="foot"><span class="brand"><i></i>2. 문제 인식</span><span class="pg">4</span></div>
 </section>
@@ -290,6 +293,7 @@
       <div class="card tint"><h3>공보 초안 2종</h3><p>보도자료(서울중앙지검 양식)<br/>문자풀(기자단 공지)</p></div>
       <div class="card tint"><h3>교차 조회</h3><p>검찰청별 · 범죄유형별 보기<br/>요약·세부 화면 수치 일치</p></div>
     </div>
+    <div class="fnote"><b>파급도란?</b> 기사 수 · 보도한 언론사 수 · 확산 속도를 종합해 "이 사건이 얼마나 크게 보도되고 있는가"를 0~100점으로 나타낸 지표입니다.</div>
   </div>
   <div class="foot"><span class="brand"><i></i>3. 주요 기능</span><span class="pg">5</span></div>
 </section>
@@ -325,7 +329,7 @@
         <div class="fitem"><span class="fic">1</span><div><div class="ft">자동 수집·분류</div><div class="fd">전국 검찰청 <b>67곳 관할·범죄유형별</b> 분류, 신뢰도·근거 저장</div></div></div>
         <div class="fitem"><span class="fic">2</span><div><div class="ft">중복 기사 통합</div><div class="fd">동일 사건의 여러 기사를 <b>하나의 이슈</b>로 집계</div></div></div>
         <div class="fitem"><span class="fic">3</span><div><div class="ft">파급도 0~100 정량화</div><div class="fd">보도량·출처 수·확산 속도 기반 <b>주요 이슈 Top 10</b> 자동 정렬</div></div></div>
-        <div class="fnote">제도·정책 이슈(검찰개혁·공소청 등)는 <b>주제별로 별도</b> 집계합니다.</div>
+        <div class="fnote">쉽게 말해, 아침에 흩어져 있는 수백 건의 기사를 시스템이 대신 읽고 <b>"오늘 무엇이 중요한지"를 순서대로 정리</b>해 줍니다. 검찰개혁·공소청 같은 제도·정책 이슈는 주제별로 따로 모아 보여줍니다.</div>
       </div>
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span>주요 이슈 Top 10</span><span class="zoom">확대</span></div>
@@ -346,7 +350,7 @@
         <div class="fitem"><span class="fic">1</span><div><div class="ft">전국 지도 히트맵</div><div class="fd">검찰청 <b>실제 좌표</b> 기반, 시도 선택 시 시군구 상세 표시</div></div></div>
         <div class="fitem"><span class="fic">2</span><div><div class="ft">조직도 집계</div><div class="fd"><b>고검 → 지검 → 지청</b> 체계로 이슈 분포 조회</div></div></div>
         <div class="fitem"><span class="fic">3</span><div><div class="ft">기간별 집계</div><div class="fd">금일·금주·금월 전환 시 <b>전체 수치 즉시 재계산</b></div></div></div>
-        <div class="fnote">지도·조직도·순위표가 <b>동일한 데이터</b>를 사용하여 수치가 일치합니다.</div>
+        <div class="fnote">색이 진할수록 <b>이슈가 많은 지역</b>입니다. 지도·조직도·순위표가 동일한 데이터를 사용하여 어느 화면을 보더라도 수치가 일치합니다.</div>
       </div>
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span>검찰청별 이슈 분포 (전국)</span></div>
@@ -388,7 +392,7 @@
         <div class="fitem"><span class="fic">1</span><div><div class="ft">선고 보도 정밀 분류</div><div class="fd">법원 <b>판결 선고 기사</b>를 선별하여 공판 동향으로 집계</div></div></div>
         <div class="fitem"><span class="fic">2</span><div><div class="ft">주요 사건 Top 10</div><div class="fd">파급도 순 정렬, <b>관할청·기저 범죄유형</b> 표시</div></div></div>
         <div class="fitem"><span class="fic">3</span><div><div class="ft">검찰청별·유형별 분포</div><div class="fd">이슈 모니터링과 <b>동일한 방식</b>의 지도·순위 제공</div></div></div>
-        <div class="fnote">산재된 공판 보도를 한 화면으로 집계하여 <b>주요 선고사건 누락을 방지</b>합니다.</div>
+        <div class="fnote"><b>공판</b>은 법원 재판 단계, <b>선고 보도</b>는 판결 결과 기사입니다. 산재된 공판 보도를 한 화면으로 집계하여 주요 선고사건 누락을 방지합니다.</div>
       </div>
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span>공판 모니터링 — 주요 사건 Top 10</span><span class="zoom">확대</span></div>
@@ -409,7 +413,7 @@
         <div class="fitem"><span class="fic">1</span><div><div class="ft">집회·시위 일정 수집</div><div class="fd">전국 <b>지방경찰청 공개 게시판</b>을 수집하여 검찰청 관할로 자동 분류</div></div></div>
         <div class="fitem"><span class="fic">2</span><div><div class="ft">3개 영역 보도 TOP 5</div><div class="fd">집회·시위 / 선거 / <b>노동·중대재해</b> 보도를 각각 집계</div></div></div>
         <div class="fitem"><span class="fic">3</span><div><div class="ft">수집 현황 공개</div><div class="fd">경찰청별 <b>수집 성공 여부·정보 반영 시각</b>을 표로 제공</div></div></div>
-        <div class="fnote">게시판과 기사를 개별 확인하던 동향 점검을 <b>자동 수집·관할 분류</b>로 대체하였습니다.</div>
+        <div class="fnote"><b>공안</b>은 집회·시위, 선거, 노동 분야를 아우르는 업무 영역입니다. 게시판과 기사를 개별 확인하던 동향 점검을 자동 수집·관할 분류로 대체하였습니다.</div>
       </div>
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span>공안 모니터링 — 집회·시위 보도 TOP 5</span><span class="zoom">확대</span></div>
@@ -430,7 +434,7 @@
         <div class="fitem"><span class="fic">1</span><div><div class="ft">실제 배포 양식 반영</div><div class="fd">서울중앙지검 <b>배포 보도자료 5건</b>의 형식·문체 분석</div></div></div>
         <div class="fitem"><span class="fic">2</span><div><div class="ft">표준 목차 자동 구성</div><div class="fd">보도 유의문구 → 공보관 연락처 → 공개요건 → <b>Ⅰ~Ⅳ 목차</b></div></div></div>
         <div class="fitem"><span class="fic">3</span><div><div class="ft">사실관계는 입력값만 사용</div><div class="fd">참고자료의 <b>구조·문체만 반영</b>하고 내용은 가져오지 않음</div></div></div>
-        <div class="fnote">입력부터 복사까지 한 화면에서 처리하며, 담당자는 <b>사실관계 검토와 문구 수정</b>에 집중합니다.</div>
+        <div class="fnote"><b>보도자료</b>는 검찰이 언론에 배포하는 공식 발표 자료입니다. 입력부터 복사까지 한 화면에서 처리하며, 담당자는 사실관계 검토와 문구 수정에 집중합니다.</div>
       </div>
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span>보도자료 초안 — 생성 결과</span><span class="zoom">확대</span></div>
@@ -451,7 +455,7 @@
         <div class="fitem"><span class="fic">1</span><div><div class="ft">검찰 문자풀 형식 준수</div><div class="fd">머리글 [○○지검 알림] · 처분 → 경위 → 방침 <b>3단 구성</b> · 미확정 고지</div></div></div>
         <div class="fitem"><span class="fic">2</span><div><div class="ft">서술식 / 개조식 전환</div><div class="fd">용도에 맞춰 <b>문체를 선택</b>하여 생성</div></div></div>
         <div class="fitem"><span class="fic">3</span><div><div class="ft">표현 자동 보정</div><div class="fd">단정 표현을 <b>혐의 단계 표현</b>으로 수정 제안</div></div></div>
-        <div class="fnote">보도자료와 문자풀이 <b>동일한 입력</b>에서 생성되어 내용이 어긋나지 않습니다.</div>
+        <div class="fnote"><b>문자풀</b>은 출입기자단에 휴대전화 문자 분량으로 보내는 요약 공지입니다. 보도자료와 동일한 입력에서 생성되어 두 자료의 내용이 어긋나지 않습니다.</div>
       </div>
       <div class="frame">
         <div class="bar"><i></i><i></i><i></i><span>문자풀 초안 — 생성 결과</span><span class="zoom">확대</span></div>
@@ -496,6 +500,7 @@
       </div>
     </div>
   </div>
+  <div class="fnote" style="max-width:1060px;align-self:center;width:100%;zoom:1.38;margin-top:14px"><b>바이브 코딩이란?</b> 개발자가 아닌 사람이 AI에게 말로 요구사항을 설명하면 AI가 코드를 작성하는 개발 방식입니다. 본 시스템은 이 방식으로 검사 1인이 개발했습니다.</div>
   <div class="foot"><span class="brand"><i></i>4. 구현 방법</span><span class="pg">14</span></div>
 </section>
 
@@ -507,6 +512,7 @@
     <div class="grid c2">
       <div class="card">
         <h3>KICS 등 기존 시스템과 완전 분리</h3>
+        <p style="margin-top:4px;font-size:17px;color:var(--g50)">KICS: 수사·재판 정보를 다루는 형사사법정보시스템</p>
         <ul class="dot">
           <li>형사사법시스템을 <b>대체·연동하지 않는</b> 독립 보조도구</li>
           <li>수사정보 미사용 — <b>공개 뉴스·공식 발표자료·공개 집회일정</b>만 취급</li>
@@ -572,7 +578,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">6 향후 확산 가능성</span><span class="step">법무부 전 직렬 · 타 부처</span></div>
   <h1 class="t">세 가지만 교체하면 <b>타 기관에 그대로</b> 적용됩니다</h1>
-  <div class="body zoomup" style="gap:14px">
+  <div class="body zoomup dense" style="gap:14px">
     <div class="flow">
       <div class="fstep on"><span class="fn">①</span><div class="ftt">분류 기준</div><div class="fdd">범죄유형 → 기관 관심 주제</div></div>
       <div class="fstep on"><span class="fn">②</span><div class="ftt">기관 구조</div><div class="fdd">검찰청 67곳 → 소속기관 체계</div></div>
@@ -585,6 +591,7 @@
       <div class="card"><h3>파급도 산정 → 대변인실·홍보 부서</h3><p>여론·언론 동향을 <b style="color:var(--g90)">객관 수치</b>로 분석하여 대응 우선순위 결정</p></div>
       <div class="card tint"><h3 style="color:var(--p60)">지도 시각화 · 폐쇄망 확산</h3><p>사건·민원·집행 현황 대시보드로 재사용, <b style="color:var(--g90)">내부망 LLM 교체로 폐쇄망 기관</b>까지 확산</p></div>
     </div>
+    <div class="fnote">예시: 교정본부에 적용한다면 분류 주제를 "수용자·교정시설"로, 기관 구조를 "지방교정청 → 교정시설"로 바꾸기만 하면 수집·분류·집계·초안 기능이 그대로 작동합니다.</div>
   </div>
   <div class="foot"><span class="brand"><i></i>6. 향후 확산 가능성</span><span class="pg">17</span></div>
 </section>
