@@ -32,6 +32,8 @@
   h1.t b{color:var(--p50);font-weight:800}
   .body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:center;margin-top:8px;
     width:100%;max-width:1180px;align-self:center}
+  /* 중앙 배치형(이미지 없는) 슬라이드 콘텐츠 확대 */
+  .body.zoomup{zoom:1.28;max-width:1120px}
 
   /* ---------- 좌 설명 + 우 이미지 (5:5) ---------- */
   .split{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
@@ -195,14 +197,14 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">목차</span></div>
   <h1 class="t">발표 순서</h1>
-  <div class="body">
+  <div class="body zoomup">
     <div class="toc">
-      <div class="titem"><span class="tn">1</span><div><div class="tt">개발 배경</div><div class="td">기획·공안·공보 업무의 현실</div></div></div>
-      <div class="titem"><span class="tn">2</span><div><div class="tt">문제 인식</div><div class="td">반복 · 시간 소모 · 품질 편차</div></div></div>
-      <div class="titem hot"><span class="tn">3</span><div><div class="tt">주요 기능</div><div class="td">모니터링 3종 + 공보 초안 2종 (실제 화면)</div></div></div>
-      <div class="titem"><span class="tn">4</span><div><div class="tt">구현 방법</div><div class="td">바이브 코딩 · 안전 설계</div></div></div>
-      <div class="titem"><span class="tn">5</span><div><div class="tt">업무 적용 효과</div><div class="td">1시간 → 5분 · 품질 균질화</div></div></div>
-      <div class="titem"><span class="tn">6</span><div><div class="tt">향후 확산 가능성</div><div class="td">법무부 전 직렬 · 타 부처 · 폐쇄망</div></div></div>
+      <div class="titem"><span class="tn">1</span><div><div class="tt">개발 배경</div><div class="td">매일 1시간 일찍 출근하던 기획·공안·공보 담당자의 하루</div></div></div>
+      <div class="titem"><span class="tn">2</span><div><div class="tt">문제 인식</div><div class="td">수백 건 수작업 분류 · 감(感)에 의존한 판단 · 담당자별 품질 편차</div></div></div>
+      <div class="titem hot"><span class="tn">3</span><div><div class="tt">주요 기능</div><div class="td">이슈·공판·공안 모니터링 + 보도자료·문자풀 초안 — 실제 운영 화면으로 시연</div></div></div>
+      <div class="titem"><span class="tn">4</span><div><div class="tt">구현 방법</div><div class="td">Claude Code 바이브 코딩 1인 개발 · KICS 분리 등 안전 설계</div></div></div>
+      <div class="titem"><span class="tn">5</span><div><div class="tt">업무 적용 효과</div><div class="td">오전 모니터링 1시간 → 5분 · 표준 양식으로 품질 균질화</div></div></div>
+      <div class="titem"><span class="tn">6</span><div><div class="tt">향후 확산 가능성</div><div class="td">분류 기준·기관 구조·문서 양식만 교체하여 전 부처·폐쇄망까지 확산</div></div></div>
     </div>
   </div>
   <div class="foot"><span class="brand"><i></i>목차</span><span class="pg">2</span></div>
@@ -212,7 +214,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">1 개발 배경</span></div>
   <h1 class="t">기획·공안·공보 담당자를 <b>돕고자 했습니다</b></h1>
-  <div class="body">
+  <div class="body zoomup">
     <div class="grid c2">
       <div class="card tint">
         <h3>담당자의 아침</h3>
@@ -239,7 +241,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">2 문제 인식</span></div>
   <h1 class="t">반복 · 시간 소모 · <b>품질 편차</b></h1>
-  <div class="body">
+  <div class="body zoomup">
     <div class="grid c3">
       <div class="card">
         <div class="num">수백 건<small> / 일</small></div>
@@ -274,7 +276,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">3 주요 기능</span><span class="step">전체 구조</span></div>
   <h1 class="t">수집부터 초안 작성까지 <b>하나의 흐름</b>으로</h1>
-  <div class="body" style="gap:16px">
+  <div class="body zoomup" style="gap:16px">
     <div class="flow">
       <div class="fstep on"><span class="fn">1</span><div class="ftt">언론보도 자동 수집</div><div class="fdd">뉴스 · 공식 발표자료</div></div>
       <span class="farrow">›</span>
@@ -465,7 +467,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">4 구현 방법</span></div>
   <h1 class="t">개발 경험 없는 검사가 <b>AI와의 대화</b>로 완성했습니다</h1>
-  <div class="body">
+  <div class="body zoomup">
     <div class="grid c2">
       <div class="card deep">
         <h3>Claude Code 바이브 코딩</h3>
@@ -502,7 +504,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">4 구현 방법</span><span class="step">공직 도입을 전제로 한 안전 설계</span></div>
   <h1 class="t">기존 시스템과 <b>분리된 안전한 구조</b>입니다</h1>
-  <div class="body">
+  <div class="body zoomup">
     <div class="grid c2">
       <div class="card">
         <h3>KICS 등 기존 시스템과 완전 분리</h3>
@@ -541,7 +543,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">5 업무 적용 효과</span></div>
   <h1 class="t">절감한 시간을 <b>본연의 업무</b>에 재투입합니다</h1>
-  <div class="body">
+  <div class="body zoomup">
     <div class="split" style="grid-template-columns:1.25fr 1fr">
       <table class="ba">
         <thead><tr><th style="width:152px">업무</th><th>도입 전 → 도입 후</th></tr></thead>
@@ -571,7 +573,7 @@
 <section class="slide">
   <div class="eyebrow"><span class="chip">6 향후 확산 가능성</span><span class="step">법무부 전 직렬 · 타 부처</span></div>
   <h1 class="t">세 가지만 교체하면 <b>타 기관에 그대로</b> 적용됩니다</h1>
-  <div class="body" style="gap:14px">
+  <div class="body zoomup" style="gap:14px">
     <div class="flow">
       <div class="fstep on"><span class="fn">①</span><div class="ftt">분류 기준</div><div class="fdd">범죄유형 → 기관 관심 주제</div></div>
       <div class="fstep on"><span class="fn">②</span><div class="ftt">기관 구조</div><div class="fdd">검찰청 67곳 → 소속기관 체계</div></div>
@@ -596,7 +598,7 @@
     <span>법무부 AI 경진대회 · 개발 부문 본선</span>
   </div>
   <div class="cover-main" style="grid-template-columns:1fr;justify-items:center;text-align:center">
-    <div class="cover-copy">
+    <div class="cover-copy" style="zoom:1.22">
       <span class="badge">지금 접속하면 바로 동작합니다</span>
       <h1>현장에서 만든 도구가<br /><b>행정의 표준</b>이 되도록</h1>
       <p class="sub">검찰에서 검증하고, <b>법무부 전 직렬과 타 부처</b>로 넓히겠습니다.</p>
@@ -643,4 +645,5 @@
 </script>
 </body>
 </html>
+
 
