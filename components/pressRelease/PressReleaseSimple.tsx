@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FileText, Copy, Check, Sparkles } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -50,6 +50,23 @@ export function PressReleaseSimple() {
   }
   async function copy() { if (!draft) return; try { await navigator.clipboard.writeText(draft); setCopied(true); setTimeout(() => setCopied(false), 1500); } catch {} }
   const canGen = form.officeName.trim() && form.caseSummary.trim() && form.disposition.trim();
+
+  // ?demo=1 — 시연·캡처용: 샘플 자동 입력 후 즉시 생성
+  const [demoPending, setDemoPending] = useState(false);
+  const demoRan = useRef(false);
+  useEffect(() => {
+    if (demoRan.current) return;
+    if (typeof window !== "undefined" && new URLSearchParams(window.location.search).get("demo")) {
+      demoRan.current = true;
+      loadSample();
+      setDemoPending(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  useEffect(() => {
+    if (demoPending && canGen) { setDemoPending(false); void generate(); }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [demoPending, form]);
 
   return (
     <div className="grid gap-4 lg:grid-cols-2">
