@@ -218,11 +218,11 @@ body {
       </div>
     </div>
     <div class="box-w" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-      <div class="box-label">확산 가능성</div>
+      <div class="box-label">확산 가능성 — 수직 · 수평</div>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <div style="font-size:13px;color:var(--ink);line-height:1.5;">분류 기준 · 기관 구조 · 문서 양식 <b style="color:var(--pt-dk);">세 가지만 교체</b>하면 타 기관 적용</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5;">교정 · 출입국 · 범죄예방 · 인권 · 타 부처 대변인실</div>
-        <div style="font-size:13px;color:var(--ink);line-height:1.5;">내부망 LLM 교체로 폐쇄망 기관까지</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5;"><b style="color:var(--pt-dk);">수직</b> — 법무부 본부 → 타 정부부처 → 청와대</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5;"><b style="color:var(--pt-dk);">수평</b> — 교정 · 출입국 · 범죄예방 · 인권 등 법무부 전 기관</div>
+        <div style="font-size:13px;color:var(--ink);line-height:1.5;">세 가지(분류·기관·양식)만 교체, 폐쇄망은 내부망 LLM</div>
       </div>
     </div>
   </div>
@@ -246,7 +246,7 @@ body {
       <div class="tl-row"><span class="tl-key" style="color:var(--pt);">03 주요 기능</span><span class="tl-text" style="font-weight:600;">모니터링 12개 화면 + 공보 초안 2종 <span class="dim">— 실제 운영 화면으로 설명</span></span></div>
       <div class="tl-row"><span class="tl-key">04 구현 방법</span><span class="tl-text">Claude Code 바이브 코딩 1인 개발 <span class="dim">— KICS 분리 등 안전 설계</span></span></div>
       <div class="tl-row"><span class="tl-key">05 적용 효과</span><span class="tl-text">오전 모니터링 1시간 → 5분 <span class="dim">— 표준 양식으로 품질 균질화</span></span></div>
-      <div class="tl-row"><span class="tl-key">06 확산 가능성</span><span class="tl-text">분류 기준·기관 구조·문서 양식만 교체 <span class="dim">— 전 부처·폐쇄망까지</span></span></div>
+      <div class="tl-row"><span class="tl-key">06 확산 가능성</span><span class="tl-text">수직(법무부 → 타 부처 → 청와대) · 수평(교정·출입국 등 법무부 전 기관) <span class="dim">— 적용 예시 포함</span></span></div>
     </div>
   </div>
 </section>
@@ -777,46 +777,120 @@ body {
   </div>
 </section>
 
-<!-- ══════════════ 20 · 확산 가능성 ══════════════ -->
+<!-- ══════════════ 20 · 확산 가능성 ① 개요 ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">06 확산 가능성</span>
+    <span class="sh-cat">06 확산 가능성 · 개요</span>
     <span class="sh-num">20</span>
   </div>
 
-  <div class="hl">세 가지만 교체하면 <span class="em">타 기관에 그대로</span> 적용됩니다</div>
-  <div class="sub-hl">수집·분류·집계·초안 엔진은 그대로 재사용합니다. 정보량이 많은 지검·대검·법무부 본부일수록 절감 효과는 더 커집니다.</div>
+  <div class="hl"><span class="em">수직</span>과 <span class="em">수평</span>, 두 방향으로 확산됩니다</div>
+  <div class="sub-hl">공개정보 수집 → 관할·주제 분류 → 집계 → 문서 초안이라는 공통 엔진은 그대로 두고, 분류 기준·기관 구조·문서 양식 세 가지만 교체하면 어느 기관이든 이식됩니다.</div>
 
   <div class="visual">
-    <div class="spec" style="flex:none;height:172px;margin-bottom:12px;">
-      <div>
-        <div class="spec-label">① 분류 기준</div>
-        <div class="spec-desc">범죄유형 → 기관 관심 주제<br><span style="color:var(--muted);">예: 수용자·교정시설</span></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;">
+
+      <!-- 수직적 확산 -->
+      <div class="box-w" style="display:flex;flex-direction:column;">
+        <div class="box-label">수직적 확산 — 상급기관으로</div>
+        <div class="box-desc" style="margin-bottom:10px;">위로 갈수록 다루는 정보량이 커져 <b style="color:var(--ink);">절감 효과도 함께 커집니다</b></div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+          <div class="tl-row" style="padding:12px 0;"><span class="tl-key" style="min-width:118px;">청와대</span><span class="tl-text" style="font-size:13.5px;">국정 현안 언론 동향 종합 <span class="dim">— 부처별 파급도 비교·대응 우선순위</span></span></div>
+          <div class="tl-row" style="padding:12px 0;"><span class="tl-key" style="min-width:118px;">타 정부부처</span><span class="tl-text" style="font-size:13.5px;">각 부처 대변인실 공보·동향 모니터링 <span class="dim">— 보도자료가 있는 모든 기관</span></span></div>
+          <div class="tl-row" style="padding:12px 0;"><span class="tl-key" style="min-width:118px;">법무부 본부</span><span class="tl-text" style="font-size:13.5px;">전 직렬 이슈 통합 모니터링 <span class="dim">— 대변인실·정책 부서, 국회 대응</span></span></div>
+          <div class="tl-row" style="padding:12px 0;background:var(--pt-bg);border-radius:6px;padding-left:12px;padding-right:12px;"><span class="tl-key" style="min-width:106px;color:var(--pt);">검찰청 <span style="font-size:10px;">현재</span></span><span class="tl-text" style="font-size:13.5px;font-weight:600;">일선 청 기획·공안·공보 <span class="dim">— 실서비스로 검증 완료</span></span></div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);">일선 청에서 검증한 모델을 그대로 위로 — 조직 규모가 커질수록 수작업 병목이 크기 때문입니다.</div>
       </div>
-      <div>
-        <div class="spec-label">② 기관 구조</div>
-        <div class="spec-desc">검찰청 67곳 → 소속기관 체계<br><span style="color:var(--muted);">예: 지방교정청 → 교정시설</span></div>
+
+      <!-- 수평적 확산 -->
+      <div class="box-w" style="display:flex;flex-direction:column;">
+        <div class="box-label">수평적 확산 — 법무부 내 기관으로</div>
+        <div class="box-desc" style="margin-bottom:10px;">같은 법무부 안에서 <b style="color:var(--ink);">분류 주제와 기관 트리만 바꾸면</b> 바로 적용됩니다</div>
+        <div style="flex:1;display:flex;flex-direction:column;justify-content:center;">
+          <div class="tl-row" style="padding:12px 0;"><span class="tl-key" style="min-width:150px;">교정본부</span><span class="tl-text" style="font-size:13.5px;">교정시설·수용자 보도 모니터링 <span class="dim">— 지방교정청별 집계</span></span></div>
+          <div class="tl-row" style="padding:12px 0;"><span class="tl-key" style="min-width:150px;">출입국·외국인정책본부</span><span class="tl-text" style="font-size:13.5px;">체류·국적·난민 정책 동향 <span class="dim">— 출입국·외국인청별</span></span></div>
+          <div class="tl-row" style="padding:12px 0;"><span class="tl-key" style="min-width:150px;">범죄예방정책국</span><span class="tl-text" style="font-size:13.5px;">보호관찰·전자감독·소년 정책 동향 <span class="dim">— 보고 초안까지</span></span></div>
+          <div class="tl-row" style="padding:12px 0;"><span class="tl-key" style="min-width:150px;">인권국 · 법무실</span><span class="tl-text" style="font-size:13.5px;">인권·입법·법제 이슈 주제별 분류 <span class="dim">— 참고자료 초안</span></span></div>
+        </div>
+        <div style="margin-top:10px;font-size:12px;color:var(--muted);">망분리 환경의 기관은 내부망 LLM으로 교체 설치하여 동일하게 운영할 수 있습니다.</div>
       </div>
-      <div>
-        <div class="spec-label">③ 문서 양식</div>
-        <div class="spec-desc">보도자료 → 기관 표준 서식<br><span style="color:var(--muted);">공문·보고서·알림까지</span></div>
-      </div>
+
+    </div>
+    <div class="note"><b>이식 방법은 한 가지</b> — ① 분류 기준(범죄유형 → 기관 관심 주제) ② 기관 구조(검찰청 67곳 → 소속기관 체계) ③ 문서 양식(보도자료 → 기관 표준 서식)만 교체하고, 수집·분류·집계·초안 엔진은 수정 없이 재사용합니다.</div>
+  </div>
+</section>
+
+<!-- ══════════════ 21 · 확산 가능성 ② 적용 예시 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-cat">06 확산 가능성 · 적용 예시</span>
+    <span class="sh-num">21</span>
+  </div>
+
+  <div class="hl">세 항목만 바꾸면 <span class="em">이렇게 달라집니다</span></div>
+  <div class="sub-hl">현재 검증된 검찰 버전과 동일한 화면 구성으로, 기관별 적용 시 각 항목이 어떻게 바뀌는지 예시입니다.</div>
+
+  <div class="visual">
+    <div class="spec" style="margin-bottom:12px;">
       <div style="background:var(--pt-bg);">
-        <div class="spec-label">엔진은 그대로</div>
-        <div class="spec-desc"><b style="color:var(--pt-dk);">수집 · 분류 · 집계 · 초안</b><br>수정 없이 재사용</div>
+        <div class="spec-label">검찰청 — 현재</div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">분류 주제</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">범죄유형 17종 · 공판 · 공안</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">기관 구조</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">대검 → 고검 → 지검 → 지청 (67곳)</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">산출물</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">보도자료 · 문자풀 초안</div>
+        </div>
+        <div class="spec-foot" style="margin-top:12px;color:var(--pt-dk);font-weight:600;">실서비스 검증 완료</div>
+      </div>
+      <div>
+        <div class="spec-label">교정본부 — 수평</div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">분류 주제</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">수용자 처우 · 교정시설 · 직원 관련</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">기관 구조</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">지방교정청 4곳 → 교정시설</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">산출물</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">교정 보도자료 · 내부 보고 초안</div>
+        </div>
+        <div class="spec-foot" style="margin-top:12px;">지도에 교정시설 분포 표시</div>
+      </div>
+      <div>
+        <div class="spec-label">출입국본부 — 수평</div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">분류 주제</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">체류 · 국적 · 난민 · 단속</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">기관 구조</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">출입국·외국인청 → 사무소·출장소</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">산출물</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">정책 발표자료 · 동향 보고 초안</div>
+        </div>
+        <div class="spec-foot" style="margin-top:12px;">청별 이슈 분포·순위 제공</div>
+      </div>
+      <div>
+        <div class="spec-label">법무부 대변인실 — 수직</div>
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">분류 주제</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">부처 전 직렬 현안 · 정책 이슈</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">기관 구조</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">실·국 → 소속기관 전체</div>
+          <div style="font-size:12px;color:var(--muted);margin:10px 0 3px;">산출물</div>
+          <div style="font-size:13px;font-weight:600;line-height:1.5;">부처 보도자료 · 국회 대응 참고자료</div>
+        </div>
+        <div class="spec-foot" style="margin-top:12px;">전 직렬 파급도 통합 비교</div>
       </div>
     </div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;">
-      <div class="box"><div class="box-label">문서 초안 도구 → 법무부 전 부처</div>
-        <div class="box-desc" style="font-size:13px;">교정·출입국·인권 등 각 기관의 보도자료와 <b style="color:var(--ink);">공문·보고서·알림 초안</b>까지 적용</div></div>
-      <div class="box"><div class="box-label">모니터링 모듈 → 공보·기획·정책 부서</div>
-        <div class="box-desc" style="font-size:13px;">분류 기준·대상기관 교체로 <b style="color:var(--ink);">기관별 동향 모니터링</b>으로 전환</div></div>
-      <div class="box"><div class="box-label">파급도 산정 → 대변인실·홍보 부서</div>
-        <div class="box-desc" style="font-size:13px;">여론·언론 동향을 <b style="color:var(--ink);">객관 수치</b>로 분석하여 대응 우선순위 결정</div></div>
-      <div class="box" style="background:var(--pt-bg);"><div class="box-label">지도 시각화 · 폐쇄망 확산</div>
-        <div class="box-desc" style="font-size:13px;">사건·민원·집행 현황 대시보드로 재사용, <b style="color:var(--ink);">내부망 LLM 교체로 폐쇄망 기관</b>까지 확산</div></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="box"><div class="box-label">수직 확산의 다음 단계</div>
+        <div class="box-desc" style="font-size:13px;">같은 구조로 <b style="color:var(--ink);">타 정부부처 대변인실</b>, 나아가 <b style="color:var(--ink);">청와대의 국정 현안 언론 동향 종합</b>까지 — 보도자료를 내는 모든 기관이 대상입니다.</div></div>
+      <div class="box" style="background:var(--pt-bg);"><div class="box-label">폐쇄망 기관 대응</div>
+        <div class="box-desc" style="font-size:13px;">LLM 3단 교체 구조로 <b style="color:var(--ink);">내부망 설치형 LLM</b>으로 바꾸면 외부망 차단 환경에서도 동일하게 운영됩니다.</div></div>
     </div>
   </div>
 </section>
