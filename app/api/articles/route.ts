@@ -12,6 +12,17 @@ export async function GET(req: NextRequest) {
   return handle(async () => {
     const sp = req.nextUrl.searchParams;
     const f = parseArticleFilters(sp);
+    // 고검·대검 등 상위 청 선택 시 산하 지검·지청 기사까지 포함(조직도 롤업 수치와 일치)
+    if (f.officeId) {
+      const all = await prisma.prosecutionOffice.findMany({ select: { id: true, parentId: true } });
+      const ids = new Set<string>([f.officeId]);
+      let grew = true;
+      while (grew) {
+        grew = false;
+        for (const o of all) if (o.parentId && ids.has(o.parentId) && !ids.has(o.id)) { ids.add(o.id); grew = true; }
+      }
+      f.officeIds = [...ids];
+    }
     const where = buildArticleWhere(f);
     const limit = Math.min(3000, Number(sp.get("limit") || 100));
 

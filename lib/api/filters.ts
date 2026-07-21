@@ -19,6 +19,8 @@ export interface ArticleFilters {
   start: Date;
   end: Date;
   officeId?: string;
+  /** officeId의 자손 청까지 포함한 확장 목록(라우트에서 계산해 주입) */
+  officeIds?: string[];
   region?: string;
   crimeType?: string;
   source?: string;
@@ -46,7 +48,8 @@ export function buildArticleWhere(f: ArticleFilters): Prisma.ArticleWhereInput {
   const where: Prisma.ArticleWhereInput = {
     publishedAt: { gte: f.start, lte: f.end },
   };
-  if (f.officeId) where.primaryOfficeId = f.officeId;
+  if (f.officeIds && f.officeIds.length) where.primaryOfficeId = { in: f.officeIds };
+  else if (f.officeId) where.primaryOfficeId = f.officeId;
   if (f.region) where.primaryRegion = f.region;
   if (f.crimeType) where.crimeType = f.crimeType;
   if (f.source) where.sourceName = { contains: f.source };

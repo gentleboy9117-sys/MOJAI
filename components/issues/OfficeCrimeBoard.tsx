@@ -26,7 +26,7 @@ export function OfficeCrimeBoard({ officeId, officeName, onBack }: { officeId: s
   const [picked, setPicked] = useState<string | null>(null);
   const range = useMemo(() => calendarRange(period), [period]);
   const { data, loading } = useApi<ArticleRow[]>(
-    `/api/articles?officeId=${officeId}&startDate=${range.start.toISOString()}&endDate=${range.end.toISOString()}&limit=300`,
+    `/api/articles?officeId=${officeId}&startDate=${range.start.toISOString()}&endDate=${range.end.toISOString()}&limit=3000`,
   );
 
   // 범죄유형별 중복제거 묶음
