@@ -3,7 +3,6 @@ import { Suspense } from "react";
 import { Menu } from "lucide-react";
 import { UserChip } from "./UserChip";
 import { SearchBar } from "./SearchBar";
-import { BackButton } from "./BackButton";
 
 // 좌: 법무부 로고 / 우: 검찰 로고(대칭) · 가운데: 검색(새로고침 내장)
 export function Header({ onMenu }: { onMenu?: () => void }) {
@@ -17,8 +16,6 @@ export function Header({ onMenu }: { onMenu?: () => void }) {
       >
         <Menu className="h-5 w-5" />
       </button>
-      {/* 이전 화면으로(전역) */}
-      <BackButton />
       {/* 좌: 법무부 로고 + 타이틀 */}
       <div className="flex shrink-0 items-center gap-3">
         {/* eslint-disable-next-line @next/next/no-img-element */}

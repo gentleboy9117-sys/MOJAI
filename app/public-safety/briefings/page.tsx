@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Spinner } from "@/components/ui/misc";
 import { PublicSafetySubNav } from "@/components/publicSafety/PublicSafetySubNav";
-import { PublicSafetyBriefingGenerator } from "@/components/publicSafety/PublicSafetyBriefingGenerator";
+import { ReportGenerator } from "@/components/reports/ReportGenerator";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +22,7 @@ export default function BriefingsPage() {
           </div>
         }
       >
-        <PublicSafetyBriefingGenerator />
+        <ReportGenerator mode="safety" />
       </Suspense>
     </div>
   );

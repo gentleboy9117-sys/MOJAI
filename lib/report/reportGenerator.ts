@@ -236,7 +236,7 @@ export function generateReportMarkdown(
     DISCLAIMER,
     "",
     `- 생성자: ${data.generatedBy} · 생성일: ${formatDate(data.generatedAt)}`,
-    `- 데이터 기준일: ${formatDate(data.periodStart)} ~ ${formatDate(data.periodEnd)} · 보고서 유형: ${meta.label}`,
+    `- 데이터 기준일: ${formatDate(data.periodStart)} ~ ${formatDate(data.periodEnd)}`,
     "",
     "---",
     "",
@@ -247,15 +247,8 @@ export function generateReportMarkdown(
     .filter(Boolean)
     .join(NL + NL);
 
-  const tail = [
-    "",
-    "## 유의사항",
-    "",
-    "이 보고서는 공개 자료 기반 참고 브리핑입니다. 수사 사실처럼 단정하지 않으며, 최종 활용 전 담당자 검토가 필요합니다.",
-  ].join(NL);
-
   // 민감 표현 자동 완화
-  const raw = head + body + NL + tail;
+  const raw = head + body;
   const { text } = rewriteMarkdown(raw);
   return { title, markdown: text };
 }

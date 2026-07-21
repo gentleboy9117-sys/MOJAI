@@ -22,7 +22,7 @@ export default function TrialReportsPage() {
           </div>
         }
       >
-        <ReportGenerator fixedCrimeType="공판" />
+        <ReportGenerator mode="trial" />
       </Suspense>
     </div>
   );

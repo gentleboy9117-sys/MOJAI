@@ -1,4 +1,5 @@
 // 보고서 데이터 집계 — DB 조회 후 ReportData 구성(보고서 생성기/일일 브리핑 공용)
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/db/prisma";
 import { asArray } from "@/lib/utils";
 import { getTopIssues } from "@/lib/dashboard/topIssues";
@@ -11,18 +12,39 @@ export async function buildReportData(opts: {
   end: Date;
   generatedBy: string;
   now?: Date;
+  /** 기사 추가 필터(검찰청·범죄유형·공안 영역 등) — 통계·요약이 이 범위로 좁혀짐 */
+  articleWhere?: Prisma.ArticleWhereInput;
+  /** 필터 대상 검찰청 이름 목록(자손 포함) — 이슈 Top·검찰청 표 사후 필터용 */
+  officeNames?: string[];
+  /** 필터 범죄유형(이슈 Top·트렌드 사후 필터용) */
+  crimeTypeLabel?: string;
 }): Promise<ReportData> {
   const { start, end, generatedBy } = opts;
   const now = opts.now ?? new Date();
 
-  const [articles, topIssues, officeRows, trendAlerts] = await Promise.all([
-    prisma.article.findMany({ where: { publishedAt: { gte: start, lte: end } }, orderBy: { publishedAt: "desc" } }),
-    getTopIssues({ periodStart: start, periodEnd: end, limit: 5 }),
+  const [articles, topIssuesRaw, officeRowsRaw, trendAlertsRaw] = await Promise.all([
+    prisma.article.findMany({ where: { publishedAt: { gte: start, lte: end }, ...(opts.articleWhere ?? {}) }, orderBy: { publishedAt: "desc" } }),
+    getTopIssues({ periodStart: start, periodEnd: end, limit: 20 }),
     getOfficeHeatmap({ periodStart: start, periodEnd: end }),
     computeTrendAlerts({ now }),
   ]);
 
-  const issueCount = await prisma.issueCluster.count({ where: { lastPublishedAt: { gte: start, lte: end } } });
+  // 필터 사후 적용(이슈 Top·검찰청 표·트렌드)
+  const officeNameSet = opts.officeNames?.length ? new Set(opts.officeNames) : null;
+  const topIssues = topIssuesRaw
+    .filter((t) => (officeNameSet ? (t.officeName ? officeNameSet.has(t.officeName) : false) : true))
+    .filter((t) => (opts.crimeTypeLabel ? t.crimeType === opts.crimeTypeLabel : true))
+    .slice(0, 5);
+  const officeRows = officeNameSet ? officeRowsRaw.filter((o) => officeNameSet.has(o.officeName)) : officeRowsRaw;
+  const trendAlerts = opts.crimeTypeLabel ? trendAlertsRaw.filter((t) => t.crimeType === opts.crimeTypeLabel) : trendAlertsRaw;
+
+  const clustersForCount = await prisma.issueCluster.findMany({
+    where: { lastPublishedAt: { gte: start, lte: end } },
+    select: { mainCrimeType: true, mainOfficeName: true },
+  });
+  const issueCount = clustersForCount
+    .filter((c) => (officeNameSet ? (c.mainOfficeName ? officeNameSet.has(c.mainOfficeName) : false) : true))
+    .filter((c) => (opts.crimeTypeLabel ? c.mainCrimeType === opts.crimeTypeLabel : true)).length;
 
   // 검찰청명 맵
   const officeMap = new Map(officeRows.map((o) => [o.officeName, o]));
