@@ -57,7 +57,7 @@ function Counts({ heat }: { heat?: AggCounts }) {
 export default function OfficesPage() {
   const { data: offices, loading: lo } = useApi<Office[]>("/api/offices");
   const [period, setPeriod] = useState<CalPeriod>("month");
-  const [selectedOffice, setSelectedOffice] = useState<{ id: string; name: string } | null>(null);
+  const [selectedOffice, setSelectedOffice] = useState<{ id: string; name: string; subOffices?: { name: string; isBranch: boolean }[] } | null>(null);
   const [open, setOpen] = useState<Set<string>>(new Set());
   const toggle = (id: string) => setOpen((p) => { const n = new Set(p); if (n.has(id)) n.delete(id); else n.add(id); return n; });
   const [showAllRank, setShowAllRank] = useState(false);
@@ -157,7 +157,7 @@ export default function OfficesPage() {
           <Spinner className="h-6 w-6" />
         </div>
       ) : selectedOffice ? (
-        <OfficeCrimeBoard officeId={selectedOffice.id} officeName={selectedOffice.name} onBack={() => setSelectedOffice(null)} />
+        <OfficeCrimeBoard officeId={selectedOffice.id} officeName={selectedOffice.name} subOffices={selectedOffice.subOffices} onBack={() => setSelectedOffice(null)} />
       ) : (
         <div className="grid gap-4 lg:grid-cols-2">
           {/* 조직 트리 */}
@@ -185,7 +185,7 @@ export default function OfficesPage() {
                           <button onClick={() => toggle(h.id)} className="shrink-0 rounded p-1 text-ink-disabled hover:text-primary" aria-label="펼치기">
                             <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isOpen && "rotate-90")} />
                           </button>
-                          <button onClick={() => setSelectedOffice({ id: h.id, name: h.name })} className="flex flex-1 items-center justify-between gap-3 rounded-md px-1 py-1.5 text-left hover:bg-gray-5">
+                          <button onClick={() => setSelectedOffice({ id: h.id, name: h.name, subOffices: tree.districtsByParent(h.id).flatMap((d) => [{ name: d.name, isBranch: false }, ...tree.branchesByParent(d.id).map((b) => ({ name: b.name, isBranch: true }))]) })} className="flex flex-1 items-center justify-between gap-3 rounded-md px-1 py-1.5 text-left hover:bg-gray-5">
                             <span className="truncate text-body-s font-medium text-ink-title">{h.name}</span>
                             <Counts heat={aggHeat(h)} />
                           </button>

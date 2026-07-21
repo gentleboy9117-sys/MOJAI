@@ -111,11 +111,39 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
     </div>
   );
 
-  const selectedDeduped = useMemo(() => {
+  // 선택 청의 자손 청 이름 목록(고검 → 산하 지검·지청 포함) — 조직 순서 유지
+  const selectedNames = useMemo(() => {
+    if (!selected) return [] as string[];
+    const list = offices ?? [];
+    const me = list.find((o) => o.name === selected);
+    if (!me) return [selected];
+    const out = [me.name];
+    if (me.type === "고등검찰청" || me.type === "법무부/대검찰청") {
+      for (const d of list.filter((o) => o.type === "지방검찰청" && o.parentId === me.id).sort((a, b) => ord(a.name) - ord(b.name))) {
+        out.push(d.name);
+        for (const b of list.filter((o) => o.type === "지청" && o.parentId === d.id).sort((a, b) => ord(a.name) - ord(b.name))) out.push(b.name);
+      }
+    } else if (me.type === "지방검찰청") {
+      for (const b of list.filter((o) => o.type === "지청" && o.parentId === me.id).sort((a, b) => ord(a.name) - ord(b.name))) out.push(b.name);
+    }
+    return out;
+  }, [selected, offices]);
+
+  // 자손 포함 + 청별 그룹(조직 순서) — 고검 클릭 시 지검·지청별로 분류 표시
+  const selectedGroups = useMemo(() => {
     if (!selected) return [];
-    return dedupeArticles((data ?? []).filter((r) => r.primaryOfficeName === selected))
-      .sort((a, b) => new Date(b.rep.publishedAt).getTime() - new Date(a.rep.publishedAt).getTime());
-  }, [data, selected]);
+    const nameSet = new Set(selectedNames);
+    const rows = (data ?? []).filter((r) => r.primaryOfficeName && nameSet.has(r.primaryOfficeName));
+    const byName = new Map<string, ArticleRow[]>();
+    for (const r of rows) { const n = r.primaryOfficeName!; if (!byName.has(n)) byName.set(n, []); byName.get(n)!.push(r); }
+    return selectedNames
+      .filter((n) => byName.has(n))
+      .map((n) => ({
+        name: n,
+        list: dedupeArticles(byName.get(n)!).sort((a, b) => new Date(b.rep.publishedAt).getTime() - new Date(a.rep.publishedAt).getTime()),
+      }));
+  }, [data, selected, selectedNames]);
+  const selectedTotal = useMemo(() => selectedGroups.reduce((s, g) => s + g.list.length, 0), [selectedGroups]);
 
   function OfficeRow({ o, indent }: { o: Office; indent: number }) {
     const c = agg(o);
@@ -151,14 +179,21 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
           <span className="flex items-center gap-1.5 text-body-s font-bold text-ink-title">
             <Newspaper className="h-4 w-4 text-primary" /> {selected} {countLabel}
           </span>
-          <span className="ml-auto"><Badge tone="outline">{selectedDeduped.length}건</Badge></span>
+          <span className="ml-auto"><Badge tone="outline">{selectedTotal}건</Badge></span>
         </div>
         <CardContent className="p-0">
-          {!selectedDeduped.length ? (
+          {!selectedTotal ? (
             <EmptyState icon={<Newspaper className="h-8 w-8" />} title="보도가 없습니다" />
           ) : (
             <ul className="divide-y divide-line">
-              {selectedDeduped.map((d) => (
+              {selectedGroups.map((g) => [
+                selectedGroups.length > 1 ? (
+                  <li key={`h-${g.name}`} className="flex items-center gap-2 bg-gray-5 px-4 py-1.5">
+                    <span className="text-detail font-bold text-ink-title">{g.name}</span>
+                    <Badge tone="blue">{g.list.length}건</Badge>
+                  </li>
+                ) : null,
+                ...g.list.map((d) => (
                 <li key={d.rep.id} className="px-4 py-2.5">
                   <a href={d.rep.originalUrl} target="_blank" rel="noreferrer" className="group flex items-start gap-1.5 text-body-s font-medium text-ink-title hover:text-primary">
                     <span className="hover:underline">{d.rep.title.split(" - ")[0]}</span>
@@ -177,7 +212,8 @@ export function OfficeNewsBoard({ baseUrl, countLabel = "보도", clickHint = "�
                     </div>
                   )}
                 </li>
-              ))}
+                )),
+              ])}
             </ul>
           )}
         </CardContent>

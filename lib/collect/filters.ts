@@ -89,9 +89,37 @@ const KR_LEGAL_ACTION = /檢|구속기소|불구속|기소|구속영장|체포�
 // 북한·외국 검찰/사법 기관 소식(한국 관할 무관) — 무조건 제외
 const NK_FOREIGN_RE = /인민검찰청|인민재판|인민법원|로동신문|조선중앙|평양|법수호신문|최고인민회의|외국\s*검찰|연방대법|연방법원|미\s*연방|미주한인|미 대법원|연방수사국|\bFBI\b|\bSEC\b/;
 
+// 한국 '고유' 단서(지명·고유기관·정당 등) — 검찰/법원/대통령 같은 일반 기관어는 외국 기사에도 나오므로 제외
+const KOREA_HARD_NEXUS_RE = new RegExp(
+  [
+    "한국|대한민국|국내|한인|교민|교포|재외|내국인|우리\\s?국민|국적|한국인",
+    "지검|고검|대검|공수처|선관위|국정원|국세청|관세청|공정거래위|법무부|검찰청",
+    "민주노총|한국노총|전교조|국민의힘|더불어민주당|민주당|조국혁신당",
+    "서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|제주",
+    "수원|성남|용인|부천|안산|안양|화성|평택|의정부|고양|남양주|창원|청주|천안|전주|포항|김해|양산",
+  ].join("|"),
+);
+// 외국 사법·국가기관이 주어인 기사(예: "우크라이나 검찰", "대만 검찰", "美 의회") — 한국 관할 무관
+const FOREIGN_JUSTICE_RE = /(미국|美|중국|일본|日|독일|영국|프랑스|러시아|대만|우크라이나|우크라|이란|인도|태국|베트남|필리핀|캄보디아|튀르키예|이스라엘|EU|유럽연합|홍콩|싱가포르)\s*(검찰|검사|법원|대법원|경찰|법무부|의회|국세청|당국)/;
+// 제목에 외국 국가·도시·정상이 명시된 경우(외국발 사건일 강한 신호)
+const FOREIGN_TITLE_RE = new RegExp(
+  [
+    "우크라이나|우크라|러시아|이스라엘|이란|튀르키예|사우디|브라질|멕시코|아르헨티나|이집트|파키스탄|미얀마|라오스|네팔|베네수",
+    "뉴욕|워싱턴|로스앤젤레스|런던|파리|베를린|도쿄|오사카|베이징|상하이|모스크바|키이우|텔아비브|테헤란",
+    "젤렌스키|푸틴|바이든|시진핑|마크롱|네타냐후|트럼프",
+  ].join("|"),
+);
+// 한국 제도·정책 논의 맥락(외국 사례 인용 기사 보호 — 예: "검찰개혁 모델 영국도…")
+const KR_POLICY_CONTEXT_RE = /검찰개혁|수사권|기소독점|공소청|기소청|중수청|검수완박|형사소송법|공수처|사법개혁/;
+
 export function isForeignTopic(title: string, summary?: string | null): boolean {
   const t = `${title || ""} ${summary || ""}`;
   if (NK_FOREIGN_RE.test(t)) return true; // 북한·외국 검찰 소식
+  const koreaNexus = KOREA_HARD_NEXUS_RE.test(t) || KOREA_FOREIGN_NEXUS.test(t) || KR_POLICY_CONTEXT_RE.test(t);
+  // ① 외국 사법기관이 주어(우크라이나 검찰 등)이고 한국 단서가 없으면 제외
+  if (FOREIGN_JUSTICE_RE.test(title || "") && !koreaNexus) return true;
+  // ② 제목이 강한 외국 신호(분쟁국·외국 정상·외국 도시)이고 한국 단서·한국 형사절차 용어가 없으면 제외
+  if (FOREIGN_TITLE_RE.test(title || "") && !koreaNexus && !KR_LEGAL_ACTION.test(title || "")) return true;
   if (KOREA_NEXUS_RE.test(t) || KOREA_FOREIGN_NEXUS.test(t) || KR_LEGAL_ACTION.test(t)) return false;
   return FOREIGN_RE.test(t);
 }

@@ -1,4 +1,4 @@
-// [공안] 클라이언트 표시용 라벨/상수 (labels.ts 를 건드리지 않기 위한 모듈)
+﻿// [공안] 클라이언트 표시용 라벨/상수 (labels.ts 를 건드리지 않기 위한 모듈)
 import type { Tone } from "@/lib/client/labels";
 
 /** 공안 모듈 하위 탭 네비게이션 */
@@ -13,6 +13,7 @@ export const PUBLIC_SAFETY_SUBNAV: SubNavItem[] = [
   { label: "집회·시위 보도", href: "/public-safety/related-news" },
   { label: "선거 보도", href: "/public-safety/election-news" },
   { label: "노동·중대재해 보도", href: "/public-safety/labor-news" },
+  { label: "공안 브리핑", href: "/public-safety/briefings" },
 ];
 
 /** 관할 추정 방법 라벨 */
@@ -66,3 +67,4 @@ export function isInferredJurisdiction(method?: string | null, needsHumanReview?
 export function formatPercent(value?: number | null): string {
   return `${Math.round((value ?? 0) * 100)}%`;
 }
+

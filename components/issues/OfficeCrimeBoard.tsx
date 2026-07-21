@@ -15,19 +15,44 @@ interface ArticleRow {
   sourceName: string;
   publishedAt: string;
   originalUrl: string;
+  primaryOfficeName?: string | null;
   crimeType?: string | null;
   crimeSubtype?: string | null;
   issueScore?: number | null;
 }
 
-/** 특정 검찰청 이슈를 '범죄유형 탭 + 목록(중복 묶음·링크)'으로 보여주는 보기 */
-export function OfficeCrimeBoard({ officeId, officeName, onBack }: { officeId: string; officeName: string; onBack: () => void }) {
+/** 특정 검찰청 이슈 보기.
+ *  - 지검·지청: 범죄유형 탭 + 목록(중복 묶음·링크)
+ *  - 고검(subOffices 전달 시): 산하 지검·지청별로 기사를 자동 분류해 그룹 표시 */
+export function OfficeCrimeBoard({ officeId, officeName, subOffices, onBack }: { officeId: string; officeName: string; subOffices?: { name: string; isBranch: boolean }[]; onBack: () => void }) {
   const [period, setPeriod] = useState<CalPeriod>("month");
   const [picked, setPicked] = useState<string | null>(null);
+  const [openAll, setOpenAll] = useState<Set<string>>(new Set());
   const range = useMemo(() => calendarRange(period), [period]);
   const { data, loading } = useApi<ArticleRow[]>(
     `/api/articles?officeId=${officeId}&startDate=${range.start.toISOString()}&endDate=${range.end.toISOString()}&limit=3000`,
   );
+
+  // 고검 보기: 산하 청별 그룹(지검 → 소속 지청 순서), 고검 직속 기사는 맨 위
+  type Dedup2 = { rep: ArticleRow; sources: { sourceName: string; url: string }[]; count: number };
+  const subGroups = useMemo(() => {
+    if (!subOffices?.length) return null;
+    const byName = new Map<string, ArticleRow[]>();
+    for (const r of data ?? []) {
+      const n = r.primaryOfficeName ?? "";
+      if (!byName.has(n)) byName.set(n, []);
+      byName.get(n)!.push(r);
+    }
+    const mk = (name: string, isBranch: boolean): { name: string; isBranch: boolean; list: Dedup2[] } => ({
+      name, isBranch,
+      list: dedupeArticles(byName.get(name) ?? []).sort((a, b) => (b.rep.issueScore ?? 0) - (a.rep.issueScore ?? 0)),
+    });
+    const groups = [
+      ...(byName.has(officeName) ? [mk(officeName, false)] : []),
+      ...subOffices.map((s) => mk(s.name, s.isBranch)),
+    ].filter((g) => g.list.length > 0);
+    return groups;
+  }, [data, subOffices, officeName]);
 
   // 범죄유형별 중복제거 묶음
   const groups = useMemo(() => {
@@ -70,6 +95,57 @@ export function OfficeCrimeBoard({ officeId, officeName, onBack }: { officeId: s
 
       {loading ? (
         <div className="flex justify-center py-16"><Spinner className="h-6 w-6" /></div>
+      ) : subGroups ? (
+        !subGroups.length ? (
+          <EmptyState title="해당 기간 이슈가 없습니다" desc="기간을 넓혀보세요." />
+        ) : (
+          <div className="space-y-3">
+            {subGroups.map((g) => {
+              const opened = openAll.has(g.name);
+              const shown = opened ? g.list : g.list.slice(0, 5);
+              return (
+                <Card key={g.name} className={cn(g.isBranch && "ml-5")}>
+                  <div className="flex items-center gap-2 border-b border-line bg-gray-5 px-4 py-2 rounded-t-lg">
+                    <span className={cn("text-body-s font-bold", g.isBranch ? "text-ink-body" : "text-ink-title")}>{g.name}</span>
+                    <Badge tone="blue">{g.list.length}건</Badge>
+                  </div>
+                  <CardContent className="p-0">
+                    <ul className="divide-y divide-line">
+                      {shown.map((d) => (
+                        <li key={d.rep.id} className="px-4 py-2.5">
+                          <div className="flex items-start gap-3">
+                            <span className="mt-0.5 flex h-8 w-8 shrink-0 flex-col items-center justify-center rounded-md bg-blue-5 text-primary">
+                              <span className="text-body-s font-bold leading-none">{Math.round(d.rep.issueScore ?? 0)}</span>
+                            </span>
+                            <div className="min-w-0 flex-1">
+                              <a href={d.rep.originalUrl} target="_blank" rel="noreferrer" className="group flex items-start gap-1.5 text-body-s font-medium text-ink-title hover:text-primary">
+                                <span className="hover:underline">{d.rep.title.split(" - ")[0]}</span>
+                                <ExternalLink className="mt-0.5 h-3.5 w-3.5 shrink-0 opacity-40 group-hover:opacity-100" />
+                              </a>
+                              <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-detail text-ink-muted">
+                                {d.rep.crimeType && <Badge tone="navy">{d.rep.crimeType}</Badge>}
+                                <span>{d.rep.sourceName}{d.rep.publishedAt ? ` · ${formatDate(d.rep.publishedAt)}` : ""}</span>
+                                {d.count > 1 && <span className="text-blue-60">· 동일 보도 {d.count}건</span>}
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                    {g.list.length > 5 && (
+                      <button
+                        onClick={() => setOpenAll((p) => { const n = new Set(p); if (n.has(g.name)) n.delete(g.name); else n.add(g.name); return n; })}
+                        className="flex w-full items-center justify-center border-t border-line py-1.5 text-detail font-medium text-blue-60 hover:bg-gray-5"
+                      >
+                        {opened ? "접기" : `더보기 (+${g.list.length - 5})`}
+                      </button>
+                    )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )
       ) : !tabs.length ? (
         <EmptyState title="해당 기간 이슈가 없습니다" desc="기간을 넓혀보세요." />
       ) : (

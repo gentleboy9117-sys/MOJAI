@@ -1,4 +1,4 @@
-{
+﻿{
   "_meta": {
     "description": "전국 검찰청 마스터 seed. 대검찰청 전국검찰청찾기 기준 구조. 주소/전화는 sync 스크립트로 보강(여기서는 null 가능). homepageUrl 은 spo.go.kr 서브도메인 패턴.",
     "source": "https://www.spo.go.kr (전국검찰청찾기)",
@@ -6,12 +6,13 @@
   },
   "offices": [
     {
-      "name": "대검찰청",
-      "type": "대검찰청",
-      "region": "서울",
+      "name": "법무부/대검찰청",
+      "type": "법무부/대검찰청",
+      "region": "전국",
       "parentName": null,
       "homepageUrl": "https://www.spo.go.kr",
       "searchKeywords": [
+        "법무부",
         "대검찰청",
         "대검",
         "검찰총장",
@@ -22,7 +23,7 @@
       "name": "서울고등검찰청",
       "type": "고등검찰청",
       "region": "서울",
-      "parentName": "대검찰청",
+      "parentName": "법무부/대검찰청",
       "homepageUrl": "https://seoulhigh.spo.go.kr",
       "searchKeywords": [
         "서울고등검찰청",
@@ -35,7 +36,7 @@
       "name": "수원고등검찰청",
       "type": "고등검찰청",
       "region": "수원",
-      "parentName": "대검찰청",
+      "parentName": "법무부/대검찰청",
       "homepageUrl": "https://suwonhigh.spo.go.kr",
       "searchKeywords": [
         "수원고등검찰청",
@@ -48,7 +49,7 @@
       "name": "대전고등검찰청",
       "type": "고등검찰청",
       "region": "대전",
-      "parentName": "대검찰청",
+      "parentName": "법무부/대검찰청",
       "homepageUrl": "https://daejeonhigh.spo.go.kr",
       "searchKeywords": [
         "대전고등검찰청",
@@ -61,7 +62,7 @@
       "name": "대구고등검찰청",
       "type": "고등검찰청",
       "region": "대구",
-      "parentName": "대검찰청",
+      "parentName": "법무부/대검찰청",
       "homepageUrl": "https://daeguhigh.spo.go.kr",
       "searchKeywords": [
         "대구고등검찰청",
@@ -74,7 +75,7 @@
       "name": "부산고등검찰청",
       "type": "고등검찰청",
       "region": "부산",
-      "parentName": "대검찰청",
+      "parentName": "법무부/대검찰청",
       "homepageUrl": "https://busanhigh.spo.go.kr",
       "searchKeywords": [
         "부산고등검찰청",
@@ -87,7 +88,7 @@
       "name": "광주고등검찰청",
       "type": "고등검찰청",
       "region": "광주",
-      "parentName": "대검찰청",
+      "parentName": "법무부/대검찰청",
       "homepageUrl": "https://gwangjuhigh.spo.go.kr",
       "searchKeywords": [
         "광주고등검찰청",
