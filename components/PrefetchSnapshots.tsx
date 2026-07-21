@@ -16,6 +16,8 @@ export function PrefetchSnapshots() {
       "/api/issues?period=30d",
       "/api/public-safety/sources",
       "/api/articles?crimeType=공판&period=all&limit=300",
+      "/api/crime-type-counts?scope=issue",
+      "/api/crime-type-counts?scope=trial",
       `/api/articles?crimeType=공판&startDate=${iso(m.start)}&endDate=${iso(m.end)}&limit=3000&sort=score`,
       `/api/articles?crimeType=공판&startDate=${iso(m.start)}&endDate=${iso(m.end)}&limit=3000`,
       `/api/articles?crimeType=공판&startDate=${iso(m.prevStart)}&endDate=${iso(m.prevEnd)}&limit=3000`,
