@@ -181,15 +181,14 @@ export default function OfficesPage() {
                     const isOpen = open.has(h.id);
                     return (
                       <div key={h.id}>
-                        <div className="flex items-center">
-                          <button onClick={() => toggle(h.id)} className="shrink-0 rounded p-1 text-ink-disabled hover:text-primary" aria-label="펼치기">
-                            <ChevronRight className={cn("h-3.5 w-3.5 transition-transform", isOpen && "rotate-90")} />
-                          </button>
-                          <button onClick={() => setSelectedOffice({ id: h.id, name: h.name, subOffices: tree.districtsByParent(h.id).flatMap((d) => [{ name: d.name, isBranch: false }, ...tree.branchesByParent(d.id).map((b) => ({ name: b.name, isBranch: true }))]) })} className="flex flex-1 items-center justify-between gap-3 rounded-md px-1 py-1.5 text-left hover:bg-gray-5">
+                        {/* 고검 행 전체 클릭 = 산하 펼치기(화면 이동 없음). 고검 상세는 우측 순위표에서 진입 */}
+                        <button onClick={() => toggle(h.id)} className="flex w-full items-center justify-between gap-3 rounded-md px-2 py-1.5 text-left hover:bg-gray-5">
+                          <span className="flex min-w-0 items-center gap-1.5">
+                            <ChevronRight className={cn("h-3.5 w-3.5 shrink-0 text-ink-disabled transition-transform", isOpen && "rotate-90")} />
                             <span className="truncate text-body-s font-medium text-ink-title">{h.name}</span>
-                            <Counts heat={aggHeat(h)} />
-                          </button>
-                        </div>
+                          </span>
+                          <Counts heat={aggHeat(h)} />
+                        </button>
                         {isOpen && tree.districtsByParent(h.id).map((d) => (
                           <div key={d.id}>
                             <OfficeLink o={d} indent={1} />
