@@ -8,11 +8,28 @@ export function isPhotoOnlyTitle(title: string): boolean {
 }
 
 // 칼럼·오피니언·연재물(범죄/재판 기사가 아닌 논평·에세이) — 제목 머리표 기준
-const COLUMN_RE = /\[[^\]]*(칼럼|경영학|경제학|에세이|연재|시론|기고|사설|오피니언|단상|시평|논단|논객|기자수첩|데스크|문화산책|인문학|북리뷰|서평|살롱|매거진|트렌드|라이프|레시피|건강|여행|스포츠|연예|영화|드라마|리뷰|세상의눈|세상읽기|세상보기|아침을\s*열며|시각|시선|광장|발언대|동서남북|만물상|분수대|횡설수설|메아리|태평로|전망대|특별기고|기고문|독자|투고)[^\]]*\]/;
+const COLUMN_RE = /\[[^\]]*(칼럼|경영학|경제학|에세이|연재|시론|기고|사설|오피니언|단상|시평|논단|논객|기자수첩|데스크|문화산책|인문학|북리뷰|서평|살롱|매거진|트렌드|라이프|레시피|건강|여행|스포츠|연예|영화|드라마|리뷰|세상의눈|세상읽기|세상보기|아침을\s*열며|시각|시선|광장|발언대|동서남북|만물상|분수대|횡설수설|메아리|태평로|전망대|특별기고|기고문|독자|투고|정치톡|아침저널)[^\]]*\]/;
+// 머리표 없는 사설/오피니언 표기(꺾쇠·머리말 등)
+const COLUMN_LOOSE_RE = /^[\s〈<【(]*\s*(사설|오피니언|시론|논설|데스크\s*칼럼)\s*[〉>】)\]:·-]|(사설|오피니언)\s*[〉>】\]]\s*$/;
+// URL 경로에 오피니언 섹션 신호가 있는 경우
+const OPINION_URL_RE = /\/(opinion|column|editorial|sasul|saseol)s?\//i;
 
 /** 칼럼·오피니언·연재물이면 true → 수집 제외(범죄/재판 보도 아님) */
-export function isOpinionColumn(title: string): boolean {
-  return COLUMN_RE.test(title || "");
+export function isOpinionColumn(title: string, url?: string | null): boolean {
+  if (COLUMN_RE.test(title || "") || COLUMN_LOOSE_RE.test(title || "")) return true;
+  return !!url && OPINION_URL_RE.test(url);
+}
+
+// 홍보·행사성 기사(기관/기업 홍보, 협약·행사·수상 등 — 사건 보도 아님).
+//  단, 기소·구속·선고 등 형사절차 용어가 제목에 있으면 사건 기사로 보고 유지.
+const PROMO_RE = /업무\s*협약|MOU|협약\s*체결|협약식|출범식|개소식|발대식|시상식|선포식|기념식|경축식|자매결연|알림톡|서비스\s*(출시|오픈|시작)|앱\s*출시|박람회|공모전|장학금|장학생|기부금|후원금|표창|감사패|위촉식|아카데미\s*(개최|운영|모집)|특강\s*개최|설명회\s*개최|간담회\s*개최|워크숍\s*개최|캠페인\s*(전개|실시|펼쳐)|홍보\s*캠페인|교육\s*(개최|실시|진행)\b/;
+const CASE_ACTION_RE = /기소|구속|불구속|송치|선고|판결|징역|영장|압수수색|입건|검거|적발|혐의|구형|체포|고발/;
+
+/** 홍보·행사성 기사면 true → 수집 제외 */
+export function isPromoNoise(title: string): boolean {
+  const t = title || "";
+  if (!PROMO_RE.test(t)) return false;
+  return !CASE_ACTION_RE.test(t);
 }
 
 // 연예/가십성 표현(근황·타투·미모 등). 단, 법률·수사·재판 용어가 함께 있으면 사건기사로 보고 유지.
