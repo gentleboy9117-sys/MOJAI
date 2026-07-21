@@ -63,6 +63,7 @@ async function saveRaw(a: any, offices: any[]): Promise<boolean> {
     { title: a.title, fullText: a.fullText, summary: a.summary, sourceType: a.sourceType, sourceName: a.sourceName },
     offices,
   );
+  if (!r.primaryOffice?.officeId) return false; // 관할 분류 불가 기사는 저장하지 않음(관할 미상 0 정책)
   await prisma.article.create({
     data: {
       title: a.title, sourceName: a.sourceName, publishedAt: a.publishedAt, originalUrl: a.originalUrl,

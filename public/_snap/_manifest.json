@@ -7,37 +7,37 @@
   {
     "url": "/api/articles?period=all&limit=300&sort=score",
     "file": "s1u58xgg.json",
-    "bytes": 315975
+    "bytes": 314787
   },
   {
     "url": "/api/articles?crimeType=%EA%B3%B5%ED%8C%90&period=all&limit=300&sort=score",
     "file": "sr7lwr6.json",
-    "bytes": 312957
+    "bytes": 310751
   },
   {
     "url": "/api/articles?keyword=%EC%A7%91%ED%9A%8C&period=all&limit=300&sort=score",
     "file": "s1dp8au0.json",
-    "bytes": 306560
+    "bytes": 306616
   },
   {
     "url": "/api/issues?period=30d",
     "file": "s1av592h.json",
-    "bytes": 71112
+    "bytes": 71000
   },
   {
     "url": "/api/articles?crimeType=공판&period=all&limit=300",
     "file": "sa44g43.json",
-    "bytes": 315042
+    "bytes": 312587
   },
   {
     "url": "/api/crime-type-counts?scope=issue",
     "file": "sftkkrk.json",
-    "bytes": 210
+    "bytes": 208
   },
   {
     "url": "/api/crime-type-counts?scope=trial",
     "file": "shdynqr.json",
-    "bytes": 175
+    "bytes": 174
   },
   {
     "url": "/api/offices",
@@ -72,17 +72,17 @@
   {
     "url": "/api/articles?keyword=집회&period=all&limit=300&sort=score",
     "file": "s1f3f5i3.json",
-    "bytes": 306560
+    "bytes": 306616
   },
   {
     "url": "/api/articles?crimeType=선거범죄&period=all&limit=300&sort=score",
     "file": "st5ie4h.json",
-    "bytes": 307482
+    "bytes": 307424
   },
   {
     "url": "/api/articles?crimeType=%EB%85%B8%EB%8F%99%2F%EC%A4%91%EB%8C%80%EC%9E%AC%ED%95%B4%EB%B2%94%EC%A3%84&period=all&limit=300&sort=score",
     "file": "saht92l.json",
-    "bytes": 304483
+    "bytes": 303661
   },
   {
     "url": "/api/articles?crimeType=%ED%98%95%EC%82%AC%EC%82%AC%EB%B2%95%EC%A0%9C%EB%8F%84%2F%EC%A0%95%EC%B1%85&period=all&limit=300",
@@ -102,46 +102,46 @@
   {
     "url": "/api/articles?crimeType=공판&startDate=2026-06-30T15:00:00.000Z&endDate=2026-07-21T14:59:59.999Z&limit=3000&sort=score",
     "file": "scitrjf.json",
-    "bytes": 257501
+    "bytes": 110403
   },
   {
     "url": "/api/articles?crimeType=공판&startDate=2026-06-30T15:00:00.000Z&endDate=2026-07-21T14:59:59.999Z&limit=3000",
     "file": "s1qyuzcq.json",
-    "bytes": 257501
+    "bytes": 110403
   },
   {
     "url": "/api/articles?crimeType=공판&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-21T14:59:59.999Z&limit=3000",
     "file": "s9u8et.json",
-    "bytes": 19841
+    "bytes": 19839
   },
   {
     "url": "/api/articles?keyword=집회&limit=3000&startDate=2026-06-30T15:00:00.000Z&endDate=2026-07-21T14:59:59.999Z",
     "file": "swcrhhn.json",
-    "bytes": 134810
+    "bytes": 94276
   },
   {
     "url": "/api/articles?keyword=집회&limit=3000&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-21T14:59:59.999Z",
     "file": "sgeg1fa.json",
-    "bytes": 33228
+    "bytes": 30195
   },
   {
     "url": "/api/articles?crimeType=선거범죄&limit=3000&startDate=2026-06-30T15:00:00.000Z&endDate=2026-07-21T14:59:59.999Z",
     "file": "s7db0bx.json",
-    "bytes": 50362
+    "bytes": 31277
   },
   {
     "url": "/api/articles?crimeType=선거범죄&limit=3000&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-21T14:59:59.999Z",
     "file": "stadlro.json",
-    "bytes": 53084
+    "bytes": 42598
   },
   {
     "url": "/api/articles?crimeType=%EB%85%B8%EB%8F%99%2F%EC%A4%91%EB%8C%80%EC%9E%AC%ED%95%B4%EB%B2%94%EC%A3%84&limit=3000&startDate=2026-06-30T15:00:00.000Z&endDate=2026-07-21T14:59:59.999Z",
     "file": "sy8ybzl.json",
-    "bytes": 423010
+    "bytes": 183016
   },
   {
     "url": "/api/articles?crimeType=%EB%85%B8%EB%8F%99%2F%EC%A4%91%EB%8C%80%EC%9E%AC%ED%95%B4%EB%B2%94%EC%A3%84&limit=3000&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-21T14:59:59.999Z",
     "file": "sntk16w.json",
-    "bytes": 14860
+    "bytes": 13811
   }
 ]
