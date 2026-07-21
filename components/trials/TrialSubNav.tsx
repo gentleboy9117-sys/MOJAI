@@ -7,10 +7,9 @@ const TRIAL_SUBNAV = [
   { label: "공판 모니터링", href: "/trials" },
   { label: "검찰청별 보기", href: "/trials/offices" },
   { label: "범죄유형별 보기", href: "/trials/crime-types" },
-  { label: "공판 브리핑", href: "/trials/reports" },
 ];
 
-/** [공판 모니터링] 하위 탭 바 — 공판 모니터링/검찰청별/범죄유형별/공판 브리핑 */
+/** [공판 모니터링] 하위 탭 바 — 공판 모니터링/검찰청별/범죄유형별 */
 export function TrialSubNav() {
   const pathname = usePathname();
   return (

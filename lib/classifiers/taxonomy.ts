@@ -185,3 +185,21 @@ export function countHits(text: string, keywords: string[]): { count: number; hi
   }
   return { count: hits.length, hits };
 }
+
+const HANGUL_RE = /[가-힣]/;
+
+/** 앞경계 검사 카운트 — 키워드 바로 앞이 한글이면 다른 단어의 일부로 보고 불인정.
+ *  예: '부정선거' 안의 '정선'(정선군) 오탐 차단. '정선군'·'정선에서'(앞이 공백/문두)는 인정. */
+export function countHitsBounded(text: string, keywords: string[]): { count: number; hits: string[] } {
+  const hits: string[] = [];
+  for (const k of keywords) {
+    if (!k) continue;
+    let idx = text.indexOf(k);
+    while (idx !== -1) {
+      const prev = idx > 0 ? text[idx - 1] : "";
+      if (!prev || !HANGUL_RE.test(prev)) { hits.push(k); break; }
+      idx = text.indexOf(k, idx + 1);
+    }
+  }
+  return { count: hits.length, hits };
+}

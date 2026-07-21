@@ -13,7 +13,6 @@ export const PUBLIC_SAFETY_SUBNAV: SubNavItem[] = [
   { label: "집회·시위 보도", href: "/public-safety/related-news" },
   { label: "선거 보도", href: "/public-safety/election-news" },
   { label: "노동·중대재해 보도", href: "/public-safety/labor-news" },
-  { label: "공안 브리핑", href: "/public-safety/briefings" },
 ];
 
 /** 관할 추정 방법 라벨 */

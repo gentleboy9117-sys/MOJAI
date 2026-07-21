@@ -6,6 +6,7 @@ import {
   HIGH_IMPACT_KEYWORDS,
   SENSITIVE_REVIEW_KEYWORDS,
   countHits,
+  countHitsBounded,
 } from "./taxonomy";
 import type {
   OfficeLite,
@@ -172,8 +173,9 @@ export function classifyOffices(input: ClassifyInput, offices: OfficeLite[]): Of
     const police = office.policeStations ?? [];
 
     const nameHit = countHits(text, nameKw);
-    const regionHit = countHits(text, regionKw);
-    const policeHit = countHits(text, police);
+    // 지역·경찰서 키워드는 앞경계 검사 — '부정선거'→'정선'(정선군) 같은 부분 문자열 오탐 방지
+    const regionHit = countHitsBounded(text, regionKw);
+    const policeHit = countHitsBounded(text, police);
 
     let matchType: OfficeMatchType | null = null;
     let confidence = 0;

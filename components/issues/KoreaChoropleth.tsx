@@ -2,9 +2,22 @@
 import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { HIGH_PROSECUTION_TREE } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
+import { HIGH_PROSECUTION_TREE, OFFICE_ORDER } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
 
 const HIGH_ORDER: Record<string, number> = Object.fromEntries(HIGH_PROSECUTION_TREE.map((g, i) => [g.high, i]));
+const ORD = (name: string) => OFFICE_ORDER[name] ?? 9999;
+
+/** 바 라벨 축약 — 고검 지역 접두 제거(서울중앙지검→중앙지검, 부산동부지청→동부지청).
+ *  접두를 떼면 이름부가 사라지는 청(부산지검 등)은 그대로 둔다. */
+function shortLabel(officeName: string, highName: string): string {
+  let name = officeName.replace("지방검찰청", "지검");
+  const region = highName.replace("고등검찰청", "");
+  if (name.startsWith(region)) {
+    const stripped = name.slice(region.length);
+    if (stripped.length > 2 && (stripped.endsWith("지검") || stripped.endsWith("지청"))) name = stripped;
+  }
+  return name;
+}
 
 // 도시 → 시도(geojson 명칭) : 드릴다운 대상 시도 판별용
 const CITY_SIDO: Record<string, string> = {
@@ -58,12 +71,12 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
     const dists = orgs.filter((o) => o.type === "지방검찰청");
     const branches = orgs.filter((o) => o.type === "지청");
     const ownCount = (name: string) => countByName.get(name) ?? 0;
-    // 고검 산하: 지검 + 그 지검의 지청들(평면)
+    // 고검 산하: 지검 + 그 지검의 지청들(평면) — 조직 체계 순서(서울: 중앙-동부-남부-북부-서부)
     const childrenOf = (highId: string) => {
       const out: { office: Office; branch: boolean }[] = [];
-      for (const d of dists.filter((d) => d.parentId === highId)) {
+      for (const d of dists.filter((d) => d.parentId === highId).sort((a, b) => ORD(a.name) - ORD(b.name))) {
         out.push({ office: d, branch: false });
-        for (const b of branches.filter((b) => b.parentId === d.id)) out.push({ office: b, branch: true });
+        for (const b of branches.filter((b) => b.parentId === d.id).sort((a, b) => ORD(a.name) - ORD(b.name))) out.push({ office: b, branch: true });
       }
       return out;
     };
@@ -180,9 +193,11 @@ export function KoreaChoropleth({ offices }: { offices: { name: string; count: n
                   <div className="mt-1 space-y-0.5 pl-5">
                     {tree.childrenOf(h.id).map(({ office, branch }) => {
                       const c = tree.ownCount(office.name);
+                      const label = shortLabel(office.name, h.name);
                       return (
                         <button key={office.id} onClick={() => drillName(office.name)} className="flex w-full items-center gap-2 hover:opacity-80">
-                          <span className={cn("w-16 shrink-0 truncate text-left text-detail", branch ? "pl-2 text-ink-muted" : "text-ink-title")}>{branch ? office.name : office.name.replace("지방검찰청", "지검")}</span>
+                          {/* 5글자(의정부지검 등)는 자간·크기 축소로 전부 표시 */}
+                          <span className={cn("w-16 shrink-0 whitespace-nowrap text-left", label.length >= 5 ? "text-caption tracking-[-0.06em]" : "text-detail", branch ? "pl-2 text-ink-muted" : "text-ink-title")}>{label}</span>
                           <Bar count={c} max={ownMax} /><span className="w-6 shrink-0 text-right text-detail font-semibold text-primary/80">{c}</span>
                         </button>
                       );

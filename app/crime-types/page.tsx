@@ -55,6 +55,8 @@ function extractKeywords(issues: Issue[]): string[] {
 
 export default function CrimeTypesPage() {
   const { data, loading } = useApi<Issue[]>("/api/issues?period=30d");
+  // '목록' 화면과 동일 기준(전체 기간·동일 기사 묶음) 기사 수 — 카드 건수와 목록 총계 일치
+  const { data: counts } = useApi<Record<string, number>>("/api/crime-type-counts?scope=issue");
 
   const groups = useMemo<Group[]>(() => {
     const issues = data ?? [];
@@ -124,14 +126,15 @@ export default function CrimeTypesPage() {
               <CardContent className="flex flex-1 flex-col gap-2.5">
                 <div className="flex flex-wrap gap-1">
                   <Badge tone="blue">이슈 {g.issues.length}</Badge>
-                  <Badge tone="outline">기사 {g.articleCount}</Badge>
+                  <Badge tone="outline">기사 {counts?.[g.type] ?? g.articleCount}</Badge>
                 </div>
 
                 {g.headline && (
                   <div>
                     <p className="text-detail text-ink-muted">대표 헤드라인</p>
+                    {/* 대표 헤드라인 클릭 = '목록'과 동일 화면 */}
                     <Link
-                      href={`/issues?issue=${g.headline.id}`}
+                      href={`/crime-news?type=${encodeURIComponent(g.type)}&scope=issue`}
                       className="line-clamp-2 text-body-s font-medium text-ink-title hover:text-primary hover:underline"
                     >
                       {g.headline.title}

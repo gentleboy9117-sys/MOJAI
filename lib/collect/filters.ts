@@ -112,6 +112,22 @@ const FOREIGN_TITLE_RE = new RegExp(
 // 한국 제도·정책 논의 맥락(외국 사례 인용 기사 보호 — 예: "검찰개혁 모델 영국도…")
 const KR_POLICY_CONTEXT_RE = /검찰개혁|수사권|기소독점|공소청|기소청|중수청|검수완박|형사소송법|공수처|사법개혁/;
 
+// ── 선거 기사: '선거범죄 사건'(수사·기소·재판)만 수집, 일반 정치부 기사 제외 ──
+// 선거 맥락 신호(선거·투표·개표·선관위·부정선거·공천 등)
+const ELECTION_CONTEXT_RE = /선거|투표|개표|선관위|공천|출마|낙선|당선|경선|표심|지지율|여론조사|재선거|보궐/;
+// 선거 '사건' 신호 — 수사·기소·재판·고발 등 형사절차가 실제로 언급된 경우(제목 기준)
+const ELECTION_CASE_RE = /공직선거법|선거법\s*위반|선거범죄|선거사범|허위사실\s*(공표|유포)|금품\s*(살포|제공|수수)|기부행위|매수|흑색선전|불법\s*선거운동|수사|기소|구속|불구속|송치|입건|고발|고소|영장|압수수색|재판|공판|선고|판결|징역|벌금형|집행유예|무죄|유죄|항소|상고|구형|검거|적발|체포|소환|혐의|폭행|난동|피의자|피고인/;
+// 요약문에 있으면 사건 기사로 보호할 강한 선거사범 신호(요약의 우연한 '수사' 언급만으로는 보호하지 않음)
+const ELECTION_STRONG_RE = /공직선거법|선거법\s*위반|선거범죄|선거사범|허위사실\s*공표|구속영장|압수수색|구속\s*기소/;
+
+/** 선거 관련 기사인데 수사·기소·재판 등 사건 요소가 없으면 true → 수집 제외(일반 정치부 기사) */
+export function isElectionPolitics(title: string, summary?: string | null): boolean {
+  const t = `${title || ""} ${summary || ""}`;
+  if (!ELECTION_CONTEXT_RE.test(t)) return false; // 선거 무관 기사는 이 필터 대상 아님
+  if (ELECTION_CASE_RE.test(title || "")) return false; // 제목에 사건 요소 → 사건 보도
+  return !ELECTION_STRONG_RE.test(summary || "");
+}
+
 export function isForeignTopic(title: string, summary?: string | null): boolean {
   const t = `${title || ""} ${summary || ""}`;
   if (NK_FOREIGN_RE.test(t)) return true; // 북한·외국 검찰 소식

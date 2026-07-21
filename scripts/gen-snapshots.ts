@@ -23,6 +23,8 @@ const URLS = [
   // 이슈/공판 범죄유형별
   "/api/issues?period=30d",
   "/api/articles?crimeType=공판&period=all&limit=300",
+  "/api/crime-type-counts?scope=issue",
+  "/api/crime-type-counts?scope=trial",
   // 검찰청/지도
   "/api/offices",
   "/api/dashboard/office-heatmap?period=month",

@@ -1,7 +1,7 @@
 "use client";
 import { useMemo } from "react";
 import Link from "next/link";
-import { Building2, Gavel, Megaphone, ChevronRight, FileText, MessageSquareText, ExternalLink } from "lucide-react";
+import { Building2, Gavel, Megaphone, ChevronRight, FileText, FileBarChart, MessageSquareText, ExternalLink } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Spinner } from "@/components/ui/misc";
@@ -91,6 +91,10 @@ export function DashboardSections() {
         </CardHeader>
         <CardContent className="flex-1 space-y-2">
           <p className="mb-1 text-detail text-ink-muted">사건 처리 후 신속 공보 작성</p>
+          <Link href="/reports" className="flex items-center justify-between rounded-md border border-line px-3 py-2.5 text-body-s text-ink-title transition-colors hover:border-primary hover:text-primary">
+            <span className="flex items-center gap-1.5"><FileBarChart className="h-4 w-4 text-ink-muted" /> 브리핑</span>
+            <ChevronRight className="h-4 w-4 text-ink-disabled" />
+          </Link>
           <Link href="/press-release-generator" className="flex items-center justify-between rounded-md border border-line px-3 py-2.5 text-body-s text-ink-title transition-colors hover:border-primary hover:text-primary">
             <span className="flex items-center gap-1.5"><FileText className="h-4 w-4 text-ink-muted" /> 보도자료 초안</span>
             <ChevronRight className="h-4 w-4 text-ink-disabled" />

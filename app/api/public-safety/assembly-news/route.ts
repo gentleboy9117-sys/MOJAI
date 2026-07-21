@@ -32,7 +32,9 @@ export async function GET(req: NextRequest) {
     // 임의 범죄유형/기저유형 보도 보기(이슈·공판 모니터링 '범죄유형별 보기 → 목록'에서 사용)
     const crimeType = req.nextUrl.searchParams.get("crimeType");
     const crimeSubtype = req.nextUrl.searchParams.get("crimeSubtype");
-    const since = new Date(Date.now() - WINDOW_DAYS * DAY);
+    // crimeType 목록은 '전체 기간'이 기본(카드 건수와 일치) — 날짜를 고르면 그 날짜만
+    const allPeriod = crimeType ? (!dateParam || dateParam === "all") : dateParam === "all";
+    const since = crimeType ? new Date(0) : new Date(Date.now() - WINDOW_DAYS * DAY);
     // 관할 그룹핑을 primaryOffice 기준으로 할지(임의 crimeType·선거·노동) / 발생장소 기준(집회)
     const byPrimaryOffice = !!crimeType || kind === "election" || kind === "labor";
 
@@ -55,7 +57,7 @@ export async function GET(req: NextRequest) {
     const articles = await prisma.article.findMany({
       where: { AND: [kindFilter, { publishedAt: { gte: since } }] },
       orderBy: { publishedAt: "desc" },
-      take: 1500,
+      take: crimeType ? undefined : 1500,
       select: {
         id: true, title: true, sourceName: true, publishedAt: true, originalUrl: true, resolvedUrl: true, primaryRegion: true, summary: true,
         primaryOfficeId: true, assemblyOfficeName: true, assemblyOffices: true, assemblyLocationHint: true, bodyEnrichedAt: true,
@@ -84,13 +86,14 @@ export async function GET(req: NextRequest) {
       .map(([date, count]) => ({ date, count }))
       .sort((x, y) => (x.date < y.date ? 1 : -1));
 
-    // 선택 날짜: 지정값 > 오늘(보유 시) > 가장 최근 보유일
+    // 선택 날짜: 전체 기간(all) > 지정값 > 오늘(보유 시) > 가장 최근 보유일
     //  (오늘 기사가 없으면 가장 최근 보유일로 — 목록이 비어 헤드라인 기사가 안 보이는 문제 방지)
     const today = dayKey(appToday());
-    const selectedDate =
-      dateParam || (dateCounts.has(today) ? today : availableDates[0]?.date ?? today);
+    const selectedDate = allPeriod
+      ? "all"
+      : dateParam || (dateCounts.has(today) ? today : availableDates[0]?.date ?? today);
 
-    const dayArticles = articles.filter((a) => dayKey(a.publishedAt) === selectedDate);
+    const dayArticles = allPeriod ? arts : articles.filter((a) => dayKey(a.publishedAt) === selectedDate);
 
     // 중복 기사(같은 내용, 다른 매체/쿼리) 1개로 합치기 — 제목 정규화 키
     const normTitle = (t: string) =>

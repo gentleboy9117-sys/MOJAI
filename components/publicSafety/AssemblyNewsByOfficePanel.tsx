@@ -59,15 +59,17 @@ export function AssemblyNewsByOfficePanel({
 
   const selected = data?.selectedDate ?? date ?? "";
   const isToday = data ? data.selectedDate === data.today : false;
+  const isAll = selected === "all";
 
-  // 날짜 옵션(선택일이 목록에 없으면 0건으로 추가)
+  // 날짜 옵션(선택일이 목록에 없으면 0건으로 추가) — 범죄유형 목록은 '전체 기간'이 기본
   const dateOptions = useMemo(() => {
     const list = (data?.availableDates ?? []).slice();
-    if (data && !list.some((d) => d.date === data.selectedDate)) {
+    if (data && data.selectedDate !== "all" && !list.some((d) => d.date === data.selectedDate)) {
       list.unshift({ date: data.selectedDate, count: 0 });
     }
+    if (crimeType) list.unshift({ date: "all", count: data?.selectedDate === "all" ? data.total : list.reduce((s, d) => s + d.count, 0) });
     return list;
-  }, [data]);
+  }, [data, crimeType]);
 
   const groups = useMemo(() => {
     const all = data?.groups ?? [];
@@ -97,7 +99,7 @@ export function AssemblyNewsByOfficePanel({
           >
             {dateOptions.map((d) => (
               <option key={d.date} value={d.date}>
-                {d.date}{d.date === data?.today ? " (오늘)" : ""} · {d.count}건
+                {d.date === "all" ? "전체 기간" : `${d.date}${d.date === data?.today ? " (오늘)" : ""}`} · {d.count}건
               </option>
             ))}
           </Select>
@@ -127,8 +129,8 @@ export function AssemblyNewsByOfficePanel({
               <EmptyState title={`‘${q}’ 검색 결과가 없습니다`} desc="다른 검색어나 날짜를 시도해 보세요." />
             ) : (
               <EmptyState
-                title={isToday ? `오늘 ${title}가 없습니다` : `${selected} ${title}가 없습니다`}
-                desc="상단에서 다른 날짜를 선택해 보세요."
+                title={isAll ? `${title}가 없습니다` : isToday ? `오늘 ${title}가 없습니다` : `${selected} ${title}가 없습니다`}
+                desc={isAll ? "기사가 수집되면 표시됩니다." : "상단에서 다른 날짜를 선택해 보세요."}
               />
             );
           }

@@ -44,6 +44,8 @@ export default function TrialCrimeTypesPage() {
   const { data, loading } = useApi<ArticleRow[]>(
     "/api/articles?crimeType=공판&period=all&limit=300",
   );
+  // '목록' 화면과 동일 기준(전체 기간·동일 기사 묶음) 기사 수 — 카드 건수와 목록 총계 일치
+  const { data: counts } = useApi<Record<string, number>>("/api/crime-type-counts?scope=trial");
 
   const groups = useMemo<Group[]>(() => {
     const rows = data ?? [];
@@ -112,15 +114,19 @@ export default function TrialCrimeTypesPage() {
               </CardHeader>
               <CardContent className="flex flex-1 flex-col gap-2.5">
                 <div className="flex flex-wrap gap-1">
-                  <Badge tone="blue">기사 {g.articles.length}</Badge>
+                  <Badge tone="blue">기사 {counts?.[g.type] ?? g.articles.length}</Badge>
                 </div>
 
                 {g.headline && (
                   <div>
                     <p className="text-detail text-ink-muted">대표 헤드라인</p>
-                    <p className="line-clamp-2 text-body-s font-medium text-ink-title">
+                    {/* 대표 헤드라인 클릭 = '목록'과 동일 화면 */}
+                    <Link
+                      href={`/crime-news?type=${encodeURIComponent("공판")}&subtype=${encodeURIComponent(g.type)}&scope=trial`}
+                      className="line-clamp-2 text-body-s font-medium text-ink-title hover:text-primary hover:underline"
+                    >
                       {g.headline.title.split(" - ")[0]}
-                    </p>
+                    </Link>
                     <div className="mt-1 flex items-center gap-1.5 text-detail text-ink-muted">
                       <span>{g.headline.primaryOfficeName ?? "관할 추정"}</span>·
                       <span>파급도 {g.headline.issueScore}/100</span>
