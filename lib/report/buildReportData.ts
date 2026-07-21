@@ -81,7 +81,18 @@ export async function buildReportData(opts: {
   const reviewArticles = articles.filter((a) => a.needsHumanReview).slice(0, 15);
   const officeNameById = new Map((await prisma.prosecutionOffice.findMany({ select: { id: true, name: true } })).map((o) => [o.id, o.name]));
 
-  const mainOffices = officeRows.slice(0, 5).map((o) => o.officeName);
+  // 필터가 걸린 경우 '주요 검찰청'은 필터된 기사 기준으로 집계(전체 순위 재사용 방지)
+  const hasFilter = !!(opts.articleWhere && Object.keys(opts.articleWhere).length) || !!officeNameSet;
+  const mainOffices = hasFilter
+    ? (() => {
+        const m = new Map<string, number>();
+        for (const a of articles) {
+          const n = a.primaryOfficeId ? officeNameById.get(a.primaryOfficeId) : undefined;
+          if (n) m.set(n, (m.get(n) ?? 0) + 1);
+        }
+        return [...m.entries()].sort((x, y) => y[1] - x[1]).slice(0, 5).map(([n]) => n);
+      })()
+    : officeRows.slice(0, 5).map((o) => o.officeName);
   const mainCrimeTypes = crimeStats.slice(0, 4).map((c) => c.crimeType);
 
   return {
