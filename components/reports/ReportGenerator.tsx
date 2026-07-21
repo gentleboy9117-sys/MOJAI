@@ -17,13 +17,16 @@ const PERIOD_LABEL: Record<Period, string> = { today: "오늘", "7d": "최근 7�
 
 interface OfficeLite { id: string; name: string; type: string }
 
-/** 공안 브리핑 영역(집회·시위/선거/노동) */
+/** 공안 브리핑 범죄유형 — 공안 모니터링 보도 메뉴(집회·시위/선거/노동·중대재해)와 동일 구분 */
 const SAFETY_SCOPES = [
-  { key: "all", label: "전체 공안" },
+  { key: "all", label: "전체" },
   { key: "assembly", label: "집회·시위" },
   { key: "election", label: "선거" },
   { key: "labor", label: "노동·중대재해" },
 ] as const;
+
+/** 검찰청 드롭다운 들여쓰기 — 검찰청별 보기 조직도와 같은 위계 표현 */
+const OFFICE_INDENT: Record<string, string> = { 지방검찰청: "   ", 지청: "      " };
 
 /** 브리핑 생성 — 기관장용 1페이지 요약(EXEC_SUMMARY) 고정.
  *  mode: issue(범죄유형) / trial(공판 — 기저 범죄유형) / safety(공안 — 영역 선택) */
@@ -120,7 +123,7 @@ export function ReportGenerator({ mode = "issue" }: { mode?: "issue" | "trial" |
               <Select id="rpt-office" value={office} onChange={(e) => setOffice(e.target.value)}>
                 <option value="">전국(전체)</option>
                 {officeOptions.map((o) => (
-                  <option key={o.id} value={o.name}>{o.name}</option>
+                  <option key={o.id} value={o.name}>{(OFFICE_INDENT[o.type] ?? "") + o.name}</option>
                 ))}
               </Select>
             </div>
@@ -129,7 +132,8 @@ export function ReportGenerator({ mode = "issue" }: { mode?: "issue" | "trial" |
                 <Label htmlFor="rpt-crime">범죄유형 (선택)</Label>
                 <Select id="rpt-crime" value={crimeType} onChange={(e) => setCrimeType(e.target.value)}>
                   <option value="">전체</option>
-                  {ALL_CRIME_TYPES.filter((c) => c !== "공판").map((c) => (
+                  {/* '범죄유형별 보기'와 동일 목록(공판·형사사법제도/정책 제외) */}
+                  {ALL_CRIME_TYPES.filter((c) => c !== "공판" && c !== "형사사법제도/정책").map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
                 </Select>
@@ -137,9 +141,10 @@ export function ReportGenerator({ mode = "issue" }: { mode?: "issue" | "trial" |
             )}
             {mode === "trial" && (
               <div>
-                <Label htmlFor="rpt-crime">범죄유형(기저) (선택)</Label>
+                <Label htmlFor="rpt-crime">범죄유형 (선택)</Label>
                 <Select id="rpt-crime" value={crimeType} onChange={(e) => setCrimeType(e.target.value)}>
-                  <option value="">전체 공판</option>
+                  <option value="">전체</option>
+                  {/* '공판 범죄유형별 보기'와 동일한 기저 범죄유형 목록 */}
                   {trialSubtypes.map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
@@ -148,7 +153,7 @@ export function ReportGenerator({ mode = "issue" }: { mode?: "issue" | "trial" |
             )}
             {mode === "safety" && (
               <div>
-                <Label htmlFor="rpt-scope">범죄유형(영역)</Label>
+                <Label htmlFor="rpt-scope">범죄유형 (선택)</Label>
                 <Select id="rpt-scope" value={scope} onChange={(e) => setScope(e.target.value as typeof scope)}>
                   {SAFETY_SCOPES.map((s) => (
                     <option key={s.key} value={s.key}>{s.label}</option>
