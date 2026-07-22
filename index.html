@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -182,8 +182,8 @@ body {
     <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
       <div class="box-label">무엇을 만들었나</div>
       <div>
-        <div class="box-title">모니터링 12개 화면 +<br>공보 초안 2종</div>
-        <div class="box-desc">이슈·공판·공안 동향을 자동 수집·분류·집계 ·<br>보도자료·문자풀 초안 즉시 생성</div>
+        <div class="box-title">모니터링 12개 화면 +<br>브리핑·공보 초안 3종</div>
+        <div class="box-desc">이슈·공판·공안 동향을 자동 수집·분류·집계 ·<br>브리핑·보도자료·문자풀 초안 즉시 생성</div>
       </div>
     </div>
     <div class="box-dk" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
@@ -243,7 +243,7 @@ body {
     <div style="max-width:1080px;width:100%;">
       <div class="tl-row"><span class="tl-key">01 개발 배경</span><span class="tl-text">매일 1시간 일찍 출근하던 기획·공안·공보 담당자의 하루 <span class="dim">— 반복 업무의 실제 모습</span></span></div>
       <div class="tl-row"><span class="tl-key">02 문제 인식</span><span class="tl-text">수백 건 수작업 분류 · 감(感)에 의존한 판단 · 담당자별 품질 편차 <span class="dim">— 기존 도구의 한계</span></span></div>
-      <div class="tl-row"><span class="tl-key" style="color:var(--pt);">03 주요 기능</span><span class="tl-text" style="font-weight:600;">모니터링 12개 화면 + 공보 초안 2종 <span class="dim">— 실제 운영 화면으로 설명</span></span></div>
+      <div class="tl-row"><span class="tl-key" style="color:var(--pt);">03 주요 기능</span><span class="tl-text" style="font-weight:600;">모니터링 12개 화면 + 브리핑·공보 초안 3종 <span class="dim">— 실제 운영 화면으로 설명</span></span></div>
       <div class="tl-row"><span class="tl-key">04 구현 방법</span><span class="tl-text">Claude Code 바이브 코딩 1인 개발 <span class="dim">— KICS 분리 등 안전 설계</span></span></div>
       <div class="tl-row"><span class="tl-key">05 적용 효과</span><span class="tl-text">오전 모니터링 1시간 → 5분 <span class="dim">— 표준 양식으로 품질 균질화</span></span></div>
       <div class="tl-row"><span class="tl-key">06 확산 가능성</span><span class="tl-text">수직(법무부 → 타 부처 → 청와대) · 수평(교정·출입국 등 법무부 전 기관) <span class="dim">— 적용 예시 포함</span></span></div>
@@ -260,7 +260,7 @@ body {
     <span class="sh-num">04</span>
   </div>
 
-  <div class="hl">기획·공안·공보 담당자를 <span class="em">돕고자 했습니다</span></div>
+  <div class="hl">기획·공안·공보 담당자에게 <span class="em">도움이 되고 싶었습니다.</span></div>
   <div class="sub-hl">기획 업무 담당 시절, 매일 1시간 일찍 출근해 전국 보도를 확인하고 내부 보고용으로 정리했습니다. 이 경험이 개발의 출발점입니다.</div>
 
   <div class="visual">
@@ -290,7 +290,6 @@ body {
         <div class="spec-foot">과거 문서를 찾아<br>양식부터 재구성</div>
       </div>
     </div>
-    <div class="note"><b>용어 안내</b> — 기획: 전국·관할 동향을 정리해 내부 보고 / 공안: 집회·시위, 선거, 노동 분야 대응 / 공보: 보도자료·기자단 공지 등 언론 대응</div>
   </div>
 </section>
 
@@ -371,8 +370,8 @@ body {
       </div>
       <div>
         <div class="spec-label">공보</div>
-        <div><div class="spec-big">2개 화면</div>
-        <div class="spec-desc">보도자료 초안<br>문자풀 초안</div></div>
+        <div><div class="spec-big">3개 화면</div>
+        <div class="spec-desc">브리핑(이슈·공판·공안)<br>보도자료 초안 · 문자풀 초안</div></div>
         <div class="spec-foot">실제 배포 양식 그대로<br>입력 → 생성 → 복사</div>
       </div>
     </div>
@@ -581,13 +580,38 @@ body {
   </div>
 </section>
 
-<!-- ══════════════ 15 · 기능 ⑨ 보도자료 초안 ══════════════ -->
+<!-- ══════════════ 15 · 기능 ⑨ 브리핑 ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">03 주요 기능 · ⑨ 보도자료 초안</span>
+    <span class="sh-cat">03 주요 기능 · ⑨ 브리핑</span>
     <span class="sh-num">15</span>
+  </div>
+
+  <div class="hl">조건만 고르면 <span class="em">기관장 보고용 요약</span>이 나옵니다</div>
+
+  <div class="split">
+    <div>
+      <div class="fe"><div class="fe-t"><span class="no">1</span>이슈 · 공판 · 공안 브리핑 통합</div><div class="fe-d">공보 메뉴 한 화면에서 <b>탭으로 전환</b> — 세 영역의 브리핑을 같은 방식으로 생성</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">2</span>기간 · 검찰청 · 범죄유형 선택</div><div class="fe-d">검찰청은 <b>전국 조직도 순서 드롭다운</b> — 고검을 고르면 <b>산하 지검·지청까지 자동 포함</b>해 집계</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>기관장용 1페이지 요약</div><div class="fe-d">핵심 이슈 TOP 5 · 주요 검찰청 · 범죄유형을 자동 구성, <b>Markdown 파일로 즉시 다운로드</b></div></div>
+      <div class="note"><b>브리핑</b>은 선택한 조건의 보도 동향을 보고서 형식으로 정리한 자동 초안입니다. 매일 아침 보고 초안이 <b>클릭 두 번</b>으로 만들어집니다.</div>
+    </div>
+    <div class="shot">
+      <div class="shot-label">브리핑 — 조건 선택 · 생성 결과</div>
+      <div class="ph fade"><img src="assets/crop_briefing.png" alt="브리핑 생성 결과"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 16 · 기능 ⑩ 보도자료 초안 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-cat">03 주요 기능 · ⑩ 보도자료 초안</span>
+    <span class="sh-num">16</span>
   </div>
 
   <div class="hl">기초 정보만 입력하면 <span class="em">배포 양식 그대로</span> 생성합니다</div>
@@ -606,13 +630,13 @@ body {
   </div>
 </section>
 
-<!-- ══════════════ 16 · 기능 ⑩ 문자풀 초안 ══════════════ -->
+<!-- ══════════════ 17 · 기능 ⑪ 문자풀 초안 ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">03 주요 기능 · ⑩ 문자풀 초안</span>
-    <span class="sh-num">16</span>
+    <span class="sh-cat">03 주요 기능 · ⑪ 문자풀 초안</span>
+    <span class="sh-num">17</span>
   </div>
 
   <div class="hl">기자단 공지 문자도 <span class="em">즉시 생성</span>합니다</div>
@@ -637,7 +661,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법</span>
-    <span class="sh-num">17</span>
+    <span class="sh-num">18</span>
   </div>
 
   <div class="hl">개발 경험 없는 검사가 <span class="em">AI와의 대화</span>로 완성했습니다</div>
@@ -697,7 +721,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법 · 안전 설계</span>
-    <span class="sh-num">18</span>
+    <span class="sh-num">19</span>
   </div>
 
   <div class="hl">기존 시스템과 <span class="em">분리된 안전한 구조</span>입니다</div>
@@ -744,7 +768,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">05 적용 효과</span>
-    <span class="sh-num">19</span>
+    <span class="sh-num">20</span>
   </div>
 
   <div class="hl">절감한 시간을 <span class="em">본연의 업무</span>에 재투입합니다</div>
@@ -783,7 +807,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 개요</span>
-    <span class="sh-num">20</span>
+    <span class="sh-num">21</span>
   </div>
 
   <div class="hl"><span class="em">수직</span>과 <span class="em">수평</span>, 두 방향으로 확산됩니다</div>
@@ -829,7 +853,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 적용 예시</span>
-    <span class="sh-num">21</span>
+    <span class="sh-num">22</span>
   </div>
 
   <div class="hl">세 항목만 바꾸면 <span class="em">이렇게 달라집니다</span></div>
@@ -924,5 +948,4 @@ body {
 
 </body>
 </html>
-
 
