@@ -108,11 +108,11 @@ export function TextPoolGenerator() {
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label htmlFor="tp-office">발표 검찰청 *</Label>
+              <Label htmlFor="tp-office">발표기관 *</Label>
               <Input id="tp-office" value={form.officeName} onChange={(e) => set("officeName", e.target.value)} placeholder="예: 서울북부지방검찰청" />
             </div>
             <div>
-              <Label htmlFor="tp-div">수사 부서</Label>
+              <Label htmlFor="tp-div">담당부서</Label>
               <Input id="tp-div" value={form.division} onChange={(e) => set("division", e.target.value)} placeholder="예: 형사2부" />
             </div>
           </div>

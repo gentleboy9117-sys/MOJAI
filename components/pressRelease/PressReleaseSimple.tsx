@@ -77,8 +77,8 @@ export function PressReleaseSimple() {
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-2 gap-3">
-            <div><Label htmlFor="pr-office">발표 검찰청 *</Label><Input id="pr-office" value={form.officeName} onChange={(e) => set("officeName", e.target.value)} placeholder="예: 서울중앙지방검찰청" /></div>
-            <div><Label htmlFor="pr-div">수사 부서</Label><Input id="pr-div" value={form.division} onChange={(e) => set("division", e.target.value)} placeholder="예: 반부패수사1부" /></div>
+            <div><Label htmlFor="pr-office">발표기관 *</Label><Input id="pr-office" value={form.officeName} onChange={(e) => set("officeName", e.target.value)} placeholder="예: 서울중앙지방검찰청" /></div>
+            <div><Label htmlFor="pr-div">담당부서</Label><Input id="pr-div" value={form.division} onChange={(e) => set("division", e.target.value)} placeholder="예: 반부패수사1부" /></div>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div><Label htmlFor="pr-chief">부장검사</Label><Input id="pr-chief" value={form.chief} onChange={(e) => set("chief", e.target.value)} placeholder="예: 홍길동" /></div>

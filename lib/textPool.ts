@@ -15,7 +15,7 @@ export type TextPoolStyle = "formal" | "concise";
 
 export interface TextPoolInput {
   officeName: string;
-  division?: string; // 수사 부서(형사2부, 여성아동범죄조사부 등)
+  division?: string; // 담당부서(형사2부, 여성아동범죄조사부 등)
   chief?: string; // 부장검사명
   crimeName?: string; // 정식 죄명
   caseSummary: string; // 사건 개요·경위
@@ -85,7 +85,7 @@ function buildPrompt(input: TextPoolInput): { systemPrompt: string; userPrompt: 
     "당신은 대한민국 검찰청 공보 담당자입니다. 기자단에 보내는 '문자풀' 초안을 작성합니다.",
     "아래 형식을 반드시 따르세요:",
     input.includeHeader !== false ? "· 첫 줄: [검찰청명 알림]" : "· 머리표 없음",
-    "· '○' 항목 3단 구성: ① 처분 요지(수사 부서·부장검사·정식 죄명·처분(구속/불구속 기소 등)·처분 일자) ② 수사 경위·의의(직접수사·입증 등) ③ 향후 대응·공소유지(필요 시 피해자 지원)",
+    "· '○' 항목 3단 구성: ① 처분 요지(담당부서·부장검사·정식 죄명·처분(구속/불구속 기소 등)·처분 일자) ② 수사 경위·의의(직접수사·입증 등) ③ 향후 대응·공소유지(필요 시 피해자 지원)",
     "· 제도·근거 보충이 필요하면 ' * ' 각주로 추가",
     input.includeDisclaimer !== false ? "· 마지막 줄: [공개되는 범죄사실은 재판에 의하여 확정된 사실이 아님을 유의하여 주시기 바랍니다]" : "· 고지 문구 없음",
     `· 문체: ${concise ? "개조식" : "서술식"}`,
@@ -93,7 +93,7 @@ function buildPrompt(input: TextPoolInput): { systemPrompt: string; userPrompt: 
   ].filter(Boolean).join("\n");
   const userPrompt = [
     `검찰청: ${input.officeName}`,
-    input.division ? `수사 부서: ${input.division}` : "",
+    input.division ? `담당부서: ${input.division}` : "",
     input.chief ? `부장검사: ${input.chief}` : "",
     input.crimeName ? `죄명: ${input.crimeName}` : "",
     `처분: ${input.disposition}${input.dispositionDate ? ` (${input.dispositionDate})` : ""}`,

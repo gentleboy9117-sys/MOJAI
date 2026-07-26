@@ -42,7 +42,7 @@ function buildPrompt(i: PressSimpleInput): { systemPrompt: string; userPrompt: s
   ].join("\n");
   const userPrompt = [
     `검찰청: ${i.officeName}`,
-    i.division ? `수사 부서: ${i.division}` : "",
+    i.division ? `담당부서: ${i.division}` : "",
     i.chief ? `부장검사: ${i.chief}` : "",
     i.crimeName ? `죄명: ${i.crimeName}` : "",
     `처분: ${i.disposition}${i.dispositionDate ? ` (${i.dispositionDate})` : ""}`,
