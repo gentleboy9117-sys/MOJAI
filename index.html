@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
@@ -100,6 +100,8 @@ body {
 .shot-label .zm { font-size: 10px; color: var(--muted); letter-spacing: .5px; }
 .shot .ph { position: relative; overflow: hidden; background: #fff; flex: 1; min-height: 0; }
 .shot img { width: 100%; height: auto; display: block; }
+.shot .ph.fill { display: block; }
+.shot .ph.fill img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
 .ph.fade::after { content:""; position:absolute; left:0; right:0; bottom:0; height:54px;
   background: linear-gradient(rgba(255,255,255,0), #fff); }
 
@@ -125,6 +127,21 @@ body {
 .note { background: var(--pt-bg); border-radius: 6px; padding: 14px 18px; font-size: 12.5px; line-height: 1.65; color: var(--sub); margin-top: 16px; }
 .note b { color: var(--pt-dk); font-weight: 600; }
 
+/* ── FLOW BAR (기능 진행 단계) ── */
+.flow { display: flex; align-items: center; justify-content: flex-end; gap: 0; margin: -8px 0 18px; }
+.fstep { display: flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 600; color: var(--muted);
+  background: var(--bg-w); border: 1px solid var(--border); padding: 6px 13px; margin-left: -1px; }
+.fstep:first-child { border-radius: 6px 0 0 6px; margin-left: 0; }
+.fstep:last-child { border-radius: 0 6px 6px 0; }
+.fstep svg { width: 14px; height: 14px; flex-shrink: 0; }
+.fstep.on { background: var(--ink); border-color: var(--ink); color: #fff; position: relative; z-index: 1; }
+.farr { display: none; }
+
+/* ── 간지 (섹션 표지) ── */
+.divider-label { font-size: 16px; font-weight: 700; color: var(--pt); letter-spacing: 4px; }
+.divider-title { font-size: 66px; font-weight: 600; letter-spacing: -1.8px; color: var(--ink); margin: 20px 0 30px; }
+.divider-desc { font-size: 18px; color: var(--sub); line-height: 1.6; }
+
 @media print {
   html { background: #fff; }
   .slide { border-bottom: none; page-break-after: always; }
@@ -143,10 +160,10 @@ body {
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding:20px 0;">
     <div style="width:48px;height:3px;background:var(--pt);margin-bottom:38px;border-radius:2px;"></div>
     <div style="font-size:13px;font-weight:600;color:var(--pt-dk);letter-spacing:2px;text-transform:uppercase;margin-bottom:20px;">AI 개발 사례 발표</div>
-    <div style="font-size:52px;font-weight:500;line-height:1.18;letter-spacing:-1.5px;color:var(--ink);max-width:1080px;">
-      매일 아침 1시간의 반복 업무를<br>
-      <span style="color:var(--pt);">5분으로</span> —<br>
-      AI 기반 검찰 기획업무 자동화 플랫폼
+    <div style="font-size:50px;font-weight:500;line-height:1.24;letter-spacing:-1.5px;color:var(--ink);">
+      매일 아침 1시간의<br>
+      반복 업무를 <span style="color:var(--pt);">5분</span>으로 —<br>
+      AI 기반 검찰 <span style="color:var(--pt);">기획업무 자동화</span> 플랫폼
     </div>
   </div>
 
@@ -167,58 +184,33 @@ body {
     <span class="sh-num">02</span>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:1fr 1fr;gap:12px;flex:1;">
-    <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-      <div class="box-label">개발 배경</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px;flex:1;">
+    <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:16px;">
+      <div class="box-label" style="font-size:16px;">개발 배경</div>
       <div>
-        <div class="box-title">기획·공안·공보 담당자의<br>매일 1시간 반복 업무</div>
-        <div class="box-desc">수백 건 기사 수작업 검색·분류 ·<br>실무자 감(感)에 의존한 중요도 판단 · 백지상태 초안 작성</div>
+        <div class="box-title" style="font-size:21px;">매일 1시간, 기획·공안·공보 반복 업무</div>
+        <div class="box-desc" style="font-size:15px;line-height:1.7;">수백 건 기사 수작업 검색·분류 · 감(感)에 의존한 판단 · 백지상태 초안 작성</div>
       </div>
     </div>
-    <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-      <div class="box-label">무엇을 만들었나</div>
+    <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:16px;">
+      <div class="box-label" style="font-size:16px;">개발 결과물</div>
       <div>
-        <div class="box-title">이슈·공판·공안 모니터링 12개 화면 +<br>브리핑·공보 초안 3종</div>
-        <div class="box-desc">이슈 4 · 공판 3 · 공안 5개 화면으로 동향 자동 수집·분류·집계 ·<br>브리핑·보도자료·문자풀 초안 즉시 생성</div>
+        <div class="box-title" style="font-size:21px;">모니터링 12개 화면 + 공보 초안 3종</div>
+        <div class="box-desc" style="font-size:15px;line-height:1.7;">이슈·공판·공안 자동 수집·분류·집계 · 브리핑·보도자료·문자풀 즉시 생성</div>
       </div>
     </div>
-    <div class="box-dk" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-      <div class="box-label">차별화 포인트</div>
+    <div class="box-w" style="display:flex;flex-direction:column;justify-content:center;gap:16px;">
+      <div class="box-label" style="font-size:16px;">적용 효과</div>
       <div>
-        <div class="box-title">검사 1인이 바이브 코딩으로 완성<br>시연과 같이 즉시 배포 가능</div>
-        <div class="box-desc">검찰청 67곳 관할에 따른 체계적 분류 ·<br>실제 배포 양식 바탕 보도자료 등 초안 생성</div>
-        <div style="font-size:12px;color:#fff;font-weight:700;line-height:1.6;margin-top:8px;">KICS 등 기존 시스템과 분리 · 연동 선택 가능</div>
+        <div class="box-title" style="font-size:21px;">모니터링 1시간 → 5분, 판단은 수치로</div>
+        <div class="box-desc" style="font-size:15px;line-height:1.7;">파급도 0~100 수치화 · 표준양식 초안으로 균질한 품질 · 주요 이슈 누락 방지</div>
       </div>
     </div>
-    <div class="box-w" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-      <div class="box-label">적용 효과</div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div class="arr" style="font-size:14px;line-height:1.55;"><span>→</span>오전 모니터링 1시간 이상 → 5분 내외 핵심 검토</div>
-        <div class="arr" style="font-size:14px;line-height:1.55;"><span>→</span>중요도 판단을 파급도 0~100 수치로 뒷받침</div>
-        <div class="arr" style="font-size:14px;line-height:1.55;"><span>→</span>표준양식 기반 초안으로 인사이동과 무관히 균질한 품질</div>
-        <div class="arr" style="font-size:14px;line-height:1.55;"><span>→</span>광범위한 기사 수집으로 주요 이슈 누락 방지</div>
-      </div>
-    </div>
-    <div class="box-w" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-      <div class="box-label">구현 방식</div>
-      <div style="display:flex;flex-direction:column;gap:14px;">
-        <div>
-          <div style="font-size:14.5px;font-weight:600;margin-bottom:4px;">Claude Code 바이브 코딩 <span style="font-size:12px;font-weight:400;color:var(--muted);">· 1인 개발</span></div>
-          <div style="font-size:12.5px;color:var(--sub);line-height:1.65;">화면·DB·분류 로직까지 대화로 구현 → GitHub·Netlify 자동 배포<br>설치 없이 브라우저로 사용 · 정부 표준 디자인(KRDS)</div>
-        </div>
-        <div style="width:100%;height:1px;background:var(--border);"></div>
-        <div>
-          <div style="font-size:14.5px;font-weight:600;margin-bottom:4px;">망분리 환경에서도 운영 가능</div>
-          <div style="font-size:12.5px;color:var(--sub);line-height:1.65;">외부 수집 → 내부 처리로 내부 정보 유출 없음 · AI 없이도 동작(AI는 선택)<br>환각 최소화 · 최종 판단은 담당자</div>
-        </div>
-      </div>
-    </div>
-    <div class="box-w" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-      <div class="box-label">확산 가능성 — 수직 · 수평</div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div style="font-size:14px;color:var(--ink);line-height:1.55;"><b style="color:var(--pt-dk);">수직</b> — 검찰 → 법무부 및 타 정부부처 → 청와대</div>
-        <div style="font-size:14px;color:var(--ink);line-height:1.55;"><b style="color:var(--pt-dk);">수평</b> — 교정 · 출입국 · 범죄예방 · 인권 등 법무부 전 기관</div>
-        <div style="font-size:14px;color:var(--sub);line-height:1.55;word-break:keep-all;"><b style="color:var(--pt-dk);">기존 엔진은 유지</b>, ① 분류 기준 ② 기관 구조 ③ 문서 양식만 기관에 맞게 교체</div>
+    <div class="box-w" style="display:flex;flex-direction:column;justify-content:center;gap:16px;">
+      <div class="box-label" style="font-size:16px;">차별화 포인트</div>
+      <div>
+        <div class="box-title" style="font-size:21px;">검찰청 67곳 관할 · 범죄유형 체계적 분류</div>
+        <div class="box-desc" style="font-size:15px;line-height:1.7;">실제 배포 양식 바탕 보도자료 등 초안 생성 · KICS 등 기존 시스템과 분리·연동 선택</div>
       </div>
     </div>
   </div>
@@ -237,13 +229,28 @@ body {
 
   <div class="visual" style="justify-content:center;">
     <div style="max-width:1080px;width:100%;">
-      <div class="tl-row"><span class="tl-key">01 개발 배경</span><span class="tl-text">매일 1시간 일찍 출근하던 기획·공안·공보 담당자의 하루</span></div>
-      <div class="tl-row"><span class="tl-key">02 문제 인식</span><span class="tl-text">수백 건 수작업 분류 · 감(感)에 의존한 판단 · 담당자별 품질 편차 <span class="dim">— 기존 업무방식의 한계</span></span></div>
-      <div class="tl-row"><span class="tl-key" style="color:var(--pt);">03 주요 기능</span><span class="tl-text" style="font-weight:600;">모니터링 12개 화면 + 브리핑·공보 초안 3종 <span class="dim">— 실제 운영 화면으로 설명</span></span></div>
-      <div class="tl-row"><span class="tl-key">04 구현 방법</span><span class="tl-text">Claude Code 바이브 코딩 1인 개발 <span class="dim">— 기존 시스템(KICS 등)과 분리·연동 선택, 망분리 환경에서도 운영 가능</span></span></div>
-      <div class="tl-row"><span class="tl-key">05 적용 효과</span><span class="tl-text">오전 모니터링 1시간 → 5분, 담당자는 판단과 본래 업무에 집중 <span class="dim">— 표준 양식으로 품질 균질화</span></span></div>
-      <div class="tl-row"><span class="tl-key">06 확산 가능성</span><span class="tl-text">수직(법무부 → 타 부처 → 청와대) · 수평(교정·출입국 등 법무부 전 기관) <span class="dim">— 적용 예시 포함</span></span></div>
+      <div class="tl-row" style="padding:19px 0;"><span class="tl-key" style="font-size:18px;min-width:172px;">01 개발 배경</span><span class="tl-text" style="font-size:18px;">매일 1시간 일찍 출근하던 기획·공안·공보 담당자의 하루</span></div>
+      <div class="tl-row" style="padding:19px 0;"><span class="tl-key" style="font-size:18px;min-width:172px;">02 문제 인식</span><span class="tl-text" style="font-size:18px;">수백 건 수작업 분류 · 감(感)에 의존한 판단 · 담당자별 품질 편차 <span class="dim">— 기존 업무방식의 한계</span></span></div>
+      <div class="tl-row" style="padding:19px 0;"><span class="tl-key" style="font-size:18px;min-width:172px;color:var(--pt);">03 주요 기능</span><span class="tl-text" style="font-size:18px;font-weight:600;">모니터링 12개 화면 + 브리핑·공보 초안 3종 <span class="dim">— 실제 운영 화면으로 설명</span></span></div>
+      <div class="tl-row" style="padding:19px 0;"><span class="tl-key" style="font-size:18px;min-width:172px;">04 구현 방법</span><span class="tl-text" style="font-size:18px;">Claude Code 바이브 코딩 1인 개발 <span class="dim">— 기존 시스템(KICS 등)과 분리·연동 선택, 망분리 환경 운영 가능</span></span></div>
+      <div class="tl-row" style="padding:19px 0;"><span class="tl-key" style="font-size:18px;min-width:172px;">05 적용 효과</span><span class="tl-text" style="font-size:18px;">일일 이슈 모니터링 1시간 → 5분, 담당자는 판단과 본래 업무에 집중 <span class="dim">— 업무 효율화 및 품질 균질화</span></span></div>
+      <div class="tl-row" style="padding:19px 0;"><span class="tl-key" style="font-size:18px;min-width:172px;">06 확산 가능성</span><span class="tl-text" style="font-size:18px;">수직(법무부 → 타 부처 → 청와대) · 수평(교정·출입국 등 법무부 내 실·국·본부) <span class="dim">— 적용 예시 포함</span></span></div>
     </div>
+  </div>
+</section>
+
+<!-- ══════════════ 간지 · SECTION 01 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-num">04</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
+    <div class="divider-label">SECTION 01</div>
+    <div class="divider-title">개발 배경</div>
+    <div style="width:56px;height:4px;background:var(--pt);border-radius:2px;"></div>
+    <div class="divider-desc" style="margin-top:28px;">기획 · 공안 · 공보 업무의 일일 언론보도 모니터링 현황</div>
   </div>
 </section>
 
@@ -253,7 +260,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">01 개발 배경</span>
-    <span class="sh-num">04</span>
+    <span class="sh-num">05</span>
   </div>
 
   <div class="hl">기획·공안·공보 담당자에게 <span class="em">도움이 되고 싶었습니다</span></div>
@@ -289,13 +296,28 @@ body {
   </div>
 </section>
 
+<!-- ══════════════ 간지 · SECTION 02 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-num">06</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
+    <div class="divider-label">SECTION 02</div>
+    <div class="divider-title">문제 인식</div>
+    <div style="width:56px;height:4px;background:var(--pt);border-radius:2px;"></div>
+    <div class="divider-desc" style="margin-top:28px;">기존 업무 방식의 문제점</div>
+  </div>
+</section>
+
 <!-- ══════════════ 05 · 문제 인식 ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">02 문제 인식</span>
-    <span class="sh-num">05</span>
+    <span class="sh-num">07</span>
   </div>
 
   <div class="hl">단순·반복 작업에 투입되는 <span class="em">시간과 에너지를 절약하고 싶었습니다</span></div>
@@ -304,7 +326,21 @@ body {
   <div class="visual">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;">
       <div class="box" style="display:flex;flex-direction:column;justify-content:flex-start;gap:14px;">
-        <div class="box-label">포털 검색의 한계</div>
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="48" y="34" width="56" height="42" rx="5" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <rect x="60" y="26" width="56" height="42" rx="5" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <rect x="72" y="18" width="56" height="42" rx="5" fill="#fff" stroke="#3B7BF0" stroke-width="1.6"/>
+          <line x1="82" y1="30" x2="118" y2="30" stroke="#C7D6F0" stroke-width="3.4" stroke-linecap="round"/>
+          <line x1="82" y1="40" x2="110" y2="40" stroke="#C7D6F0" stroke-width="3.4" stroke-linecap="round"/>
+          <line x1="82" y1="50" x2="114" y2="50" stroke="#C7D6F0" stroke-width="3.4" stroke-linecap="round"/>
+          <circle cx="196" cy="48" r="20" fill="#fff" stroke="var(--pt)" stroke-width="5.5"/>
+          <line x1="211" y1="63" x2="230" y2="80" stroke="var(--pt)" stroke-width="6.5" stroke-linecap="round"/>
+          <rect x="250" y="30" width="42" height="17" rx="8.5" fill="#DCE8FB"/>
+          <text x="271" y="42.5" font-size="11" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">중복</text>
+          <rect x="250" y="52" width="42" height="17" rx="8.5" fill="#DCE8FB"/>
+          <text x="271" y="64.5" font-size="11" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">중복</text>
+        </svg>
+        <div class="box-label" style="font-size:16px;">포털 검색의 한계</div>
         <div>
           <div class="box-title">"검찰청 관할 · 범죄 유형" 개념이 없음</div>
           <div class="box-desc">관할별·범죄유형별 구분 미흡, 동일 기사 수십 건 반복 노출<br>분류 및 정리는 전부 담당자의 몫</div>
@@ -312,7 +348,22 @@ body {
         <div style="margin-top:auto;"><span class="badge badge-g">수작업 분류</span><span class="badge badge-g">중복 노출</span></div>
       </div>
       <div class="box" style="display:flex;flex-direction:column;justify-content:flex-start;gap:14px;">
-        <div class="box-label">수작업 정리의 한계</div>
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="108" y="14" width="84" height="66" rx="7" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <rect x="135" y="9" width="30" height="12" rx="3.5" fill="#DCE8FB" stroke="#A6C3F5" stroke-width="1.6"/>
+          <circle cx="124" cy="32" r="6" fill="var(--pt)"/>
+          <path d="M121 32 l2.2 2.2 l4 -4.4" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="138" y1="32" x2="182" y2="32" stroke="#C7D6F0" stroke-width="3.4" stroke-linecap="round"/>
+          <circle cx="124" cy="47" r="6" fill="var(--pt)"/>
+          <path d="M121 47 l2.2 2.2 l4 -4.4" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="138" y1="47" x2="176" y2="47" stroke="#C7D6F0" stroke-width="3.4" stroke-linecap="round"/>
+          <circle cx="124" cy="62" r="6" fill="#fff" stroke="#E2802E" stroke-width="2.2"/>
+          <path d="M121.5 59.5 l5 5 M126.5 59.5 l-5 5" stroke="#E2802E" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="138" y1="62" x2="178" y2="62" stroke="#EAD6C2" stroke-width="3.4" stroke-linecap="round"/>
+          <rect x="214" y="40" width="48" height="20" rx="10" fill="#F7E4D3"/>
+          <text x="238" y="54" font-size="12" fill="#C0641F" font-weight="700" text-anchor="middle">누락</text>
+        </svg>
+        <div class="box-label" style="font-size:16px;">수작업 정리의 한계</div>
         <div>
           <div class="box-title">주요사건 누락 · 품질 편차 위험</div>
           <div class="box-desc"><span style="white-space:nowrap;">부서별, 담당자별, 인사이동 과정 품질 편차 발생</span><br>특히, 사건 중요도 및 관할 판단 오류로 보고 누락 가능성</div>
@@ -320,7 +371,24 @@ body {
         <div style="margin-top:auto;"><span class="badge badge-g">담당자별 편차</span><span class="badge badge-g">누락 위험</span></div>
       </div>
       <div class="box" style="display:flex;flex-direction:column;justify-content:flex-start;gap:14px;">
-        <div class="box-label">서식 관리의 한계</div>
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="44" y="20" width="50" height="60" rx="5" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <line x1="52" y1="30" x2="86" y2="30" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <line x1="52" y1="39" x2="78" y2="39" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <rect x="52" y="48" width="34" height="22" rx="3" fill="#EAF1FC"/>
+          <rect x="118" y="14" width="50" height="60" rx="5" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <rect x="126" y="22" width="34" height="16" rx="3" fill="#EAF1FC"/>
+          <line x1="126" y1="46" x2="160" y2="46" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <line x1="126" y1="55" x2="154" y2="55" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <line x1="126" y1="64" x2="160" y2="64" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <rect x="192" y="24" width="50" height="60" rx="5" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <line x1="200" y1="34" x2="234" y2="34" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <line x1="200" y1="48" x2="224" y2="48" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <line x1="200" y1="60" x2="234" y2="60" stroke="#C7D6F0" stroke-width="3.2" stroke-linecap="round"/>
+          <circle cx="268" cy="34" r="14" fill="var(--pt)"/>
+          <text x="268" y="40.5" font-size="17" fill="#fff" font-weight="800" text-anchor="middle">?</text>
+        </svg>
+        <div class="box-label" style="font-size:16px;">서식 관리의 한계</div>
         <div>
           <div class="box-title">표준 양식 없이 그때그때 작성</div>
           <div class="box-desc">사건별로 적합한 양식부터 구해야 하는 문제<br>문서마다 양식·문체 상이, 작성시간 지연</div>
@@ -332,13 +400,85 @@ body {
   </div>
 </section>
 
+<!-- ══════════════ 문제 → 해결 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-cat">02 문제 인식 · 해결 방향</span>
+    <span class="sh-num">08</span>
+  </div>
+
+  <div class="hl">세 가지 한계를 <span class="em">이렇게 해결</span>했습니다</div>
+
+  <div class="visual" style="justify-content:center;gap:14px;">
+    <div style="display:grid;grid-template-columns:340px 56px 1fr;align-items:stretch;gap:0 0;">
+      <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:6px;">
+        <div class="box-label" style="font-size:13px;">포털 검색의 한계</div>
+        <div style="font-size:17px;font-weight:600;">수작업 분류 · 중복 노출</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--pt);font-size:24px;font-weight:700;">→</div>
+      <div style="background:var(--pt-bg);border:1px solid #A6C3F5;border-radius:4px;padding:18px 24px;display:flex;align-items:center;gap:18px;">
+        <svg viewBox="0 0 44 44" width="44" height="44" style="flex-shrink:0;"><circle cx="22" cy="22" r="21" fill="#fff" stroke="#A6C3F5"/><rect x="12" y="13" width="8" height="8" rx="2" fill="var(--pt)"/><rect x="24" y="13" width="8" height="8" rx="2" fill="#A6C3F5"/><rect x="12" y="24" width="8" height="8" rx="2" fill="#A6C3F5"/><rect x="24" y="24" width="8" height="8" rx="2" fill="var(--pt)"/></svg>
+        <div>
+          <div style="font-size:19px;font-weight:700;color:var(--pt-dk);">자동 수집 · 자동 분류</div>
+          <div style="font-size:14.5px;color:var(--sub);margin-top:4px;">검찰청 <b style="color:var(--pt-dk);">67곳 관할 · 범죄유형</b> 자동 분류, 동일사건 중복보도 통합</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:340px 56px 1fr;align-items:stretch;gap:0 0;">
+      <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:6px;">
+        <div class="box-label" style="font-size:13px;">수작업 정리의 한계</div>
+        <div style="font-size:17px;font-weight:600;">담당자별 편차 · 누락 위험</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--pt);font-size:24px;font-weight:700;">→</div>
+      <div style="background:var(--pt-bg);border:1px solid #A6C3F5;border-radius:4px;padding:18px 24px;display:flex;align-items:center;gap:18px;">
+        <svg viewBox="0 0 44 44" width="44" height="44" style="flex-shrink:0;"><circle cx="22" cy="22" r="21" fill="#fff" stroke="#A6C3F5"/><rect x="13" y="24" width="5" height="8" rx="1.5" fill="#A6C3F5"/><rect x="20" y="18" width="5" height="14" rx="1.5" fill="#6D9BF3"/><rect x="27" y="12" width="5" height="20" rx="1.5" fill="var(--pt)"/></svg>
+        <div>
+          <div style="font-size:19px;font-weight:700;color:var(--pt-dk);">파급도 수치화 · 자동 집계</div>
+          <div style="font-size:14.5px;color:var(--sub);margin-top:4px;"><b style="color:var(--pt-dk);">파급도 0~100 · Top 10</b> 자동 정렬, 금일·금주·금월 통계로 누락 방지</div>
+        </div>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:340px 56px 1fr;align-items:stretch;gap:0 0;">
+      <div class="box" style="display:flex;flex-direction:column;justify-content:center;gap:6px;">
+        <div class="box-label" style="font-size:13px;">서식 관리의 한계</div>
+        <div style="font-size:17px;font-weight:600;">형식 불일치 · 작성 시간 소모</div>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--pt);font-size:24px;font-weight:700;">→</div>
+      <div style="background:var(--pt-bg);border:1px solid #A6C3F5;border-radius:4px;padding:18px 24px;display:flex;align-items:center;gap:18px;">
+        <svg viewBox="0 0 44 44" width="44" height="44" style="flex-shrink:0;"><circle cx="22" cy="22" r="21" fill="#fff" stroke="#A6C3F5"/><rect x="14" y="11" width="16" height="22" rx="2.5" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/><line x1="18" y1="17" x2="26" y2="17" stroke="#A6C3F5" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="22" x2="26" y2="22" stroke="#A6C3F5" stroke-width="2" stroke-linecap="round"/><path d="M18 27.5 l2.5 2.5 l5 -5" stroke="var(--pt)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <div>
+          <div style="font-size:19px;font-weight:700;color:var(--pt-dk);">표준 양식 초안 자동 생성</div>
+          <div style="font-size:14.5px;color:var(--sub);margin-top:4px;"><b style="color:var(--pt-dk);">브리핑 · 보도자료 · 문자풀</b>, 실제 양식 그대로 클릭 몇 번에 완성</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 간지 · SECTION 03 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-num">09</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
+    <div class="divider-label">SECTION 03</div>
+    <div class="divider-title">주요 기능</div>
+    <div style="width:56px;height:4px;background:var(--pt);border-radius:2px;"></div>
+    <div class="divider-desc" style="margin-top:28px;">자동 수집부터 산출물 생성까지 — 실제 운영 화면 중심</div>
+  </div>
+</section>
+
 <!-- ══════════════ 06 · 주요 기능 · 시연 영상 ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능 · 시연 영상</span>
-    <span class="sh-num">06</span>
+    <span class="sh-num">10</span>
   </div>
 
   <div class="hl">실제 동작 화면을 <span class="em">영상으로 먼저</span> 보시겠습니다</div>
@@ -347,6 +487,9 @@ body {
   <div class="visual" style="justify-content:center;align-items:center;">
     <div style="width:100%;max-width:940px;aspect-ratio:16/9;border-radius:12px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.14);border:1px solid var(--border);">
       <iframe width="100%" height="100%" src="https://www.youtube.com/embed/AzLwPetZ58g" title="MOJAI 시연 영상" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen style="display:block;border:0;"></iframe>
+    </div>
+    <div style="margin-top:16px;font-size:13.5px;text-align:center;">
+      <span style="color:var(--muted);">영상이 재생되지 않으면 &nbsp;</span><a href="https://www.youtube.com/watch?v=AzLwPetZ58g" target="_blank" rel="noopener" style="color:var(--pt);font-weight:600;text-decoration:underline;">▶ youtube.com/watch?v=AzLwPetZ58g</a>
     </div>
   </div>
 </section>
@@ -357,41 +500,84 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능</span>
-    <span class="sh-num">07</span>
+    <span class="sh-num">11</span>
   </div>
 
-  <div class="hl">수집부터 초안 작성까지 <span class="em">하나의 흐름</span>으로</div>
-  <div class="sub-hl">언론보도 자동 수집 → 관할·유형 자동 분류(신뢰도 저장) → 중복 통합·파급도 산정 → 시각화·공보 초안. 모든 화면은 아래 4개 메뉴로 구성됩니다.</div>
+  <div class="hl">수집부터 산출물까지 <span class="em">하나의 흐름</span>으로</div>
 
-  <div class="visual">
-    <div class="spec">
-      <div>
-        <div class="spec-label">이슈 모니터링</div>
-        <div><div class="spec-big">4개 화면</div>
-        <div class="spec-desc">이슈 현황 · 검찰청별 보기<br>범죄유형별 보기 · 제도/정책 이슈</div></div>
-        <div class="spec-foot">주요 이슈 Top 10<br>전국 지도 히트맵</div>
+  <div class="visual" style="justify-content:center;">
+    <div style="display:grid;grid-template-columns:1fr 34px 1fr 34px 1fr 34px 1fr;gap:0;align-items:stretch;">
+      <div class="box-w" style="display:flex;flex-direction:column;gap:14px;padding:20px 22px;">
+        <svg viewBox="0 0 300 100" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="42" y="16" width="60" height="20" rx="10" fill="#fff" stroke="#A6C3F5" stroke-width="1.4"/><text x="72" y="30" font-size="11" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">구글</text>
+          <rect x="120" y="16" width="60" height="20" rx="10" fill="#fff" stroke="#A6C3F5" stroke-width="1.4"/><text x="150" y="30" font-size="11" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">네이버</text>
+          <rect x="198" y="16" width="60" height="20" rx="10" fill="#fff" stroke="#A6C3F5" stroke-width="1.4"/><text x="228" y="30" font-size="11" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">경찰청</text>
+          <path d="M72 42 v10 M150 42 v10 M228 42 v10" stroke="#A6C3F5" stroke-width="2" stroke-linecap="round"/>
+          <path d="M72 58 q0 8 12 8 h54 q12 0 12-8 M228 58 q0 8 -12 8 h-54 q-12 0 -12-8" stroke="#A6C3F5" stroke-width="2" fill="none"/>
+          <path d="M150 70 v8 M144 74 l6 6 6-6" stroke="var(--pt)" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="box-label" style="font-size:15px;">STEP 1 — 자동 수집</div>
+          <div class="box-title" style="font-size:19px;margin-top:6px;">전국 언론보도 · 공개자료</div>
+          <div class="box-desc" style="font-size:14.5px;line-height:1.7;">구글·네이버 뉴스, 경찰청 집회 게시판을 자동 수집</div>
+        </div>
       </div>
-      <div>
-        <div class="spec-label">공판 모니터링</div>
-        <div><div class="spec-big">3개 화면</div>
-        <div class="spec-desc">공판 현황 · 검찰청별 보기<br>범죄유형별 보기</div></div>
-        <div class="spec-foot">법원 선고 보도만<br>정밀 선별 집계</div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--pt);font-size:20px;font-weight:700;">→</div>
+      <div class="box-w" style="display:flex;flex-direction:column;gap:14px;padding:20px 22px;">
+        <svg viewBox="0 0 300 100" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="40" y="14" width="130" height="72" rx="6" fill="#fff" stroke="#A6C3F5" stroke-width="1.4"/>
+          <rect x="40" y="14" width="130" height="14" rx="6" fill="#DCE8FB"/>
+          <circle cx="52" cy="38" r="3.5" fill="var(--pt)"/><line x1="60" y1="38" x2="130" y2="38" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="52" cy="52" r="3.5" fill="#6D9BF3"/><line x1="60" y1="52" x2="120" y2="52" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="52" cy="66" r="3.5" fill="#A6C3F5"/><line x1="60" y1="66" x2="126" y2="66" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <rect x="190" y="24" width="9" height="52" rx="2.5" fill="var(--pt)"/>
+          <rect x="207" y="40" width="9" height="36" rx="2.5" fill="#6D9BF3"/>
+          <rect x="224" y="50" width="9" height="26" rx="2.5" fill="#A6C3F5"/>
+          <rect x="241" y="58" width="9" height="18" rx="2.5" fill="#C7D6F0"/>
+        </svg>
+        <div>
+          <div class="box-label" style="font-size:15px;">STEP 2 — 분석 · 모니터링</div>
+          <div class="box-title" style="font-size:19px;margin-top:6px;">이슈 · 공판 · 공안</div>
+          <div class="box-desc" style="font-size:14.5px;line-height:1.7;">파급도 Top 10 · 전국 지도 · 검찰청별 순위 · 유형별 분류</div>
+        </div>
       </div>
-      <div>
-        <div class="spec-label">공안 모니터링</div>
-        <div><div class="spec-big">5개 화면</div>
-        <div class="spec-desc">집회·시위 일정 / 집회·시위 보도<br>선거 보도 / 노동·중대재해 보도</div></div>
-        <div class="spec-foot">경찰청 게시판 자동 수집<br>검찰청 관할 자동 연결</div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--pt);font-size:20px;font-weight:700;">→</div>
+      <div class="box-w" style="display:flex;flex-direction:column;gap:14px;padding:20px 22px;">
+        <svg viewBox="0 0 300 100" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="52" y="18" width="88" height="66" rx="6" fill="#fff" stroke="#A6C3F5" stroke-width="1.4"/>
+          <rect x="52" y="18" width="88" height="16" rx="6" fill="#DCE8FB"/>
+          <path d="M68 12 v10 M124 12 v10" stroke="#6D9BF3" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="70" cy="48" r="4" fill="#A6C3F5"/><circle cx="88" cy="48" r="4" fill="var(--pt)"/><circle cx="106" cy="48" r="4" fill="#A6C3F5"/><circle cx="124" cy="48" r="4" fill="#C7D6F0"/>
+          <circle cx="70" cy="66" r="4" fill="#C7D6F0"/><circle cx="88" cy="66" r="4" fill="#A6C3F5"/><circle cx="106" cy="66" r="4" fill="#6D9BF3"/><circle cx="124" cy="66" r="4" fill="#C7D6F0"/>
+          <rect x="168" y="26" width="84" height="12" rx="3" fill="#DCE8FB"/>
+          <rect x="168" y="44" width="84" height="12" rx="3" fill="#EAF1FC"/>
+          <rect x="168" y="62" width="84" height="12" rx="3" fill="#EAF1FC"/>
+        </svg>
+        <div>
+          <div class="box-label" style="font-size:15px;">STEP 3 — 일정 · 보도 정리</div>
+          <div class="box-title" style="font-size:19px;margin-top:6px;">집회 일정 · 분야별 보도</div>
+          <div class="box-desc" style="font-size:14.5px;line-height:1.7;">날짜·관할별 집회 일정, 노동·집회·선거 보도 집계</div>
+        </div>
       </div>
-      <div>
-        <div class="spec-label">공보</div>
-        <div><div class="spec-big">3개 화면</div>
-        <div class="spec-desc">브리핑(이슈·공판·공안)<br>보도자료 초안 · 문자풀 초안</div></div>
-        <div class="spec-foot">실제 배포 양식 그대로<br>입력 → 생성 → 복사</div>
+      <div style="display:flex;align-items:center;justify-content:center;color:var(--pt);font-size:20px;font-weight:700;">→</div>
+      <div style="background:var(--pt-bg);border:1.5px solid var(--pt);border-radius:8px;display:flex;flex-direction:column;gap:14px;padding:20px 22px;">
+        <svg viewBox="0 0 300 100" width="100%" style="display:block;background:#fff;border-radius:8px;">
+          <rect x="106" y="12" width="72" height="76" rx="5" fill="#fff" stroke="var(--pt)" stroke-width="2"/>
+          <line x1="118" y1="28" x2="166" y2="28" stroke="#A6C3F5" stroke-width="3" stroke-linecap="round"/>
+          <line x1="118" y1="42" x2="158" y2="42" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <line x1="118" y1="56" x2="166" y2="56" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <line x1="118" y1="70" x2="150" y2="70" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <circle cx="188" cy="72" r="14" fill="var(--pt)"/>
+          <path d="M181.5 72 l4.5 4.5 8-9" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div>
+          <div class="box-label" style="font-size:15px;">STEP 4 — 산출물 작성</div>
+          <div class="box-title" style="font-size:19px;margin-top:6px;color:var(--pt-dk);">브리핑 · 보도자료 · 문자풀</div>
+          <div class="box-desc" style="font-size:14.5px;line-height:1.7;">표준 양식 초안을 클릭 몇 번으로 즉시 생성</div>
+        </div>
       </div>
     </div>
-    <div class="note" style="font-size:13.5px;"><b>공통 기능</b> — 모든 통계 화면에 금일·금주·금월 전환(수치 즉시 재계산) / 상단 키워드 검색(제목·내용·검찰청·유형) / 기사 제목 클릭 시 원문 이동.
-    <b>파급도</b>는 "얼마나 크게 보도되고 있는가"를 0~100점으로 나타낸 지표입니다.</div>
+    <div class="note" style="font-size:14px;text-align:center;">모든 화면 <b>공통</b> — 금일·금주·금월 전환 / 키워드 검색 / 기사 제목 클릭 시 원문 이동 / <b>파급도 0~100</b> 수치 표시</div>
   </div>
 </section>
 
@@ -401,10 +587,11 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능 · ① 대시보드</span>
-    <span class="sh-num">08</span>
+    <span class="sh-num">12</span>
   </div>
 
-  <div class="hl">모든 업무가 <span class="em">한 화면에서 시작</span>됩니다</div>
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
+  <div class="hl">전체 현황을 파악할 수 있는 <span class="em">요약 대시보드</span></div>
 
   <div class="split">
     <div>
@@ -414,8 +601,7 @@ body {
       <div class="note">출근 직후 이 화면 하나로 <b>당일 현황 파악</b>이 끝납니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">대시보드 — 실제 운영 화면</div>
-      <div class="ph fade"><img src="assets/crop_dash.png" alt="대시보드"></div>
+      <div class="ph fill"><img src="assets/crop_dash.png" alt="대시보드"></div>
     </div>
   </div>
 </section>
@@ -426,21 +612,21 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능 · ② 이슈 모니터링</span>
-    <span class="sh-num">09</span>
+    <span class="sh-num">13</span>
   </div>
 
-  <div class="hl">중요도 판단을 <span class="em">수치로</span> 뒷받침합니다</div>
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
+  <div class="hl"><span class="em">이슈</span> 모니터링</div>
 
   <div class="split">
     <div>
       <div class="fe"><div class="fe-t"><span class="no">1</span>주요 이슈 Top 10</div><div class="fe-d">파급도 순 자동 정렬 — <b>제목 클릭 시 기사 원문</b>, 관할청·유형 태그 표시</div></div>
       <div class="fe"><div class="fe-t"><span class="no">2</span>금일 · 금주 · 금월 전환</div><div class="fe-d">버튼을 누르면 Top10·지도·유형 통계가 <b>해당 기간 수치로 즉시 전환</b></div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>자동 분류 · 중복 통합</div><div class="fe-d">검찰청 <b>67곳 관할·범죄유형별</b> 분류(신뢰도 저장), 동일 사건은 하나의 이슈로</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>자동 분류 · 중복 통합</div><div class="fe-d">검찰청 <b>67곳 관할·범죄유형별</b> 분류, 동일사건 중복보도는 하나의 이슈로 묶음</div></div>
       <div class="note">흩어져 있는 수백 건의 기사를 시스템이 대신 읽고 <b>"오늘 무엇이 중요한지"를 순서대로 정리</b>해 줍니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">주요 이슈 Top 10 <span class="zm">확대</span></div>
-      <div class="ph"><img src="assets/crop_top10_left.png" alt="주요 이슈 Top10"></div>
+      <div class="ph fill"><img src="assets/crop_top10_left.png" alt="이슈 모니터링 첫 화면"></div>
     </div>
   </div>
 </section>
@@ -451,20 +637,20 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능 · ③ 전국 분포 지도</span>
-    <span class="sh-num">10</span>
+    <span class="sh-num">14</span>
   </div>
 
-  <div class="hl">관할별 현황을 <span class="em">지도 한 장</span>으로 파악합니다</div>
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
+  <div class="hl">전국 <span class="em">검찰청별 이슈 분포</span>를 파악합니다</div>
 
   <div class="split">
     <div>
       <div class="fe"><div class="fe-t"><span class="no">1</span>전국 히트맵</div><div class="fe-d">색이 진할수록 이슈가 많은 지역 — <b>시도를 누르면 시군구 상세</b>로 전환</div></div>
       <div class="fe"><div class="fe-t"><span class="no">2</span>검찰청 실제 좌표 표시</div><div class="fe-d">전국 검찰청 위치를 <b>실제 좌표</b>로 지도 위에 표기</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>조직도 집계</div><div class="fe-d">법무부·대검, <b>고검을 펼치면 산하 지검·지청</b>까지 단계별 확인</div></div>
-      <div class="note">지도·조직도·순위표가 <b>동일한 데이터</b>를 사용하여 어느 화면을 보더라도 수치가 일치합니다.</div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>조직도 집계</div><div class="fe-d">법무부·대검, 고검을 펼치면 <b>산하 지검·지청까지 단계별 확인</b></div></div>
+      <div class="note">전국 히트맵은 <b>카카오맵(Kakao Map) API</b>를 활용해 검찰청 위치·관할을 지도 위에 표시하며, 지도·조직도·순위표가 <b>같은 데이터</b>를 공유합니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">검찰청별 이슈 분포 (전국)</div>
       <div class="ph"><img src="assets/crop_issue_map.png" alt="전국 지도"></div>
     </div>
   </div>
@@ -476,9 +662,10 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능 · ④ 검찰청별 보기</span>
-    <span class="sh-num">11</span>
+    <span class="sh-num">15</span>
   </div>
 
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
   <div class="hl">우리 청 순위를 <span class="em">검색 한 번</span>에 확인합니다</div>
 
   <div class="split">
@@ -486,11 +673,10 @@ body {
       <div class="fe"><div class="fe-t"><span class="no">1</span>검찰청 이름 검색</div><div class="fe-d">검색창에 청 이름을 입력하면 <b>전국 순위를 즉시 확인</b></div></div>
       <div class="fe"><div class="fe-t"><span class="no">2</span>순위표 · 증감 표시</div><div class="fe-d">기사·이슈 수 순위와 <b>전월(전주·전일) 대비 증감</b>, 더보기로 전체 열람</div></div>
       <div class="fe"><div class="fe-t"><span class="no">3</span>청 선택 → 기사 목록</div><div class="fe-d">조직도·순위표에서 청을 누르면 <b>해당 청 관련 기사</b>로 이동</div></div>
-      <div class="note">조직도에는 청별 <b>기사 · 이슈 · 중요 이슈 수</b>가 함께 표시되어 한 줄로 현황을 읽을 수 있습니다.</div>
+      <div class="note"><b style="color:var(--pt);">이슈</b>(파랑) = 비슷한 기사를 묶은 사건 수 · <b style="color:#B0801A;">중요</b>(노랑) = 파급도 높은 이슈 수 · <b>파급도</b> = 보도량·출처 수·확산 속도로 산정한 공개보도 영향력(0~100)</div>
     </div>
     <div class="shot">
-      <div class="shot-label">검찰청별 보기 — 조직도 · 순위 · 검색</div>
-      <div class="ph fade"><img src="assets/crop_offices.png" alt="검찰청별 보기"></div>
+      <div class="ph fill"><img src="assets/crop_offices.png" alt="검찰청별 보기"></div>
     </div>
   </div>
 </section>
@@ -501,21 +687,21 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능 · ⑤ 범죄유형별 보기 · 제도/정책</span>
-    <span class="sh-num">12</span>
+    <span class="sh-num">16</span>
   </div>
 
-  <div class="hl">유형별 동향과 <span class="em">정책 이슈</span>를 따로 봅니다</div>
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
+  <div class="hl">범죄 소식과 <span class="em">제도·정책 이슈</span>를 구분하여 수집합니다</div>
 
   <div class="split">
     <div>
       <div class="fe"><div class="fe-t"><span class="no">1</span>범죄유형별 보기</div><div class="fe-d">유형별 이슈·기사 수와 대표 헤드라인 — <b>항목 클릭 시 관할별 기사 목록</b></div></div>
       <div class="fe"><div class="fe-t"><span class="no">2</span>유형 내 기사 검색</div><div class="fe-d">선택한 유형 안에서 <b>제목 검색</b>으로 필요한 보도만 추출</div></div>
       <div class="fe"><div class="fe-t"><span class="no">3</span>제도/정책 이슈</div><div class="fe-d">검찰개혁·공소청·특검·입법 등 <b>주제별로 묶어</b> 별도 화면 제공</div></div>
-      <div class="note">관할이 없는 <b>제도·정책 보도</b>는 사건 통계와 분리하여 정리 — 정책 동향 보고에 바로 활용할 수 있습니다.</div>
+      <div class="note"><b>제도·정책 보도</b>는 사건 통계와 분리하여 정리 — 정책 동향 보고 등에 활용할 수 있습니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">범죄유형 분류 <span class="zm">확대</span></div>
-      <div class="ph fade"><img src="assets/crop_issue_crime.png" alt="범죄유형 분류"></div>
+      <div class="ph"><img src="assets/crop_crime_policy.png" alt="범죄유형별 보기 · 제도/정책 이슈"></div>
     </div>
   </div>
 </section>
@@ -526,46 +712,71 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">03 주요 기능 · ⑥ 공판 모니터링</span>
-    <span class="sh-num">13</span>
+    <span class="sh-num">17</span>
   </div>
 
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
   <div class="hl">주요 선고사건을 <span class="em">빠짐없이</span> 집계합니다</div>
 
   <div class="split">
     <div>
       <div class="fe"><div class="fe-t"><span class="no">1</span>선고 보도만 정밀 선별</div><div class="fe-d">법원 <b>판결 선고 기사</b>를 가려내 공판 동향으로 집계</div></div>
       <div class="fe"><div class="fe-t"><span class="no">2</span>주요 사건 Top 10</div><div class="fe-d">파급도 순 정렬, 관할청·기저 범죄유형 태그 — <b>제목 클릭 시 원문</b></div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>하위 화면 동일 제공</div><div class="fe-d">공판도 <b>검찰청별 · 범죄유형별 보기</b>를 갖추고 기간 전환 지원</div></div>
-      <div class="note"><b>공판</b>은 법원 재판 단계, <b>선고 보도</b>는 판결 결과 기사입니다. 산재된 공판 보도를 한 화면으로 모아 누락을 방지합니다.</div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>이슈 모니터링과 동일 세부항목 제공</div><div class="fe-d"><b>검찰청별 · 범죄유형별 분류</b> 및 금일/금주/금월별 표시</div></div>
+      <div class="note">산재된 공판 보도를 한 화면으로 모아 <b>주요 선고사건 누락을 방지</b>합니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">공판 모니터링 — 주요 사건 Top 10 <span class="zm">확대</span></div>
-      <div class="ph"><img src="assets/crop_trials_left.png" alt="공판 Top10"></div>
+      <div class="ph fill"><img src="assets/crop_trials_left.png" alt="공판 모니터링 첫 화면"></div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ 13 · 기능 ⑦ 집회·시위 일정 ══════════════ -->
+<!-- ══════════════ 14 · 기능 ⑦ 공안 모니터링 (신규) ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">03 주요 기능 · ⑦ 집회·시위 일정</span>
-    <span class="sh-num">14</span>
+    <span class="sh-cat">03 주요 기능 · ⑦ 공안 모니터링</span>
+    <span class="sh-num">18</span>
   </div>
 
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
+  <div class="hl">공안 동향을 <span class="em">한 화면에</span> 모아 봅니다</div>
+
+  <div class="split">
+    <div>
+      <div class="fe"><div class="fe-t"><span class="no">1</span>오늘의 공안 이슈 모니터링</div><div class="fe-d">오늘·내일 <b>공개 집회 건수</b>, 관할 검찰청 수, 관련 보도 일정을 숫자로 확인</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">2</span>영역별 보도 TOP 5</div><div class="fe-d">집회·시위 / 선거 / 노동·중대재해 <b>보도 TOP 5</b>를 한 화면에서 비교</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>세부 화면 바로 진입</div><div class="fe-d">집회 일정·영역별 보도 등 <b>공안 세부 화면으로 즉시 이동</b></div></div>
+      <div class="note"><b>집회·시위 · 선거 · 노동 분야</b>를 아우르는 공안 이슈를 <b>하나의 화면</b>으로 정리하였습니다.</div>
+    </div>
+    <div class="shot">
+      <div class="ph fill"><img src="assets/crop_public_safety.png" alt="공안 모니터링 개요"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ 15 · 기능 ⑧ 집회·시위 일정 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-cat">03 주요 기능 · ⑧ 집회·시위 일정</span>
+    <span class="sh-num">19</span>
+  </div>
+
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
   <div class="hl">집회 일정을 <span class="em">날짜별 · 관할별</span>로 정리합니다</div>
 
   <div class="split">
     <div>
-      <div class="fe"><div class="fe-t"><span class="no">1</span>경찰청 게시판 자동 수집</div><div class="fe-d">전국 <b>지방경찰청 공개 게시판</b>의 집회 신고 정보를 자동 수집</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">1</span>경찰청 게시판 자동 수집</div><div class="fe-d">전국 <b>지방경찰청 공개 게시판</b>의 집회 신고 정보를 자동 수집<br><span style="color:var(--muted);font-size:11.5px;">※ 일부 지방경찰청은 집회 신고 정보 미제공 — 기관 간 협조 필요</span></div></div>
       <div class="fe"><div class="fe-t"><span class="no">2</span>날짜 선택</div><div class="fe-d"><b>오늘 · 내일 · 모레</b> 버튼 또는 달력으로 원하는 날짜의 일정 조회</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>검찰청 관할 자동 연결</div><div class="fe-d">집회 장소 기준으로 <b>관할 검찰청을 자동 판정</b>, 개요 표로 정리</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>검찰청 관할 자동 분류</div><div class="fe-d">집회 장소를 기준으로 <b>관할 검찰청 자동 분류</b> 및 집회 개요를 <b>표로 정리</b></div></div>
       <div class="note">일시·장소·주최·예상 인원·관할을 표로 제공하고, <b>관련 언론 보도가 있으면 함께 연결</b>합니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">집회·시위 일정</div>
-      <div class="ph fade"><img src="assets/crop_assembly.png" alt="집회·시위 일정"></div>
+      <div class="ph fill"><img src="assets/crop_assembly.png" alt="집회·시위 일정"></div>
     </div>
   </div>
 </section>
@@ -575,22 +786,27 @@ body {
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">03 주요 기능 · ⑧ 집회·시위 / 선거 / 노동·중대재해 보도</span>
-    <span class="sh-num">15</span>
+    <span class="sh-cat">03 주요 기능 · ⑨ 노동·중대재해 / 집회·시위 / 선거 보도</span>
+    <span class="sh-num">20</span>
   </div>
 
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
   <div class="hl">공안 3개 영역 보도를 <span class="em">각각 집계</span>합니다</div>
 
   <div class="split">
     <div>
       <div class="fe"><div class="fe-t"><span class="no">1</span>영역별 전용 화면</div><div class="fe-d">집회·시위 / 선거 / 노동·중대재해 보도를 <b>각각의 화면</b>에서 관리</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">2</span>관할별 조직도 · 순위 · 검색</div><div class="fe-d">세 화면 모두 <b>검찰청 검색과 순위표</b>를 갖추고 총계가 서로 일치</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>수집 현황 투명 공개</div><div class="fe-d">지방경찰청별 <b>수집 성공 여부와 정보 반영 시각</b>을 표로 표시</div></div>
-      <div class="note"><b>공안</b>은 집회·시위, 선거, 노동 분야를 아우르는 업무 영역입니다. 게시판·기사를 개별 확인하던 점검을 자동 수집·관할 분류로 대체했습니다.</div>
+      <div class="fe"><div class="fe-t"><span class="no">2</span>관할별 조직도 · 순위 · 검색</div><div class="fe-d">세 영역 각각 <b>검찰청별 기사 분류 · 검색 및 순위 통계</b> 제공</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>기간 · 청별 심화 조회</div><div class="fe-d"><b>금일·금주·금월 전환</b>, 청을 누르면 해당 청 관련 보도로 이동</div></div>
+      <div class="note">주요 공안 보도를 <b>노동·중대재해 · 집회·시위 · 선거</b> 각 분야별로 <b>집계 · 분류</b>합니다.</div>
     </div>
-    <div class="shot">
-      <div class="shot-label">집회·시위 보도 TOP 5 <span class="zm">확대</span></div>
-      <div class="ph fade"><img src="assets/crop_safety_col1.png" alt="집회·시위 보도 TOP5"></div>
+    <div style="display:flex;flex-direction:column;gap:10px;max-height:100%;min-height:0;">
+      <div class="shot" style="height:500px;flex:0 0 auto;">
+        <div class="ph fill fade"><img src="assets/crop_safety_col1.png" alt="노동·중대재해 보도"></div>
+      </div>
+      <div style="font-size:13.5px;color:var(--muted);text-align:center;line-height:1.45;flex:0 0 auto;">
+        ※ 집회·시위 보도 · 선거 보도 화면도 동일한 형식(조직도 · 순위 · 검색)으로 제공됩니다.
+      </div>
     </div>
   </div>
 </section>
@@ -600,21 +816,31 @@ body {
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">03 주요 기능 · ⑨ 브리핑</span>
-    <span class="sh-num">16</span>
+    <span class="sh-cat">03 주요 기능 · ⑩ 브리핑</span>
+    <span class="sh-num">21</span>
   </div>
 
-  <div class="hl">조건만 고르면 <span class="em">기관장 보고용 요약</span>이 나옵니다</div>
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
+  <div class="hl"><span class="em">클릭 두 번</span>이면 매일 아침 보고서 초안이 만들어집니다</div>
 
   <div class="split">
     <div>
-      <div class="fe"><div class="fe-t"><span class="no">1</span>이슈 · 공판 · 공안 브리핑 통합</div><div class="fe-d">공보 메뉴 한 화면에서 <b>탭으로 전환</b> — 세 영역의 브리핑을 같은 방식으로 생성</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">2</span>기간 · 검찰청 · 범죄유형 선택</div><div class="fe-d">검찰청은 <b>전국 조직도 순서 드롭다운</b> — 고검을 고르면 <b>산하 지검·지청까지 자동 포함</b>해 집계</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>기관장용 1페이지 요약</div><div class="fe-d">핵심 이슈 TOP 5 · 주요 검찰청 · 범죄유형을 자동 구성, <b>Markdown 파일로 즉시 다운로드</b></div></div>
-      <div class="note"><b>브리핑</b>은 선택한 조건의 보도 동향을 보고서 형식으로 정리한 자동 초안입니다. 매일 아침 보고 초안이 <b>클릭 두 번</b>으로 만들어집니다.</div>
+      <svg viewBox="0 0 560 96" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;margin-bottom:6px;">
+        <rect x="196" y="12" width="132" height="76" rx="6" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+        <rect x="236" y="6" width="52" height="12" rx="4" fill="#DCE8FB" stroke="#A6C3F5" stroke-width="1.4"/>
+        <rect x="210" y="28" width="76" height="9" rx="2" fill="var(--pt)"/>
+        <line x1="210" y1="50" x2="314" y2="50" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+        <line x1="210" y1="62" x2="300" y2="62" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+        <line x1="210" y1="74" x2="308" y2="74" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+        <rect x="344" y="34" width="66" height="26" rx="13" fill="var(--pt)"/>
+        <text x="377" y="51" font-size="11" fill="#fff" font-weight="700" text-anchor="middle">보고용 요약</text>
+      </svg>
+      <div class="fe"><div class="fe-t"><span class="no">1</span>브리핑 초안 생성</div><div class="fe-d"><b>'브리핑' 탭</b> 접속 후 이슈 · 공판 · 공안 영역 선택</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">2</span>기간 · 검찰청 · 범죄유형 선택</div><div class="fe-d">고검 선택 시 <b>산하 지검·지청을 포괄하여 집계</b></div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>보고용 1페이지 요약</div><div class="fe-d">작성된 초안은 <b>파일로 다운로드</b> 가능</div></div>
+      <div class="note">선택한 조건의 보도 동향을 <b>보고서 형식</b>으로 자동 정리한 초안입니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">브리핑 — 조건 선택 · 생성 결과</div>
       <div class="ph fade"><img src="assets/crop_briefing.png" alt="브리핑 생성 결과"></div>
     </div>
   </div>
@@ -625,21 +851,30 @@ body {
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">03 주요 기능 · ⑩ 보도자료 초안</span>
-    <span class="sh-num">17</span>
+    <span class="sh-cat">03 주요 기능 · ⑪ 보도자료 초안</span>
+    <span class="sh-num">22</span>
   </div>
 
-  <div class="hl">기초 정보만 입력하면 <span class="em">배포 양식 그대로</span> 생성합니다</div>
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
+  <div class="hl">기초 정보만 입력하면 <span class="em">보도자료 초안</span>이 완성됩니다</div>
 
   <div class="split">
     <div>
-      <div class="fe"><div class="fe-t"><span class="no">1</span>실제 배포 양식 반영</div><div class="fe-d">서울중앙지검 <b>배포 보도자료 5건</b>의 형식·문체 분석 — 유의문구 → 공보관 연락처 → 공개요건 → <b>Ⅰ~Ⅳ 목차</b> 자동 구성</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">2</span>한 화면 처리</div><div class="fe-d">발표 검찰청·부서·죄명·처분 입력 → 생성 → <b>복사</b>. 샘플 불러오기 지원</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>사실관계는 입력값만</div><div class="fe-d">참고자료의 <b>구조·문체만 반영</b>하고 내용은 가져오지 않음</div></div>
-      <div class="note"><b>보도자료</b>는 검찰이 언론에 배포하는 공식 자료입니다. 담당자는 사실관계 검토와 문구 수정에만 집중하면 됩니다.</div>
+      <svg viewBox="0 0 560 96" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;margin-bottom:6px;">
+        <rect x="170" y="14" width="220" height="68" rx="5" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+        <rect x="182" y="24" width="120" height="12" rx="2" fill="var(--pt)"/>
+        <line x1="182" y1="46" x2="302" y2="46" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+        <line x1="182" y1="56" x2="288" y2="56" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+        <line x1="182" y1="66" x2="296" y2="66" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+        <rect x="314" y="44" width="62" height="28" rx="3" fill="#DCE8FB"/>
+        <text x="345" y="62" font-size="10.5" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">보도자료</text>
+      </svg>
+      <div class="fe"><div class="fe-t"><span class="no">1</span>실제 보도자료 양식 반영</div><div class="fe-d">서울중앙지검 <b>게시판 공개 보도자료</b>를 학습시켜 <b>목차 자동 구성</b></div></div>
+      <div class="fe"><div class="fe-t"><span class="no">2</span>기초 정보만 입력하면 초안 완성</div><div class="fe-d">발표기관·담당부서·죄명·처분 등 <b>기초 정보만 입력</b>하면 클릭 몇 번으로 보도자료 초안이 완성</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>표준 양식 자동 구성</div><div class="fe-d">유의문구·공보관 연락처·공개요건·목차 등을 <b>각 기관 양식에 맞게 자동 구성</b></div></div>
+      <div class="note"><b>AI가 초안을 간단·신속하게 작성</b>하면, 담당자는 <b>사실관계 검토와 문구 수정</b>에만 집중하면 됩니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">보도자료 초안 — 생성 결과 <span class="zm">확대</span></div>
       <div class="ph fade"><img src="assets/crop_press_result.png" alt="보도자료 생성 결과"></div>
     </div>
   </div>
@@ -650,84 +885,123 @@ body {
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">03 주요 기능 · ⑪ 문자풀 초안</span>
-    <span class="sh-num">18</span>
+    <span class="sh-cat">03 주요 기능 · ⑫ 문자풀 초안</span>
+    <span class="sh-num">23</span>
   </div>
 
+  <div class="flow"><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2.5v6.5M5.2 6.3 8 9l2.8-2.7M2.8 11v1.6c0 .9.7 1.6 1.6 1.6h7.2c.9 0 1.6-.7 1.6-1.6V11"/></svg>자동 수집</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.2 13.2V8.4M8 13.2V3.6M12.8 13.2V6.8"/></svg>분석 · 모니터링</div><span class="farr">→</span><div class="fstep"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="2.6" y="3.4" width="10.8" height="10" rx="1.6"/><path d="M2.6 6.6h10.8M5.4 1.8v2.4M10.6 1.8v2.4"/></svg>일정 · 보도 정리</div><span class="farr">→</span><div class="fstep on"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 1.8h5.6l2.4 2.4v10H4z"/><path d="M6.2 7.4h3.6M6.2 10h2.6"/></svg>산출물 작성</div></div>
   <div class="hl">기자단 공지 문자도 <span class="em">즉시 생성</span>합니다</div>
 
   <div class="split">
     <div>
+      <svg viewBox="0 0 560 96" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;margin-bottom:6px;">
+        <rect x="196" y="10" width="52" height="80" rx="10" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/>
+        <line x1="212" y1="16.5" x2="232" y2="16.5" stroke="#C7D6F0" stroke-width="2.4" stroke-linecap="round"/>
+        <rect x="204" y="26" width="36" height="12" rx="4" fill="#DCE8FB"/>
+        <rect x="210" y="44" width="30" height="12" rx="4" fill="var(--pt)"/>
+        <rect x="204" y="62" width="36" height="12" rx="4" fill="#DCE8FB"/>
+        <path d="M262 34 h84 a8 8 0 0 1 8 8 v10 a8 8 0 0 1 -8 8 h-70 l-10 9 v-9 a8 8 0 0 1 -4 -8 v-10 a8 8 0 0 1 8 -8 z" fill="#fff" stroke="#A6C3F5" stroke-width="1.6" transform="translate(0,-2)"/>
+        <text x="304" y="49" font-size="10.5" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">[○○지검 알림]</text>
+      </svg>
       <div class="fe"><div class="fe-t"><span class="no">1</span>검찰 문자풀 형식 준수</div><div class="fe-d">머리글 [○○지검 알림] · 처분 → 경위 → 방침 <b>3단 구성</b> · 미확정 고지 꼬리글</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">2</span>문체 · 구성 선택</div><div class="fe-d"><b>서술식/개조식 전환</b>, 머리글·꼬리글 포함 여부 선택, 샘플 불러오기</div></div>
-      <div class="fe"><div class="fe-t"><span class="no">3</span>표현 자동 보정</div><div class="fe-d">단정 표현을 <b>혐의 단계 표현</b>으로 수정 제안</div></div>
+      <div class="fe"><div class="fe-t"><span class="no">2</span>기초 정보 입력 → 자동 생성</div><div class="fe-d">발표기관·담당부서·부장검사·죄명 등 입력하면 <b>문자풀 초안 자동 생성</b></div></div>
+      <div class="fe"><div class="fe-t"><span class="no">3</span>문체 · 구성 선택</div><div class="fe-d"><b>서술식/개조식 전환</b>, 머리글·꼬리글 포함 여부 선택, 샘플 불러오기</div></div>
       <div class="note"><b>문자풀</b>은 출입기자단에 휴대전화 문자 분량으로 보내는 요약 공지입니다. 보도자료와 동일한 입력에서 생성되어 내용이 어긋나지 않습니다.</div>
     </div>
     <div class="shot">
-      <div class="shot-label">문자풀 초안 — 생성 결과 <span class="zm">확대</span></div>
       <div class="ph"><img src="assets/crop_textpool_result.png" alt="문자풀 생성 결과"></div>
     </div>
   </div>
 </section>
 
-<!-- ══════════════ 17 · 구현 방법 ══════════════ -->
+<!-- ══════════════ 활용 시나리오 Before/After ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-cat">04 구현 방법</span>
-    <span class="sh-num">19</span>
+    <span class="sh-cat">03 주요 기능 · 활용 시나리오</span>
+    <span class="sh-num">24</span>
   </div>
 
-  <div class="hl">개발 경험 없는 검사가 <span class="em">AI와의 대화</span>로 완성했습니다</div>
-  <div class="sub-hl">바이브 코딩 — 개발자가 아닌 사람이 AI에게 말로 요구사항을 설명하면 AI가 코드를 작성하는 개발 방식. 본 시스템은 이 방식으로 검사 1인이 개발했습니다.</div>
+  <div class="hl">도입 전후 : 기획 업무 루틴이 <span class="em">이렇게 달라집니다</span></div>
 
-  <div class="visual">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;flex:1;">
-      <div class="box-dk" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
-        <div class="box-label">Claude Code 바이브 코딩</div>
-        <div style="display:flex;flex-direction:column;gap:10px;">
-          <div class="arr" style="color:#fff;"><span style="color:#86AFF9;">→</span>화면 · API · DB 설계 · 분류 로직을 대화로 직접 구현</div>
-          <div class="arr" style="color:#fff;"><span style="color:#86AFF9;">→</span>기획부터 배포까지 1인 수행</div>
-          <div class="arr" style="color:#fff;"><span style="color:#86AFF9;">→</span>실무자가 직접 개발하여 현장의 니즈 반영</div>
+  <div class="visual" style="justify-content:center;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;flex:1;min-height:0;">
+      <div class="box" style="display:flex;flex-direction:column;gap:10px;padding:22px 26px;">
+        <div class="box-label" style="font-size:15px;color:var(--sub);">Before — 기존 방식</div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;justify-content:center;">
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:#E8EBF1;color:var(--sub);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;">포털에서 키워드 바꿔가며 수십 회 검색</span>
+            <span style="font-size:13.5px;color:var(--muted);font-weight:600;">30분+</span>
+          </div>
+          <div style="text-align:center;color:#B6C3D6;font-size:15px;font-weight:700;line-height:1;">↓</div>
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:#E8EBF1;color:var(--sub);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;">기사 골라 관할 · 범죄유형 수기 분류</span>
+            <span style="font-size:13.5px;color:var(--muted);font-weight:600;">20분+</span>
+          </div>
+          <div style="text-align:center;color:#B6C3D6;font-size:15px;font-weight:700;line-height:1;">↓</div>
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:#E8EBF1;color:var(--sub);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;">문서에 옮겨 정리 → 보고</span>
+            <span style="font-size:13.5px;color:var(--muted);font-weight:600;">10분+</span>
+          </div>
+          <div style="text-align:center;color:#B6C3D6;font-size:15px;font-weight:700;line-height:1;">↓</div>
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--border);border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:#E8EBF1;color:var(--sub);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;">공보 필요 시 백지에서 초안 작성</span>
+            <span style="font-size:13.5px;color:var(--muted);font-weight:600;">30분+</span>
+          </div>
         </div>
-        <div style="margin-top:18px;">
-          <span class="badge" style="background:rgba(255,255,255,.10);color:#B1CEFB;">설치 없이 브라우저로 사용</span>
-          <span class="badge" style="background:rgba(255,255,255,.10);color:#B1CEFB;">정부 표준 디자인(KRDS)</span>
-          <span class="badge" style="background:rgba(255,255,255,.10);color:#B1CEFB;">전국 지도 시각화</span>
-          <span class="badge" style="background:rgba(255,255,255,.10);color:#B1CEFB;">PC · 모바일 화면 지원</span>
-          <span class="badge" style="background:rgba(255,255,255,.10);color:#B1CEFB;">키워드 통합 검색</span>
-          <span class="badge" style="background:rgba(255,255,255,.10);color:#B1CEFB;">클릭 시 기사 원문 연결</span>
-        </div>
+        <div style="background:#E8EBF1;border-radius:8px;padding:13px 18px;text-align:center;font-size:15.5px;font-weight:700;color:var(--sub);">매일 1시간 이상 + 편차 · 누락 위험</div>
       </div>
-      <div style="display:flex;flex-direction:column;gap:12px;">
-        <div class="box" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-          <div class="box-label">AI는 필요에 따라 골라 끼우는 구조</div>
-          <div style="display:flex;gap:10px;margin-top:6px;">
-            <div style="flex:1;border:1px solid var(--border);border-radius:6px;padding:14px 12px;text-align:center;">
-              <div style="font-size:14px;font-weight:600;">AI 없이도 동작</div>
-              <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">자체 규칙으로 분류</div>
-            </div>
-            <div style="flex:1;border:1px solid var(--border);border-radius:6px;padding:14px 12px;text-align:center;">
-              <div style="font-size:14px;font-weight:600;">상용 AI 연결</div>
-              <div style="font-size:11.5px;color:var(--muted);margin-top:4px;">분류·요약 더 정교</div>
-            </div>
-            <div style="flex:1;border:1.5px solid var(--pt);border-radius:6px;padding:14px 12px;text-align:center;background:var(--pt-bg);">
-              <div style="font-size:14px;font-weight:600;color:var(--pt-dk);">내부망 전용 AI</div>
-              <div style="font-size:11.5px;color:var(--sub);margin-top:4px;">보안망서도 설치·운영</div>
-            </div>
+      <div style="background:var(--pt-bg);border:1.5px solid var(--pt);border-radius:8px;display:flex;flex-direction:column;gap:10px;padding:22px 26px;">
+        <div class="box-label" style="font-size:15px;">After — 본 시스템 사용</div>
+        <div style="display:flex;flex-direction:column;gap:4px;flex:1;justify-content:center;">
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #A6C3F5;border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--pt);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">1</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;">출근 후 <b style="color:var(--pt-dk);">대시보드</b>로 당일 현황 확인</span>
+            <span style="font-size:13.5px;color:var(--pt-dk);font-weight:700;">1분</span>
+          </div>
+          <div style="text-align:center;color:var(--pt);font-size:15px;font-weight:700;line-height:1;">↓</div>
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #A6C3F5;border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--pt);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">2</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;"><b style="color:var(--pt-dk);">Top 10 · 지도 · 순위</b>로 중요 이슈 파악</span>
+            <span style="font-size:13.5px;color:var(--pt-dk);font-weight:700;">2분</span>
+          </div>
+          <div style="text-align:center;color:var(--pt);font-size:15px;font-weight:700;line-height:1;">↓</div>
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #A6C3F5;border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--pt);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">3</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;">조건 선택 → <b style="color:var(--pt-dk);">브리핑 초안</b> 자동 생성</span>
+            <span style="font-size:13.5px;color:var(--pt-dk);font-weight:700;">1분</span>
+          </div>
+          <div style="text-align:center;color:var(--pt);font-size:15px;font-weight:700;line-height:1;">↓</div>
+          <div style="display:flex;align-items:center;gap:12px;background:#fff;border:1px solid #A6C3F5;border-radius:8px;padding:11px 16px;">
+            <span style="width:24px;height:24px;border-radius:50%;background:var(--pt);color:#fff;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;">4</span>
+            <span style="font-size:15px;color:var(--ink);flex:1;">필요 시 <b style="color:var(--pt-dk);">보도자료 · 문자풀 초안</b>까지</span>
+            <span style="font-size:13.5px;color:var(--pt-dk);font-weight:700;">1분</span>
           </div>
         </div>
-        <div class="box" style="flex:1;display:flex;flex-direction:column;justify-content:center;">
-          <div class="box-label">누구나 바로 쓰는 구조</div>
-          <div style="display:flex;flex-direction:column;gap:8px;margin-top:4px;">
-            <div class="arr"><span>→</span>설치나 교육 없이 <b style="color:var(--pt-dk);">브라우저 접속만으로</b> 사용</div>
-            <div class="arr"><span>→</span>흩어진 정보를 <b style="color:var(--pt-dk);">한 화면에 모아</b> 클릭 몇 번으로 확인</div>
-            <div class="arr"><span>→</span>기간(당일·금주·금월)만 눌러 <b style="color:var(--pt-dk);">원하는 통계로 즉시 전환</b></div>
-          </div>
-        </div>
+        <div style="background:var(--pt);border-radius:8px;padding:13px 18px;text-align:center;font-size:15.5px;font-weight:700;color:#fff;">5분 내외 — 남는 시간은 검토와 판단에 집중</div>
       </div>
     </div>
+    <div class="note" style="font-size:13.5px;text-align:center;">수집 → 분석 → 정리 → 작성이 <b>하나의 흐름으로 연결</b>되어, 같은 아침 업무가 산출물까지 자동으로 이어집니다.</div>
+  </div>
+</section>
+
+<!-- ══════════════ 간지 · SECTION 04 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-num">25</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
+    <div class="divider-label">SECTION 04</div>
+    <div class="divider-title">구현 방법</div>
+    <div style="width:56px;height:4px;background:var(--pt);border-radius:2px;"></div>
+    <div class="divider-desc" style="margin-top:28px;">시스템 아키텍처 · 안전 설계 · 망분리 환경 대응</div>
   </div>
 </section>
 
@@ -737,7 +1011,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법 · 시스템 아키텍처</span>
-    <span class="sh-num">20</span>
+    <span class="sh-num">26</span>
   </div>
 
   <div class="hl">전체 <span class="em">시스템 아키텍쳐</span></div>
@@ -755,13 +1029,13 @@ body {
       <rect x="10" y="16" width="1160" height="146" rx="14" fill="#F7F9FD" stroke="#E1E7F2"/>
       <text x="42" y="44" font-size="15" font-weight="700" fill="#052561">① 만든 방법 — 개발부터 배포까지</text>
       <rect x="74" y="60" width="300" height="86" rx="10" fill="#fff" stroke="#E5E8EF"/>
-      <image href="assets/logo_claude.svg" xlink:href="assets/logo_claude.svg" x="96" y="82" width="42" height="42"/>
-      <text x="152" y="96" font-size="16" font-weight="700" fill="#1D1D1D">Claude Code</text>
-      <text x="152" y="118" font-size="12" fill="#6B7280">대화로 개발 (바이브 코딩)</text>
+      <image href="assets/logo_claude.svg" xlink:href="assets/logo_claude.svg" x="206" y="64" width="36" height="36"/>
+      <text x="224" y="120" font-size="16" font-weight="700" fill="#1D1D1D" text-anchor="middle">Claude Code</text>
+      <text x="224" y="137" font-size="11.5" fill="#6B7280" text-anchor="middle">대화로 개발 (바이브 코딩)</text>
       <rect x="440" y="60" width="300" height="86" rx="10" fill="#fff" stroke="#E5E8EF"/>
-      <image href="assets/logo_github.svg" xlink:href="assets/logo_github.svg" x="462" y="82" width="42" height="42"/>
-      <text x="518" y="96" font-size="16" font-weight="700" fill="#1D1D1D">GitHub</text>
-      <text x="518" y="118" font-size="12" fill="#6B7280">버전 관리</text>
+      <image href="assets/logo_github.svg" xlink:href="assets/logo_github.svg" x="572" y="64" width="36" height="36"/>
+      <text x="590" y="120" font-size="16" font-weight="700" fill="#1D1D1D" text-anchor="middle">GitHub</text>
+      <text x="590" y="137" font-size="11.5" fill="#6B7280" text-anchor="middle">버전 관리</text>
       <rect x="806" y="60" width="300" height="86" rx="10" fill="#fff" stroke="#E5E8EF"/>
       <image href="assets/logo_netlify.svg" xlink:href="assets/logo_netlify.svg" x="901" y="76" width="110" height="45"/>
       <text x="956" y="136" font-size="12" fill="#6B7280" text-anchor="middle">자동 배포 · 호스팅</text>
@@ -776,12 +1050,12 @@ body {
 
       <rect x="24" y="222" width="250" height="276" rx="12" fill="#fff" stroke="#E5E8EF"/>
       <text x="149" y="262" font-size="17" font-weight="700" fill="#A9761A" text-anchor="middle">① 수집</text>
-      <image href="assets/logo_google_news.svg" xlink:href="assets/logo_google_news.svg" x="46" y="292" width="20" height="20" preserveAspectRatio="xMidYMid meet"/>
-      <text x="74" y="307" font-size="13" fill="#444">구글뉴스</text>
-      <image href="assets/logo_naver.svg" xlink:href="assets/logo_naver.svg" x="46" y="324" width="20" height="20" preserveAspectRatio="xMidYMid meet"/>
-      <text x="74" y="339" font-size="13" fill="#444">네이버 뉴스</text>
-      <image href="assets/logo_police.svg" xlink:href="assets/logo_police.svg" x="46" y="356" width="20" height="20" preserveAspectRatio="xMidYMid meet"/>
-      <text x="74" y="371" font-size="13" fill="#444">경찰청 집회 게시판</text>
+      <image href="assets/logo_google_news.svg" xlink:href="assets/logo_google_news.svg" x="78" y="313" width="20" height="20" preserveAspectRatio="xMidYMid meet"/>
+      <text x="106" y="328" font-size="13" fill="#444">구글뉴스</text>
+      <image href="assets/logo_naver.svg" xlink:href="assets/logo_naver.svg" x="78" y="345" width="20" height="20" preserveAspectRatio="xMidYMid meet"/>
+      <text x="106" y="360" font-size="13" fill="#444">네이버 뉴스</text>
+      <image href="assets/logo_police.svg" xlink:href="assets/logo_police.svg" x="78" y="377" width="20" height="20" preserveAspectRatio="xMidYMid meet"/>
+      <text x="106" y="392" font-size="13" fill="#444">경찰청 집회 게시판</text>
       <text x="149" y="446" font-size="11.5" fill="#9a8560" text-anchor="middle">전국 언론보도·공개자료</text>
       <text x="149" y="464" font-size="11.5" fill="#9a8560" text-anchor="middle">자동 수집</text>
 
@@ -790,10 +1064,10 @@ body {
 
       <rect x="318" y="222" width="250" height="276" rx="12" fill="#fff" stroke="#E5E8EF"/>
       <text x="443" y="262" font-size="17" font-weight="700" fill="#0E7C6F" text-anchor="middle">② AI 분류·처리</text>
-      <text x="340" y="304" font-size="12.5" fill="#334">· 노이즈·중복 걸러내기</text>
-      <text x="340" y="332" font-size="12.5" fill="#334">· 관할·범죄유형 자동 분류</text>
-      <text x="340" y="360" font-size="12.5" fill="#334">· 파급도(0~100) 산정</text>
-      <text x="340" y="388" font-size="12.5" fill="#334">· 비슷한 기사 묶어 이슈화</text>
+      <text x="443" y="318" font-size="12.5" fill="#334" text-anchor="middle">노이즈·중복 걸러내기</text>
+      <text x="443" y="346" font-size="12.5" fill="#334" text-anchor="middle">관할·범죄유형 자동 분류</text>
+      <text x="443" y="374" font-size="12.5" fill="#334" text-anchor="middle">파급도(0~100) 산정</text>
+      <text x="443" y="402" font-size="12.5" fill="#334" text-anchor="middle">비슷한 기사 묶어 이슈화</text>
       <text x="443" y="452" font-size="11.5" fill="#5f9a90" text-anchor="middle">자체 규칙 + AI 함께 사용</text>
 
       <text x="590" y="346" font-size="10.5" fill="#9AA6B8" text-anchor="middle">결과 저장</text>
@@ -811,9 +1085,9 @@ body {
 
       <rect x="906" y="222" width="250" height="276" rx="12" fill="#fff" stroke="#E5E8EF"/>
       <text x="1031" y="262" font-size="17" font-weight="700" fill="#0B50D0" text-anchor="middle">④ 화면 · 사용자</text>
-      <text x="928" y="304" font-size="12.5" fill="#33455f">· 이슈·공판·공안 12화면</text>
-      <text x="928" y="332" font-size="12.5" fill="#33455f">· 브리핑·보도자료·문자풀</text>
-      <text x="928" y="360" font-size="12.5" fill="#33455f">· 지도·순위·검색·기간전환</text>
+      <text x="1031" y="332" font-size="12.5" fill="#33455f" text-anchor="middle">이슈·공판·공안 12화면</text>
+      <text x="1031" y="360" font-size="12.5" fill="#33455f" text-anchor="middle">브리핑·보도자료·문자풀</text>
+      <text x="1031" y="388" font-size="12.5" fill="#33455f" text-anchor="middle">지도·순위·검색·기간전환</text>
       <text x="1031" y="452" font-size="11.5" fill="#5f7fbf" text-anchor="middle">실무자가 바로 사용</text>
     </svg>
   </div>
@@ -825,7 +1099,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법 · 안전 설계</span>
-    <span class="sh-num">21</span>
+    <span class="sh-num">27</span>
   </div>
 
   <div class="hl">기관 상황에 맞춰 <span class="em">분리·연동을 선택</span>하는 안전한 구조입니다</div>
@@ -833,25 +1107,51 @@ body {
 
   <div class="visual">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;flex:1;">
-      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:26px 18px;display:flex;flex-direction:column;justify-content:center;gap:20px;">
-        <div style="font-size:16px;font-weight:700;color:var(--pt-dk);">기존 시스템(KICS 등)과 분리·연동 선택</div>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;"><span style="color:var(--pt);font-weight:700;">→</span> 기관 상황에 따라 <b style="color:var(--pt-dk);">기존 시스템과 완전 분리 또는 연동</b> 선택</div>
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 현재 비공개정보 없이 <b style="color:var(--pt-dk);">인터넷 공개자료만</b> 사용</div>
+      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:24px 20px;display:flex;flex-direction:column;justify-content:flex-start;gap:18px;">
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="42" y="28" width="86" height="34" rx="6" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <text x="85" y="49" font-size="13" fill="var(--sub)" font-weight="700" text-anchor="middle">KICS 등</text>
+          <rect x="192" y="28" width="86" height="34" rx="6" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/>
+          <text x="235" y="49" font-size="13" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">본 시스템</text>
+          <path d="M136 38 h48 M136 52 h48" stroke="#A6C3F5" stroke-width="2" stroke-dasharray="4 4"/>
+          <circle cx="160" cy="45" r="11" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/>
+          <path d="M155.5 45 h9 M160 40.5 v9" stroke="var(--pt)" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+        <div style="font-size:18.5px;font-weight:700;color:var(--pt-dk);word-break:keep-all;">기존 시스템(KICS 등)과<br>분리 · 연동 선택</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 기관 상황에 따라 <b style="color:var(--pt-dk);">완전 분리 또는 연동</b> 선택</div>
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 현재 비공개정보 없이 <b style="color:var(--pt-dk);">인터넷 공개자료만</b> 사용</div>
         </div>
       </div>
-      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:26px 18px;display:flex;flex-direction:column;justify-content:center;gap:20px;">
-        <div style="font-size:16px;font-weight:700;color:var(--pt-dk);">환각(Hallucination) 최소화</div>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 사실관계는 <b style="color:var(--pt-dk);">입력값·공개자료 안에서만</b> 작성</div>
-          <div style="font-size:14px;font-weight:500;color:var(--ink);white-space:nowrap;"><span style="color:var(--pt);font-weight:700;">→</span> 기존 입력 문서 샘플 통해 <b style="color:var(--pt-dk);">양식·문체 학습</b>, 내용은 미사용</div>
+      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:24px 20px;display:flex;flex-direction:column;justify-content:flex-start;gap:18px;">
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="112" y="14" width="60" height="64" rx="5" fill="#fff" stroke="#A6C3F5" stroke-width="1.6"/>
+          <line x1="122" y1="28" x2="162" y2="28" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <line x1="122" y1="40" x2="154" y2="40" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <line x1="122" y1="52" x2="160" y2="52" stroke="#C7D6F0" stroke-width="3" stroke-linecap="round"/>
+          <path d="M196 24 l16 6 v14 c0 12 -7 18 -16 22 c-9 -4 -16 -10 -16 -22 v-14 z" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/>
+          <path d="M189 45 l5 5 9 -10" stroke="var(--pt)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div style="font-size:18.5px;font-weight:700;color:var(--pt-dk);word-break:keep-all;">환각(Hallucination)<br>최소화</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 사실관계는 <b style="color:var(--pt-dk);">입력값·공개자료 안에서만</b> 작성</div>
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 문서 샘플로 <b style="color:var(--pt-dk);">양식·문체만 학습</b>, 내용은 미사용</div>
         </div>
       </div>
-      <div style="border:1px solid #B1CEFB;border-radius:10px;background:var(--pt-bg);padding:26px 18px;display:flex;flex-direction:column;justify-content:center;gap:20px;">
-        <div style="font-size:16px;font-weight:700;color:var(--pt-dk);">최종 판단은 사람이, AI는 보조만</div>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> AI는 <b style="color:var(--pt-dk);">수집·정리·초안작성</b>, 검토 및 판단은 담당자의 몫</div>
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 수집근거·분류기준 등은 <b style="color:var(--pt-dk);">관리자에 의해 수정 용이</b></div>
+      <div style="border:1px solid #B1CEFB;border-radius:10px;background:var(--pt-bg);padding:24px 20px;display:flex;flex-direction:column;justify-content:flex-start;gap:18px;">
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:#fff;border-radius:8px;">
+          <rect x="52" y="30" width="70px" height="26" rx="13" fill="#EAF1FC" stroke="#A6C3F5" stroke-width="1.4"/>
+          <text x="87" y="47" font-size="12" fill="var(--sub)" font-weight="700" text-anchor="middle">AI 초안</text>
+          <path d="M136 43 h30 M160 37 l7 6 -7 6" stroke="var(--pt)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="204" cy="34" r="9" fill="var(--pt)"/>
+          <path d="M190 66 c0 -10 6 -16 14 -16 s14 6 14 16" fill="var(--pt)"/>
+          <circle cx="248" cy="45" r="13" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/>
+          <path d="M242 45 l4.5 4.5 8.5 -9.5" stroke="var(--pt)" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div style="font-size:18.5px;font-weight:700;color:var(--pt-dk);word-break:keep-all;">최종 판단은 사람이,<br>AI는 보조만</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> AI는 <b style="color:var(--pt-dk);">수집·정리·초안작성</b>, 검토·판단은 담당자</div>
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 수집근거·분류기준은 <b style="color:var(--pt-dk);">관리자가 수정 용이</b></div>
         </div>
       </div>
     </div>
@@ -864,7 +1164,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법 · 폐쇄망 도입</span>
-    <span class="sh-num">22</span>
+    <span class="sh-num">28</span>
   </div>
 
   <div class="hl">망분리 환경에서도 <span class="em">운영할 수 있도록</span> 설계했습니다</div>
@@ -872,30 +1172,69 @@ body {
 
   <div class="visual">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;flex:1;">
-      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:28px 24px;display:flex;flex-direction:column;justify-content:center;gap:22px;">
-        <div style="font-size:16px;font-weight:700;color:var(--pt-dk);">외부 수집 → 내부 처리</div>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 공개정보 <b style="color:var(--pt-dk);">수집은 외부망</b>, <b style="color:var(--pt-dk);">분석·처리는 내부망</b>에서</div>
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 외부에서 수집한 자료만 내부로 들여와 활용</div>
+      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:24px 20px;display:flex;flex-direction:column;justify-content:flex-start;gap:18px;">
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <path d="M62 52 a14 14 0 0 1 4 -27 a18 18 0 0 1 34 -5 a13 13 0 0 1 8 24" fill="#fff" stroke="#A6C3F5" stroke-width="1.8"/>
+          <text x="85" y="46" font-size="11" fill="var(--sub)" font-weight="700" text-anchor="middle">외부망</text>
+          <path d="M126 45 h56 M172 38.5 l9 6.5 -9 6.5" stroke="var(--pt)" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <rect x="200" y="22" width="72" height="46" rx="6" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/>
+          <text x="236" y="42" font-size="11" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">내부망</text>
+          <text x="236" y="58" font-size="10" fill="var(--sub)" text-anchor="middle">분석 · 처리</text>
+        </svg>
+        <div style="font-size:18.5px;font-weight:700;color:var(--pt-dk);word-break:keep-all;">외부 수집 → 내부 처리</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> <b style="color:var(--pt-dk);">수집은 외부망</b>, <b style="color:var(--pt-dk);">분석·처리는 내부망</b>에서</div>
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 외부에서 수집한 자료만 내부로 반입</div>
         </div>
       </div>
-      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:28px 24px;display:flex;flex-direction:column;justify-content:center;gap:22px;">
-        <div style="font-size:16px;font-weight:700;color:var(--pt-dk);">내부 정보는 새어나가지 않음</div>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 애초에 <b style="color:var(--pt-dk);">공개된 언론보도·발표자료만</b> 사용</div>
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 내부 자료를 외부로 내보내지 않는 <b style="color:var(--pt-dk);">단방향</b> 구조</div>
+      <div style="border:1px solid var(--border);border-radius:10px;background:var(--bg-w);padding:24px 20px;display:flex;flex-direction:column;justify-content:flex-start;gap:18px;">
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:var(--pt-bg);border-radius:8px;">
+          <rect x="60" y="22" width="72" height="46" rx="6" fill="#fff" stroke="var(--pt)" stroke-width="1.8"/>
+          <text x="96" y="49" font-size="11" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">내부 자료</text>
+          <path d="M150 45 h44" stroke="#C7D6F0" stroke-width="2.4" stroke-linecap="round"/>
+          <circle cx="216" cy="45" r="15" fill="#fff" stroke="#D4574E" stroke-width="2.2"/>
+          <path d="M206 35 l20 20" stroke="#D4574E" stroke-width="2.2" stroke-linecap="round"/>
+          <rect x="248" y="34" width="20" height="17" rx="3" fill="var(--pt)"/>
+          <path d="M252 34 v-5 a6 6 0 0 1 12 0 v5" stroke="var(--pt)" stroke-width="2.4" fill="none"/>
+        </svg>
+        <div style="font-size:18.5px;font-weight:700;color:var(--pt-dk);word-break:keep-all;">내부 정보는 새어나가지 않음</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 애초에 <b style="color:var(--pt-dk);">공개 언론보도·발표자료만</b> 사용</div>
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 내부 자료를 내보내지 않는 <b style="color:var(--pt-dk);">단방향</b> 구조</div>
         </div>
       </div>
-      <div style="border:1px solid #B1CEFB;border-radius:10px;background:var(--pt-bg);padding:28px 24px;display:flex;flex-direction:column;justify-content:center;gap:22px;">
-        <div style="font-size:16px;font-weight:700;color:var(--pt-dk);">기관 절차에 맞춰 도입</div>
-        <div style="display:flex;flex-direction:column;gap:16px;">
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 세부 구성은 <b style="color:var(--pt-dk);">기관 정보보안 규정·절차</b>에 따라</div>
-          <div style="font-size:14px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 필요한 범위부터 <b style="color:var(--pt-dk);">단계적으로 적용</b></div>
+      <div style="border:1px solid #B1CEFB;border-radius:10px;background:var(--pt-bg);padding:24px 20px;display:flex;flex-direction:column;justify-content:flex-start;gap:18px;">
+        <svg viewBox="0 0 320 90" width="100%" style="display:block;background:#fff;border-radius:8px;">
+          <rect x="64" y="56" width="56" height="18" rx="4" fill="#DCE8FB"/>
+          <rect x="132" y="42" width="56" height="32" rx="4" fill="#A6C3F5"/>
+          <rect x="200" y="26" width="56" height="48" rx="4" fill="var(--pt)"/>
+          <text x="92" y="68.5" font-size="10.5" fill="var(--pt-dk)" font-weight="700" text-anchor="middle">시범</text>
+          <text x="160" y="61.5" font-size="10.5" fill="#fff" font-weight="700" text-anchor="middle">확대</text>
+          <text x="228" y="53" font-size="10.5" fill="#fff" font-weight="700" text-anchor="middle">전면 적용</text>
+        </svg>
+        <div style="font-size:18.5px;font-weight:700;color:var(--pt-dk);word-break:keep-all;">기관 절차에 맞춰 도입</div>
+        <div style="display:flex;flex-direction:column;gap:14px;">
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 세부 구성은 <b style="color:var(--pt-dk);">기관 정보보안 규정·절차</b>에 따라</div>
+          <div style="font-size:14.5px;font-weight:500;color:var(--ink);line-height:1.6;word-break:keep-all;"><span style="color:var(--pt);font-weight:700;">→</span> 필요한 범위부터 <b style="color:var(--pt-dk);">단계적으로 적용</b></div>
         </div>
       </div>
     </div>
-    <div class="note" style="text-align:center;font-size:13.5px;margin-top:14px;">핵심은 <b>외부에서 들여오기만 하고 내부 정보는 내보내지 않는</b> 방향이라는 점입니다 — 폐쇄망 도입의 구체적 방식은 기관 IT·보안 부서와 협의해 정할 수 있습니다.</div>
-    <div style="margin-top:10px;background:var(--pt-bg);border:1px solid #B1CEFB;border-radius:8px;padding:13px 20px;text-align:center;font-size:13.5px;color:var(--sub);"><b style="color:var(--pt-dk);">내부망 전용 AI 도입은 선택 사항</b> — AI 없이 자체 분류 규칙만으로도 동작하며, 기관에 이미 있는 내부 AI가 있으면 그대로 활용할 수 있습니다.</div>
+    <div class="note" style="text-align:center;font-size:13.5px;margin-top:14px;"><b>외부 정보를 수집하되, 내부 정보를 유출하지 않는 단방향 구조</b> — 구체적 도입 시기, 적용 범위·방식 등은 각 기관 IT·보안 부서 협의 하 단계적으로 정할 수 있습니다.</div>
+  </div>
+</section>
+
+<!-- ══════════════ 간지 · SECTION 05 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-num">29</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
+    <div class="divider-label">SECTION 05</div>
+    <div class="divider-title">적용 효과</div>
+    <div style="width:56px;height:4px;background:var(--pt);border-radius:2px;"></div>
+    <div class="divider-desc" style="margin-top:28px;">1시간 → 5분 · 감(感) → 수치 · 백지 → 표준 양식</div>
   </div>
 </section>
 
@@ -905,7 +1244,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">05 적용 효과</span>
-    <span class="sh-num">23</span>
+    <span class="sh-num">30</span>
   </div>
 
   <div class="hl">절감한 시간을 <span class="em">본연의 업무</span>에 재투입합니다</div>
@@ -939,13 +1278,28 @@ body {
   </div>
 </section>
 
+<!-- ══════════════ 간지 · SECTION 06 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-num">31</span>
+  </div>
+  <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
+    <div class="divider-label">SECTION 06</div>
+    <div class="divider-title">확산 가능성</div>
+    <div style="width:56px;height:4px;background:var(--pt);border-radius:2px;"></div>
+    <div class="divider-desc" style="margin-top:28px;">분류 기준 · 기관 구조 · 문서 양식 교체만으로 타 기관 적용 가능</div>
+  </div>
+</section>
+
 <!-- ══════════════ 20 · 확산 가능성 ① 개요 ══════════════ -->
 <section class="slide">
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 개요</span>
-    <span class="sh-num">24</span>
+    <span class="sh-num">32</span>
   </div>
 
   <div class="hl"><span class="em">수직</span>과 <span class="em">수평</span>, 두 방향으로 확산됩니다</div>
@@ -985,7 +1339,7 @@ body {
 
       <!-- 수평 축 -->
       <line x1="290" y1="403" x2="1152" y2="403" stroke="#0E7C6F" stroke-width="3" marker-end="url(#aht)"/>
-      <text x="720" y="448" font-size="12.5" font-weight="700" fill="#0E7C6F" text-anchor="middle">▶ 수평 — 법무부 내 기관으로  (분류 주제·기관 트리만 교체)</text>
+      <text x="720" y="448" font-size="12.5" font-weight="700" fill="#0E7C6F" text-anchor="middle">▶ 수평 — 법무부 내 실·국·본부로</text>
 
       <rect x="300" y="316" width="190" height="66" rx="10" fill="#E9F6F2" stroke="#BFE3DA"/>
       <text x="395" y="344" font-size="14" font-weight="700" fill="#0E7C6F" text-anchor="middle">교정본부</text>
@@ -1035,10 +1389,10 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 적용 예시</span>
-    <span class="sh-num">25</span>
+    <span class="sh-num">33</span>
   </div>
 
-  <div class="hl">세 항목만 바꾸면 <span class="em">이렇게 달라집니다</span></div>
+  <div class="hl">기관별 기준, 양식만 맞추면 <span class="em">확장 가능</span>합니다</div>
   <div class="sub-hl">현재 검증된 검찰 버전과 동일한 화면 구성으로, 기관별 적용 시 각 항목이 어떻게 바뀌는지 예시입니다.</div>
 
   <div class="visual">
@@ -1095,8 +1449,8 @@ body {
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
       <div class="box"><div class="box-label">수직 확산의 다음 단계</div>
         <div class="box-desc" style="font-size:13px;">같은 구조로 <b style="color:var(--ink);">타 정부부처 대변인실</b>, 나아가 <b style="color:var(--ink);">청와대의 국정 현안 언론 동향 종합</b>까지 — 보도자료를 내는 모든 기관이 대상입니다.</div></div>
-      <div class="box" style="background:var(--pt-bg);"><div class="box-label">폐쇄망 기관 대응</div>
-        <div class="box-desc" style="font-size:13px;">기관 내부망에 설치하는 <b style="color:var(--ink);">전용 AI</b>로 바꾸면, 인터넷이 차단된 환경에서도 똑같이 운영됩니다.</div></div>
+      <div class="box" style="background:var(--pt-bg);"><div class="box-label">망분리 기관 적용</div>
+        <div class="box-desc" style="font-size:13px;"><b style="color:var(--ink);">기관 내부 AI 프로그램</b> 등을 그대로 적용하여 사용할 수 있습니다.</div></div>
     </div>
   </div>
 </section>
@@ -1107,7 +1461,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 적용 화면 예시</span>
-    <span class="sh-num">26</span>
+    <span class="sh-num">34</span>
   </div>
 
   <div class="hl">교정·출입국에 적용하면 <span class="em">이런 화면</span>이 됩니다</div>
