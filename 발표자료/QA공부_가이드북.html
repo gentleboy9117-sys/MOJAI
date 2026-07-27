@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Q&A 공부 가이드북 — 아주 쉽게</title>
+<style>
+  :root { --pt:#256EF4; --pt-dk:#0B50D0; --pt-bg:#EFF5FF; --ink:#1D1D1D; --sub:#464C53; --muted:#8A949E; --border:#E6E8EA; --bg:#F4F5F6; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Pretendard','Malgun Gothic',-apple-system,sans-serif; background:var(--bg); color:var(--ink); line-height:1.7; }
+  .wrap { max-width:860px; margin:0 auto; padding:32px 20px 80px; }
+  h1 { font-size:30px; letter-spacing:-1px; margin:8px 0 6px; }
+  h2 { font-size:22px; margin:48px 0 14px; padding-left:12px; border-left:5px solid var(--pt); letter-spacing:-.5px; }
+  h3 { font-size:17px; margin:24px 0 8px; color:var(--pt-dk); }
+  .lead { color:var(--sub); font-size:15px; }
+  .tag { display:inline-block; background:var(--pt); color:#fff; font-size:12px; font-weight:700; border-radius:999px; padding:3px 12px; margin-bottom:10px; }
+  .card { background:#fff; border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin:12px 0; }
+  .term { background:#fff; border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:10px 0; }
+  .term b.word { font-size:16.5px; color:var(--ink); }
+  .easy { margin:6px 0 4px; }
+  .easy::before { content:"🧒 쉽게 말하면 — "; font-weight:700; color:var(--pt-dk); }
+  .ours { margin:4px 0; color:var(--sub); }
+  .ours::before { content:"🏛 우리 시스템에서는 — "; font-weight:700; color:var(--sub); }
+  .say { background:var(--pt-bg); border-radius:8px; padding:8px 14px; margin-top:8px; font-size:14px; }
+  .say::before { content:"🎤 심사위원 앞 한 줄 : "; font-weight:700; color:var(--pt-dk); }
+  details { background:#fff; border:1px solid var(--border); border-radius:10px; margin:10px 0; overflow:hidden; }
+  details summary { cursor:pointer; padding:15px 18px; font-weight:700; font-size:15.5px; list-style:none; }
+  details summary::before { content:"Q "; color:var(--pt); font-weight:800; }
+  details summary:hover { background:var(--pt-bg); }
+  details[open] summary { border-bottom:1px solid var(--border); background:var(--pt-bg); }
+  details .a { padding:14px 18px 16px; }
+  .a p { margin:6px 0; }
+  .a .ans::before { content:"✅ 모범답안 요지 — "; font-weight:700; color:var(--pt-dk); }
+  .a .why::before { content:"💡 왜 이렇게 답하나 — "; font-weight:700; color:#0E7C6F; }
+  .a .trap::before { content:"⚠️ 함정 — "; font-weight:700; color:#C0641F; }
+  .numbers { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:10px; }
+  .num { background:#fff; border:1px solid var(--border); border-radius:10px; padding:14px; text-align:center; }
+  .num b { display:block; font-size:22px; color:var(--pt-dk); }
+  .num span { font-size:13px; color:var(--sub); }
+  .rule { background:#fff; border-left:5px solid var(--pt); border-radius:0 10px 10px 0; padding:12px 18px; margin:10px 0; }
+  .flow { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin:14px 0; }
+  .fbox { background:#fff; border:1.5px solid var(--pt); color:var(--pt-dk); font-weight:700; border-radius:8px; padding:10px 16px; font-size:14.5px; }
+  .farr { color:var(--muted); font-weight:800; }
+  .note { font-size:13px; color:var(--muted); }
+  mark { background:#FFF3C4; padding:0 3px; border-radius:3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<span class="tag">본선 Q&A 공부용 · 혼자 보기</span>
+<h1>아주 쉽게 이해하는 우리 시스템 가이드북</h1>
+<p class="lead">기술을 몰라도 되도록, 전부 <b>비유</b>로 설명했습니다. 각 용어의 「🎤 한 줄」만 외우면 답변이 됩니다.<br>
+질문 카드는 <b>클릭하면 답이 열립니다</b> — 먼저 스스로 답해보고 열어서 확인하세요.</p>
+
+<h2>0. 우리 시스템, 한 문장 + 한 그림</h2>
+<div class="card">
+  <p><b>"아주 부지런한 신문 스크랩 조수"</b>를 컴퓨터로 만든 것입니다. 새벽부터 신문을 전부 읽고(수집), 사건마다 어느 검찰청 관할인지·무슨 범죄인지 서랍에 분류하고(분류), 얼마나 시끄러운 사건인지 점수를 매기고(파급도), 아침에 보고서 초안까지 책상에 올려놓습니다(산출물). <mark>판단과 결재는 사람이 합니다.</mark></p>
+  <div class="flow">
+    <div class="fbox">① 수집<br><span class="note">구글·네이버 뉴스, 경찰청 게시판</span></div><span class="farr">→</span>
+    <div class="fbox">② 분류<br><span class="note">관할 67곳 · 유형 16개</span></div><span class="farr">→</span>
+    <div class="fbox">③ 정리<br><span class="note">이슈 묶음 · 파급도 · 지도 · 순위</span></div><span class="farr">→</span>
+    <div class="fbox">④ 작성<br><span class="note">브리핑 · 보도자료 · 문자풀 초안</span></div>
+  </div>
+</div>
+
+<h2>1. 용어 사전 — 비유로 한 번에</h2>
+
+<h3>수집 관련</h3>
+<div class="term"><b class="word">크롤링 (자동 수집)</b>
+  <p class="easy">로봇이 신문 가판대를 돌면서 새 기사를 바구니에 담아오는 것.</p>
+  <p class="ours">구글뉴스·네이버뉴스·전국 지방경찰청 공개 게시판을 주기적으로 돌며 자동으로 담아옵니다.</p>
+  <div class="say">"공식 제공 채널(RSS·API)과 국민 공개 게시물만, 서버에 부담 없는 주기로 수집합니다."</div>
+</div>
+<div class="term"><b class="word">RSS</b>
+  <p class="easy">신문사가 "새 기사 나왔어요!"라고 보내주는 <b>구독 소식지</b>. 우리가 몰래 가져가는 게 아니라, 나눠주는 걸 받는 것.</p>
+  <p class="ours">구글뉴스가 '검찰', '중대재해' 같은 주제별로 새 기사 목록을 RSS로 제공 → 30여 개 주제를 구독 중.</p>
+  <div class="say">"RSS는 언론이 공식적으로 배포하는 채널이라 저작권·약관 부담이 적습니다."</div>
+</div>
+<div class="term"><b class="word">API</b>
+  <p class="easy">가게의 <b>주문 창구</b>. 정해진 방식으로 "네이버야, '검찰 수사' 기사 줘"라고 주문하면 정해진 형식으로 내주는 것.</p>
+  <p class="ours">네이버 뉴스 검색 API로 원문 주소·요약을 받아옵니다.</p>
+  <div class="say">"네이버가 공식 제공하는 뉴스 검색 API를 사용합니다."</div>
+</div>
+
+<h3>분류 관련 (외부 AI 위원 최다 출제 구역)</h3>
+<div class="term"><b class="word">규칙 기반(키워드) 분류</b>
+  <p class="easy">"제목에 '마약'이 있으면 마약 서랍, '성남'이 있으면 성남 서랍" — <b>단어 보고 서랍에 넣는 규칙표</b>. 빠르고, 공짜고, 왜 그렇게 분류했는지 항상 설명 가능.</p>
+  <p class="ours">검찰청 67곳의 관할 지역·경찰서 사전 + 범죄유형 16개의 키워드 사전으로 1차 분류. 근거 키워드가 기사마다 저장됨.</p>
+  <div class="say">"1차는 규칙 기반이라 AI 없이도 동작하고, 분류 근거를 항상 제시할 수 있습니다."</div>
+</div>
+<div class="term"><b class="word">LLM (대형언어모델)</b>
+  <p class="easy">책을 어마어마하게 많이 읽어서 말귀를 잘 알아듣는 <b>똑똑한 조수</b>. 단, 가끔 아는 척(거짓말)을 함.</p>
+  <p class="ours">규칙으로 확신이 안 설 때만 이 조수에게 물어보는 <b>보조</b> 역할. 주인공이 아님.</p>
+  <div class="say">"LLM은 규칙 분류의 신뢰도가 낮을 때만 보조로 씁니다. 그래서 비용도 환각 위험도 낮습니다."</div>
+</div>
+<div class="term"><b class="word">하이브리드 분류</b>
+  <p class="easy">규칙표(정확·공짜)가 먼저 하고, 애매한 것만 조수(LLM)에게 넘기는 <b>2단 구조</b>.</p>
+  <div class="say">"규칙 우선 + LLM 보조의 하이브리드입니다."</div>
+</div>
+<div class="term"><b class="word">신뢰도 (확신 점수)</b>
+  <p class="easy">분류할 때 "이거 얼마나 확실해?"를 0~1 점수로 매긴 것. 검찰청 이름이 직접 나오면 0.95(거의 확실), 지역 이름으로 추측하면 0.5~0.68(자신 없음).</p>
+  <p class="ours"><mark>확신 점수 0.6 미만이면 아예 저장하지 않음</mark> — "헷갈리면 안 긁어온다"는 우리 대원칙.</p>
+  <div class="say">"신뢰도가 기준 미달이면 수집 자체를 포기합니다. 오분류 1건이 기사 100건보다 해롭기 때문입니다."</div>
+</div>
+<div class="term"><b class="word">환각 (할루시네이션)</b>
+  <p class="easy">AI가 모르는 걸 물어보면 <b>그럴듯한 거짓말을 지어내는 현상</b>. 없는 판례를 만들어내는 것처럼.</p>
+  <p class="ours">3중 방어 — ① 사실관계는 담당자 입력값·공개 기사 안에서만 ② 기존 문서는 양식·문체만 배우고 내용은 안 씀 ③ 모든 결과물은 '참고용 초안' 표시 + 사람 검토. 그리고 모니터링 화면은 애초에 '생성'이 아니라 '수집·집계'라 환각이 낄 자리가 없음.</p>
+  <div class="say">"환각은 '생성' 단계에서만 생기는데, 저희 생성은 입력값 범위로 묶어두고 최종 검토는 사람이 합니다."</div>
+</div>
+<div class="term"><b class="word">파인튜닝 vs 프롬프트</b>
+  <p class="easy">파인튜닝 = 조수를 <b>과외시켜서 아예 뇌를 바꾸는 것</b>(비싸고 데이터 유출 걱정). 프롬프트 = 조수에게 <b>업무지시서를 잘 써주는 것</b>(싸고 안전).</p>
+  <p class="ours">파인튜닝 안 했음. 공개 보도자료 5건의 '형식'을 분석해 업무지시서(프롬프트 규칙)로 만든 것뿐 → 학습 데이터 유출 이슈가 원천 차단.</p>
+  <div class="say">"별도 모델 학습 없이 프롬프트 규칙만 사용해, 학습 데이터 유출 이슈가 없습니다."</div>
+</div>
+<div class="term"><b class="word">클러스터링 (이슈 묶기)</b>
+  <p class="easy">같은 사건을 다룬 신문 기사 30장을 <b>클립 하나로 묶는 것</b>. "기사 30건"이 아니라 "사건 1건(보도 30건)"으로 보게 됨.</p>
+  <p class="ours">제목 정규화·키워드 유사도로 동일 사건 기사를 하나의 '이슈'로 묶음. 현재 약 2,600개 이슈.</p>
+  <div class="say">"동일 사건 중복 보도를 하나의 이슈로 묶어 '사건 단위'로 봅니다."</div>
+</div>
+<div class="term"><b class="word">파급도 (0~100)</b>
+  <p class="easy">사건이 <b>얼마나 시끄러운지 점수</b>. ① 기사가 몇 건인지 ② 몇 개 언론사가 다뤘는지 ③ 얼마나 빨리 퍼지는지를 더해서 계산.</p>
+  <p class="ours">담당자의 '감'을 대체하는 게 아니라 뒷받침하는 보조 수치. 산정 근거가 이슈마다 저장되고 가중치는 관리자가 조정 가능.</p>
+  <div class="say">"보도량·출처 수·확산 속도 기반의 정량 지표이고, 산정 근거가 저장됩니다."</div>
+</div>
+
+<h3>저장·배포 관련</h3>
+<div class="term"><b class="word">DB (데이터베이스) / PostgreSQL</b>
+  <p class="easy">기사 8,700장을 넣어두는 <b>거대한 서류 캐비닛</b>. PostgreSQL은 전 세계 정부·기업이 쓰는 표준 캐비닛 브랜드(공짜·오픈소스).</p>
+  <div class="say">"표준 오픈소스 DB(PostgreSQL)라 기관 내부 서버로 그대로 옮길 수 있습니다."</div>
+</div>
+<div class="term"><b class="word">GitHub (형상관리)</b>
+  <p class="easy">코드의 <b>타임머신 보관소</b>. 언제 뭘 고쳤는지 전부 기록되고, 언제든 과거로 되돌릴 수 있음.</p>
+  <div class="say">"전체 개발 이력이 GitHub에 보존돼 있어 누구든 인수·검증할 수 있습니다."</div>
+</div>
+<div class="term"><b class="word">자동 배포 (Netlify)</b>
+  <p class="easy">원고만 넘기면 <b>인쇄·제본·전국 배포까지 자동</b>으로 되는 인쇄소. 코드를 저장하면 몇 분 뒤 홈페이지에 반영됨.</p>
+  <div class="say">"코드 저장만 하면 자동으로 서비스에 반영되는 자동 배포 체계입니다."</div>
+</div>
+<div class="term"><b class="word">스냅샷</b>
+  <p class="easy">인기 서류를 매번 캐비닛에서 찾지 않도록 <b>미리 복사해서 카운터에 쌓아두는 것</b>. 그래서 100명이 동시에 봐도 안 느려짐.</p>
+  <div class="say">"조회 화면은 사전 생성된 스냅샷을 읽는 구조라 사용자가 늘어도 부하가 거의 없습니다."</div>
+</div>
+<div class="term"><b class="word">온프레미스 vs 클라우드</b>
+  <p class="easy">온프레미스 = <b>우리 건물 안 서버</b>. 클라우드 = <b>빌려 쓰는 남의 건물 서버</b>. 지금은 시연용으로 클라우드, 기관 도입 땐 우리 건물로 이사.</p>
+  <div class="say">"현재 클라우드는 공개 기사 메타데이터만 있고, 도입 시 내부 서버로 이전을 전제로 합니다. 특정 클라우드 종속 기능이 없어 이사가 쉽습니다."</div>
+</div>
+
+<h3>보안·제도 관련 (운영단장·담당관 출제 구역)</h3>
+<div class="term"><b class="word">망분리 / 폐쇄망</b>
+  <p class="easy">인터넷과 연결되지 않은 <b>바깥과 차단된 사무실</b>. 공공기관은 중요한 일을 이 안에서 함.</p>
+  <p class="ours">바깥(외부망)에서 신문을 모아 → 안(내부망)으로 들여보내 처리. 안의 서류는 절대 바깥으로 안 나감.</p>
+  <div class="say">"외부 수집 → 내부 처리의 구조라 망분리 환경에 맞고, 반입 방식은 기관 보안 규정에 따라 협의합니다."</div>
+</div>
+<div class="term"><b class="word">단방향</b>
+  <p class="easy"><b>우편함</b> — 넣을 수만 있고 꺼낼 수는 없음. 정보가 바깥→안 한 방향으로만 흐름.</p>
+  <div class="say">"외부 정보를 수집하되 내부 정보를 유출하지 않는 단방향 구조입니다."</div>
+</div>
+<div class="term"><b class="word">KICS (형사사법정보시스템)</b>
+  <p class="easy">검찰·법원·경찰이 사건 기록을 다루는 <b>진짜 내부 업무 시스템</b>. 우리 시스템과는 완전히 별개.</p>
+  <p class="ours">완전 분리 상태. 수사정보·사건기록은 단 1건도 안 다룸 — 오직 '이미 신문에 난 것'만. 연동은 나중에 기관이 원하면 선택.</p>
+  <div class="say">"KICS와 완전히 분리돼 있고, 형사사법정보는 일절 다루지 않습니다. 연동 여부는 운영기관이 결정할 옵션입니다."</div>
+</div>
+<div class="term"><b class="word">KRDS</b>
+  <p class="easy">정부 홈페이지들이 다 비슷하게 생기도록 정한 <b>정부 공식 디자인 규칙집</b>(행안부).</p>
+  <div class="say">"KRDS 범정부 디자인시스템을 적용해 공공 서비스 전환 시 화면 재작업이 최소화됩니다."</div>
+</div>
+<div class="term"><b class="word">SSO / 권한 관리</b>
+  <p class="easy">SSO = <b>사원증 하나로 모든 문</b>이 열리는 것. 권한 관리 = 방마다 들어갈 수 있는 사람을 정하는 것.</p>
+  <div class="say">"도입 시 기관 인증체계(SSO)에 연동하고 열람·관리 권한을 분리하는 전제로 설계했습니다."</div>
+</div>
+<div class="term"><b class="word">정적 분석 / 보안성 검토</b>
+  <p class="easy">건물 다 짓고 입주 전에 받는 <b>안전 진단</b>. 코드에 위험한 구멍이 없는지 도구와 전문가가 검사.</p>
+  <div class="say">"AI가 짠 코드도 사람이 리뷰했고, 도입 단계에서 정보보안 부서의 정적 분석·보안성 검토를 전제로 합니다."</div>
+</div>
+<div class="term"><b class="word">바이브 코딩</b>
+  <p class="easy">설계사에게 <b>말로 요구사항을 설명하면 설계사(AI)가 도면을 그리고</b>, 내가 검수하는 방식. 나는 '무엇을 만들지'를 알고, AI는 '어떻게 만드는지'를 앎.</p>
+  <div class="say">"개발자가 아닌 실무자가 요구사항을 말로 정의하고 AI가 코드를 작성하는 방식으로, 검사 1인이 완성했습니다."</div>
+</div>
+
+<h2>2. ★최우선 15문항 — 셀프 테스트 (클릭해서 확인)</h2>
+<p class="note">순서: 질문 읽기 → 소리 내어 답해보기 → 클릭해서 요지·이유 확인</p>
+
+<details><summary>지금 실제로 작동하는 시스템인가?</summary><div class="a">
+  <p class="ans">실제 운영 중. 지금 휴대폰으로도 접속 가능. 기사 약 8,700건·이슈 약 2,600건·오늘 아침 데이터까지 반영.</p>
+  <p class="why">완성도 30점의 핵심 질문. '증거'(숫자+즉석 접속 제안)로 답하는 게 백 마디 설명보다 강함.</p>
+</div></details>
+
+<details><summary>분류는 어떤 방식? LLM인가?</summary><div class="a">
+  <p class="ans">하이브리드 — 1차 규칙 기반(관할 67곳·유형 16개 키워드 사전 + 신뢰도), 애매할 때만 LLM 보조. AI 없이도 동작.</p>
+  <p class="why">"LLM에 다 맡겼다"고 하면 환각·비용 공격이 들어옴. "규칙이 주인공, LLM은 보조"가 방어의 축.</p>
+  <p class="trap">"그럼 규칙은 누가 만드나?" → "제가 검찰 실무 지식으로 만들었고, 관리자가 사전만 고치면 즉시 반영됩니다."</p>
+</div></details>
+
+<details><summary>분류 정확도는? 오분류 나면?</summary><div class="a">
+  <p class="ans">원칙부터 — "헷갈리면 아예 수집하지 않는다"(신뢰도 0.6 미만 저장 안 함). 현재 관할 미상·유형 미분류 0건. 오분류 발견 시 개별 수정 + 동일 패턴 소급 정정 + 기준(키워드) 보완까지 세트로.</p>
+  <p class="why">정확도 %를 못 대는 상황에서 최선의 답은 '운영 원칙'과 '0건'이라는 검증 가능한 사실.</p>
+  <p class="trap">"정확도 수치를 대라" → "수치화된 벤치마크는 시범 운영에서 검증 데이터셋으로 산출하겠습니다. 현재는 미분류 0 원칙으로 관리합니다."</p>
+</div></details>
+
+<details><summary>환각은 어떻게 막나?</summary><div class="a">
+  <p class="ans">3중 — ① 사실관계는 입력값·공개자료 안에서만 ② 문서는 양식·문체만 학습 ③ '참고용 초안' 표시+사람 검토. 모니터링은 생성이 아니라 집계라 환각 여지 없음.</p>
+  <p class="why">외부 AI 위원의 단골 질문. "모니터링(집계)과 생성(초안)을 분리해서 설명"하면 전문성 있게 들림.</p>
+</div></details>
+
+<details><summary>폐쇄망에서 진짜 되나? 지금 인터넷이잖나.</summary><div class="a">
+  <p class="ans">오늘은 심사 편의용 인터넷 데모. 설계는 외부 수집→내부 처리 단방향이라 망분리에 맞음. 반입 세부는 기관 IT·보안 부서와 협의해 단계적으로.</p>
+  <p class="why">"세부 방식까지 다 정해놨다"고 하면 오히려 공격받음. 방향은 확실히 + 세부는 협의, 이게 공무원식 정답.</p>
+</div></details>
+
+<details><summary>KICS와 연동? 형사사법정보는?</summary><div class="a">
+  <p class="ans">완전 분리. 수사정보 일절 안 다룸 — 인터넷 공개자료만. 연동은 향후 기관이 결정할 옵션.</p>
+  <p class="why">운영단장 관할 질문. '분리'를 먼저 못박아야 보안 후속 질문이 순해짐.</p>
+</div></details>
+
+<details><summary>개인정보 침해 소지는?</summary><div class="a">
+  <p class="ans">언론이 이미 공개 보도한 기사·공공기관 공개 게시물만 수집 — 별도 개인정보 수집 없음. 산출물은 실명 단정 회피('A씨')+무죄추정 표현, 공개 판단은 공보 담당자.</p>
+</div></details>
+
+<details><summary>저작권 문제는?</summary><div class="a">
+  <p class="ans">원문 전문 무단 저장·표시 안 함 — 제목·출처·링크 중심, 클릭 시 원문 이동. 기사별 라이선스 구분 필드로 관리. 도입 시 뉴스 이용 계약으로 정식화.</p>
+</div></details>
+
+<details><summary>'1시간→5분' 근거는?</summary><div class="a">
+  <p class="ans">본인 담당 시절 실측 경험 기준(검색 수십 회+수기 분류+정리=1시간 이상 → 대시보드·Top10·브리핑 3단계=5분 내외). 시범 운영으로 복수 담당자 실측치 확보가 다음 단계.</p>
+  <p class="why">과장하면 신뢰를 잃음. '내 경험 + 검증 계획'의 정직한 구조가 오히려 점수를 받음.</p>
+</div></details>
+
+<details><summary>다른 검사·직원이 써봤나?</summary><div class="a">
+  <p class="ans">현재는 본인 실사용 단계. 본선 후 소속청 담당자 시범 사용 계획 — 설치 없는 웹이라 시범 확대 비용 0.</p>
+</div></details>
+
+<details><summary>개발자 1명인데 인사이동 나면 유지보수는?</summary><div class="a">
+  <p class="ans">표준 스택(TypeScript·Next.js·PostgreSQL)+GitHub 전체 이력이라 어느 개발 조직이든 인수 가능. 정식 도입 시 법무부 정보화 조직/유지보수 사업자 이관 + 본인은 도메인 지식 전수.</p>
+  <p class="why">'나 없으면 안 돌아간다'는 인상이 최악. '표준이라 누구나 이어받는다'가 정답 프레임.</p>
+</div></details>
+
+<details><summary>기존 서비스(빅카인즈 등)와 뭐가 다른가?</summary><div class="a">
+  <p class="ans">기존 서비스에 없는 3가지 — ① 검찰청 67곳 '관할' 개념 ② 범죄유형·공판·공안이라는 검찰 업무 분류 ③ 검찰 양식 산출물(브리핑·보도자료·문자풀). 범용 검색을 검찰 업무 구조로 재구성한 것.</p>
+</div></details>
+
+<details><summary>확산에 실제로 뭘 바꿔야 하나?</summary><div class="a">
+  <p class="ans">'설정' 3가지 — ① 분류 기준(유형 키워드) ② 기관 구조(조직표) ③ 문서 양식. 엔진 코드는 그대로. 기관당 수 주 예상.</p>
+  <p class="trap">"수 주 근거는?" → "코드 수정이 아니라 사전·조직표 데이터 교체 수준이기 때문입니다. 실제 관할 기준 보완을 하루 안에 반영한 경험이 있습니다."</p>
+</div></details>
+
+<details><summary>법무부 도입 시 어떤 순서?</summary><div class="a">
+  <p class="ans">3단계 — ① 검찰 1~2개 청 시범(즉시 가능) ② 실·국 확산(설정 교체) ③ 망분리 정식 도입(내부 이전+보안성 검토). 각 단계가 다음 단계의 검증 자료.</p>
+</div></details>
+
+<details><summary>AI가 놓치거나 잘못 판단하면 책임은?</summary><div class="a">
+  <p class="ans">시스템은 판단하지 않음 — 수집·분류·초안까지만. 채택·최종 문안은 담당자. 화면에 '공개 보도 기준 참고용' 명시. 도구가 책임 구조를 바꾸지 않음.</p>
+</div></details>
+
+<h2>3. 숫자 암기 카드</h2>
+<div class="numbers">
+  <div class="num"><b>8,700+</b><span>수집 기사(건)</span></div>
+  <div class="num"><b>2,600+</b><span>이슈 클러스터(건)</span></div>
+  <div class="num"><b>67곳</b><span>검찰청 관할 체계</span></div>
+  <div class="num"><b>16개</b><span>범죄유형 분류</span></div>
+  <div class="num"><b>15개</b><span>화면 수</span></div>
+  <div class="num"><b>13/18</b><span>집회 수집 지방경찰청</span></div>
+  <div class="num"><b>0건</b><span>관할 미상·유형 미분류</span></div>
+  <div class="num"><b>0.6</b><span>수집 신뢰도 하한선</span></div>
+  <div class="num"><b>1시간→5분</b><span>일일 모니터링</span></div>
+  <div class="num"><b>5건</b><span>양식 학습한 공개 보도자료</span></div>
+  <div class="num"><b>월 수만 원</b><span>현재 운영 비용</span></div>
+  <div class="num"><b>3가지</b><span>확산 시 교체 요소</span></div>
+</div>
+
+<h2>4. 답변 공식 — 이것만 지키면 절반은 성공</h2>
+<div class="rule"><b>① 결론부터 한 문장</b> — "예/아니오/~입니다"로 시작. 배경 설명으로 시작하면 5분이 사라짐.</div>
+<div class="rule"><b>② 근거·수치 한 문장</b> — 숫자 카드에서 하나 꺼내 붙이기.</div>
+<div class="rule"><b>③ 한계는 인정 + 보완 방향</b> — "다만 ~는 시범 운영에서 검증하겠습니다."</div>
+<div class="rule"><b>모르면</b> — "정확한 수치는 서면으로 보완드리겠습니다. 설계 방향은 ~입니다." (아는 척 절대 금지 — 외부 AI 위원은 바로 알아챕니다)</div>
+<div class="rule"><b>불리하면 원칙으로 회귀</b> — "정확도가 기사 수보다 중요합니다" / "판단은 사람의 몫입니다" / "공개자료만·단방향·세부는 협의"</div>
+
+<p class="note" style="margin-top:40px;">※ 상세 50문항 전체는 「예상QA_50문항.md」 참고. 이 가이드북은 그 답들을 이해하고 소화하기 위한 공부용입니다.</p>
+</div>
+</body>
+</html>
