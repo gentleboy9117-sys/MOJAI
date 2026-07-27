@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>예상 Q&A 51문항 — 모범답안</title>
+<style>
+  :root { --pt:#256EF4; --pt-dk:#0B50D0; --pt-bg:#EFF5FF; --ink:#1D1D1D; --sub:#464C53; --muted:#8A949E; --border:#E6E8EA; --bg:#F4F5F6; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Pretendard','Malgun Gothic',-apple-system,sans-serif; background:var(--bg); color:var(--ink); line-height:1.8; }
+  .wrap { max-width:880px; margin:0 auto; padding:32px 22px 80px; }
+  .nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .nav a { font-size:13px; font-weight:600; color:var(--sub); background:#fff; border:1px solid var(--border); border-radius:999px; padding:6px 14px; text-decoration:none; }
+  .nav a.on { background:var(--pt); border-color:var(--pt); color:#fff; }
+  h1 { font-size:28px; letter-spacing:-1px; margin:8px 0 6px; }
+  h2 { font-size:20px; margin:42px 0 12px; padding-left:12px; border-left:5px solid var(--pt); letter-spacing:-.4px; }
+  h2 small { color:var(--muted); font-size:13.5px; font-weight:500; margin-left:8px; }
+  .lead { color:var(--sub); font-size:15px; }
+  .tag { display:inline-block; background:var(--pt); color:#fff; font-size:12px; font-weight:700; border-radius:999px; padding:3px 12px; margin-bottom:10px; }
+  .meta { background:#fff; border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:16px 0 8px; font-size:14px; }
+  .meta li { margin:4px 0; }
+  .ctrl { margin:14px 0 6px; display:flex; gap:8px; }
+  .ctrl button { font-family:inherit; font-size:13px; font-weight:600; color:var(--sub); background:#fff; border:1px solid var(--border); border-radius:8px; padding:6px 14px; cursor:pointer; }
+  .ctrl button:hover { background:var(--pt-bg); color:var(--pt-dk); }
+  details { background:#fff; border:1px solid var(--border); border-radius:10px; margin:8px 0; overflow:hidden; }
+  details.star { border-color:#F0C147; box-shadow:0 0 0 1px #F0C147 inset; }
+  details summary { cursor:pointer; padding:13px 18px; font-weight:700; font-size:15px; list-style:none; display:flex; gap:8px; align-items:baseline; }
+  details summary .qn { color:var(--pt); font-weight:800; flex-shrink:0; }
+  details summary .st { color:#C99700; flex-shrink:0; }
+  details summary:hover { background:var(--pt-bg); }
+  details[open] summary { border-bottom:1px solid var(--border); background:var(--pt-bg); }
+  details .a { padding:13px 18px 15px; font-size:14.5px; }
+  details .a::before { content:"답변 — "; font-weight:800; color:var(--pt-dk); }
+  .a b { color:var(--pt-dk); }
+  .rule { background:#fff; border-left:5px solid var(--pt); border-radius:0 10px 10px 0; padding:11px 16px; margin:8px 0; font-size:14px; }
+  .note { font-size:13px; color:var(--muted); }
+  mark { background:#FFF3C4; padding:0 3px; border-radius:3px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="nav">
+  <a href="발표대본_5분.html">① 발표대본</a>
+  <a href="시연대본_5분.html">② 시연대본</a>
+  <a class="on" href="예상QA_51문항.html">③ 예상 Q&A 51</a>
+  <a href="QA공부_가이드북.html">④ 개념 가이드북</a>
+</div>
+
+<span class="tag">본선 3부 · Q&A 5분</span>
+<h1>예상 Q&A 51문항 — 모범답안</h1>
+<p class="lead">질문을 클릭하면 답이 열립니다. <span style="color:#C99700;font-weight:700;">★ 표시 16문항</span>이 최우선 암기 대상입니다. 노란 테두리 카드가 ★ 문항입니다.</p>
+
+<div class="meta"><ul style="margin:0;padding-left:18px;">
+  <li><b>심사위원</b>: 총 15명(내부 13 · 외부 AI 전문위원 2) — 정책기획단장 · 형사사법공통시스템운영단장 · 정보화데이터담당관 · 담당 사무관 · 외부 AI 전문위원</li>
+  <li><b>답변 3원칙</b>: ① 결론부터 한 문장 ② 근거·수치 한 문장 ③ 한계는 인정하되 보완 방향으로 마무리</li>
+  <li><b>즉답 곤란 시</b>: "정확한 수치는 추후 서면으로 보완드리겠습니다. 다만 설계 방향은 ~입니다."</li>
+  <li>Q&A 5분 = 실질 4~6문항</li>
+</ul></div>
+
+<div class="ctrl">
+  <button onclick="document.querySelectorAll('details').forEach(d=>d.open=true)">전체 펼치기</button>
+  <button onclick="document.querySelectorAll('details').forEach(d=>d.open=false)">전체 접기</button>
+  <button onclick="document.querySelectorAll('details:not(.star)').forEach(d=>d.style.display=d.style.display==='none'?'':'none')">★만 보기 / 전체 보기</button>
+</div>
+
+<h2>A. 완성도·기술 구현 <small>완성도 30점 — 정보화데이터담당관·사무관</small></h2>
+
+<details class="star"><summary><span class="qn">Q1</span><span class="st">★</span>지금 실제로 작동하는 시스템인가, 시연용 목업인가?</summary><div class="a">실제 운영 중인 시스템입니다. 인터넷 주소만 있으면 지금 이 자리에서 휴대폰으로도 접속하실 수 있습니다. 현재 기사 약 8,700건·이슈 클러스터 약 2,600건·전국 집회 정보가 실데이터로 쌓여 있고, 오늘 아침 데이터까지 반영돼 있습니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q2</span><span class="st">★</span>데이터는 어떻게, 얼마나 자주 수집되나?</summary><div class="a">구글뉴스 RSS 약 30개 토픽과 네이버 뉴스 API, 그리고 전국 지방경찰청 집회 공개 게시판을 자동 수집합니다. 주기 실행 스케줄러로 돌며, 1회 수집에 수백 건 단위로 저장·분류·집계까지 자동 완료됩니다.</div></details>
+
+<details><summary><span class="qn">Q3</span>개발 기간과 규모는?</summary><div class="a">검사 1인이 Claude Code와의 대화(바이브 코딩)로 수개월간 업무 외 시간에 개발했습니다. 화면 15개, 검찰청 67곳 관할 체계, 16개 범죄유형 분류가 포함된 풀스택 웹 서비스입니다.</div></details>
+
+<details><summary><span class="qn">Q4</span>기술 스택은 왜 이렇게 선택했나?</summary><div class="a">개발은 Claude Code, 형상관리는 GitHub, 배포는 Netlify 자동 배포, DB는 PostgreSQL(Supabase)입니다. 모두 표준적이고 대체 가능한 구성이라, 기관 도입 시 내부 인프라(온프레미스 DB·내부 서버)로 그대로 치환할 수 있습니다.</div></details>
+
+<details><summary><span class="qn">Q5</span>장애가 나면 어떻게 되나? 백업은?</summary><div class="a">수집이 일시 실패해도 기존 데이터로 화면은 정상 동작하고, 다음 주기에 자동 복구됩니다. 코드는 GitHub에 전 버전이 보존되고 DB는 관리형 서비스의 자동 백업을 사용합니다. 기관 도입 시에는 기관 백업 정책을 그대로 따르면 됩니다.</div></details>
+
+<details><summary><span class="qn">Q6</span>동시 사용자가 많아지면 감당되나?</summary><div class="a">조회 화면은 사전 생성된 스냅샷(정적 데이터)을 읽는 구조라 부하가 거의 없습니다. 수집·분류는 사용자 수와 무관하게 백그라운드에서 돌기 때문에 청 단위 확대에도 구조 변경이 필요 없습니다.</div></details>
+
+<details><summary><span class="qn">Q7</span>모바일에서도 되나?</summary><div class="a">예. 반응형으로 개발해 PC·모바일 브라우저 모두 지원합니다. 별도 설치 없이 주소 접속만으로 사용합니다.</div></details>
+
+<details><summary><span class="qn">Q8</span>검색은 어떤 범위까지 되나?</summary><div class="a">상단 통합검색에서 기사 제목·내용·검찰청·범죄유형을 한 번에 검색하고, 각 화면에서도 기간(금일·금주·금월) 전환과 청 이름 검색이 됩니다.</div></details>
+
+<details><summary><span class="qn">Q9</span>정부 표준을 따랐다고 했는데 구체적으로?</summary><div class="a">행안부 KRDS(범정부 디자인 시스템) 가이드에 맞춰 화면을 구성했습니다. 공공 서비스로 전환 시 UI 재작업 비용이 최소화됩니다.</div></details>
+
+<details><summary><span class="qn">Q10</span>시연 중 오류가 나면? (사전 대비용)</summary><div class="a">(침착하게) 새로고침 후 재시도하고, 안 되면 "라이브 서비스 특성상 일시 지연이 있을 수 있습니다. 준비된 화면으로 이어서 설명드리고, 시연 말미에 다시 보여드리겠습니다"로 전환. ※ 발표 전 백업: PDF·스크린샷·시연 영상.</div></details>
+
+<h2>B. AI·분류 정확도 <small>혁신성 20점 — 외부 AI 전문위원</small></h2>
+
+<details class="star"><summary><span class="qn">Q11</span><span class="st">★</span>관할·범죄유형 분류는 어떤 방식인가? LLM인가?</summary><div class="a">하이브리드입니다. 1차는 자체 구축한 규칙 기반 분류(검찰청 67곳 관할·지역·경찰서 키워드 사전 + 16개 범죄유형 키워드 사전, 신뢰도 스코어링)이고, 신뢰도가 낮은 경우에만 LLM이 보조합니다. 그래서 AI 없이도 기본 동작하고, 비용과 환각 위험이 모두 낮습니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q12</span><span class="st">★</span>분류 정확도는 얼마나 되나? 오분류는?</summary><div class="a">정확도보다 먼저 말씀드릴 것은 원칙입니다 — <b>"헷갈리면 아예 수집하지 않는다"</b>. 관할 추정 신뢰도가 기준(0.6) 미만이거나 유형을 특정하지 못하면 저장 자체를 하지 않아, 현재 DB에 관할 미상·유형 미분류가 <b>0건</b>입니다. 오분류 발견 시에는 개별 수정에 그치지 않고 동일 패턴 전체를 소급 정정하고 분류 기준(키워드·필터)까지 보완하는 체계로 운영합니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q13</span><span class="st">★</span>환각(할루시네이션)은 어떻게 막나?</summary><div class="a">세 겹입니다. ① 사실관계는 담당자 입력값과 공개 기사 안에서만 작성하고 ② 기존 문서는 양식·문체만 학습하며 내용은 가져오지 않고 ③ 모든 산출물은 '참고용 초안'으로 표시되어 담당자 검토를 전제로 합니다. 특히 모니터링 화면은 생성이 아니라 '수집·분류·집계'라 환각이 개입할 자리가 없습니다.</div></details>
+
+<details><summary><span class="qn">Q14</span>파급도 0~100은 어떻게 산정하나? 자의적이지 않나?</summary><div class="a">보도량(기사 수), 출처 수(서로 다른 언론사), 확산 속도(24시간 내 증가율) 등 공개 보도 기반의 정량 지표를 가중 합산합니다. 산정 근거가 각 이슈에 저장되며, 가중치는 관리자가 조정할 수 있습니다. '감(感)'을 대체하는 게 아니라 판단의 보조 수치입니다.</div></details>
+
+<details><summary><span class="qn">Q15</span>동일 사건 중복 기사는 어떻게 묶나?</summary><div class="a">제목 정규화와 핵심 키워드 유사도로 클러스터링해 하나의 '이슈'로 묶고, 기사 수·출처 수를 이슈 단위로 집계합니다. 현재 약 2,600개 이슈로 관리됩니다.</div></details>
+
+<details><summary><span class="qn">Q16</span>LLM은 어떤 모델을 쓰나? 종속성 문제는?</summary><div class="a">특정 모델에 종속되지 않게 설계했습니다. 분류 보조 LLM은 교체 가능한 인터페이스로 두었고, ① AI 없이 규칙만 ② 상용 API ③ 기관 내부망 AI, 세 단계 중 기관 상황에 맞게 선택하면 됩니다.</div></details>
+
+<details><summary><span class="qn">Q17</span>학습 데이터는 뭘 썼나? 파인튜닝했나?</summary><div class="a">파인튜닝은 하지 않았습니다. 보도자료·문자풀은 서울중앙지검이 <b>공개 배포한 보도자료 5건</b>의 형식·문체만 분석해 프롬프트 규칙으로 만든 것이고, 내용은 사용하지 않습니다. 별도 모델 학습이 없어 학습 데이터 유출 이슈가 원천적으로 없습니다.</div></details>
+
+<details><summary><span class="qn">Q18</span>AI 생성 코드(바이브 코딩)의 품질·보안은 누가 검증하나?</summary><div class="a">타입 검사와 빌드 검증을 상시 통과시키고, 입력 검증·권한 처리 같은 보안 요소는 사람이 코드 리뷰로 확인했습니다. 기관 도입 단계에서는 정보보안 부서의 정적 분석·보안성 검토를 받는 것을 전제로 합니다.</div></details>
+
+<details><summary><span class="qn">Q19</span>기존 뉴스 모니터링 서비스(빅카인즈 등)와 뭐가 다른가?</summary><div class="a">세 가지가 없습니다 — 기존 서비스에는 ① 검찰청 67곳 '관할' 개념 ② 범죄유형·공판·공안이라는 검찰 업무 분류 ③ 브리핑·보도자료·문자풀 등 검찰 양식 산출물이 없습니다. 범용 검색을 검찰 업무 구조로 재구성한 것이 차별점입니다.</div></details>
+
+<details><summary><span class="qn">Q20</span>AI가 판단을 대신하면 책임 소재는?</summary><div class="a">이 시스템은 판단하지 않습니다. 수집·분류·정리·초안까지만 하고, 채택 여부와 최종 문안은 담당자가 결정합니다. 화면에도 '공개 보도 기준 참고용'임을 명시했습니다.</div></details>
+
+<details><summary><span class="qn">Q21</span>분류 근거를 사용자가 확인할 수 있나? (설명가능성)</summary><div class="a">예. 기사마다 매칭 키워드, 관할 추정 방식(직접 언급/지역 추정/경찰서 추정), 신뢰도가 저장되고, 신뢰도가 낮으면 '검토 필요'로 표시됩니다.</div></details>
+
+<details><summary><span class="qn">Q22</span>데이터가 늘면 분류 기준 관리가 안 되지 않나?</summary><div class="a">분류 기준이 코드에 흩어져 있지 않고 키워드 사전(관할·유형·필터)으로 모여 있어, 관리자가 사전만 수정하면 즉시 반영되고 기존 데이터 소급 정정도 스크립트로 일괄 수행합니다.</div></details>
+
+<h2>C. 보안·폐쇄망·데이터 <small>형사사법공통시스템운영단장·정보화데이터담당관</small></h2>
+
+<details class="star"><summary><span class="qn">Q23</span><span class="st">★</span>내부망(폐쇄망)에서 진짜 돌아가나? 지금 이건 인터넷이잖나.</summary><div class="a">오늘 시연은 심사 편의를 위한 인터넷망 데모입니다. 설계 자체가 '외부에서 공개정보를 수집하고, 내부에서 처리'하는 단방향 구조라 망분리 환경에 맞습니다. 반입 방식 등 세부 구성은 기관 망연계 절차와 보안 규정에 따라 IT·보안 부서와 협의해 단계적으로 정하면 됩니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q24</span><span class="st">★</span>KICS와 연동할 것인가? 형사사법정보는?</summary><div class="a">현재는 KICS 등 내부 시스템과 <b>완전히 분리</b>되어 있고, 형사사법정보·수사정보는 일절 다루지 않습니다. 인터넷 공개자료(언론보도·경찰청 공개 게시판)만 사용합니다. 향후 필요 시 연동은 옵션이며, 그 여부·범위는 운영기관이 결정할 사안입니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q25</span><span class="st">★</span>개인정보 침해 소지는 없나?</summary><div class="a">수집 대상이 언론이 이미 공개 보도한 기사와 공공기관 공개 게시물뿐이라 별도의 개인정보 수집이 없습니다. 산출물(보도자료·문자풀)은 무죄추정·피의사실공표 유의 원칙에 따라 실명 단정 표현을 피하고 'A씨' 방식 표기를 기본으로 하며, 최종 공개 여부는 공보 담당자가 판단합니다.</div></details>
+
+<details><summary><span class="qn">Q26</span>언론사 저작권 문제는?</summary><div class="a">원문 전문을 무단 저장·표시하지 않는 것을 원칙으로 설계했습니다. 제목·출처·링크 중심으로 표시하고 클릭 시 원문으로 이동하며, 기사별로 저장·표시 가능 여부(라이선스 구분)를 필드로 관리합니다. 기관 도입 시 뉴스 이용 계약(예: 언론진흥재단)으로 정식화할 수 있습니다.</div></details>
+
+<details><summary><span class="qn">Q27</span>크롤링이 상대 사이트 약관·robots 위반 아닌가?</summary><div class="a">구글뉴스 RSS와 네이버 뉴스 API는 공식 제공 채널이고, 경찰청 집회 게시판은 국민 공개 게시물입니다. 수집 주기도 서버에 부담 없는 수준으로 제한했습니다.</div></details>
+
+<details><summary><span class="qn">Q28</span>계정·권한 관리는?</summary><div class="a">현재는 시연용 관리자 계정 구조이며, 기관 도입 시 기관 SSO·내부 인증체계에 연동하고 열람/관리 권한을 분리하는 것을 전제로 설계돼 있습니다.</div></details>
+
+<details><summary><span class="qn">Q29</span>외부(해외 클라우드)에 정부 데이터를 두는 건 문제 아닌가?</summary><div class="a">지금 올라가 있는 데이터는 전부 '이미 공개된 언론보도' 메타데이터라 비밀성이 없습니다. 기관 도입 시에는 동일 코드를 내부 서버·내부 DB로 이전하는 것을 전제로 하며, 특정 클라우드 종속 기능을 쓰지 않아 이전이 쉽습니다.</div></details>
+
+<details><summary><span class="qn">Q30</span>수집 서버가 해킹되면?</summary><div class="a">외부 수집 구간은 공개정보만 다루므로 유출될 비밀 자체가 없고, 내부망 반입은 단방향입니다. 최악의 경우에도 피해 범위가 '공개 기사 목록'에 한정되도록 설계했습니다.</div></details>
+
+<details><summary><span class="qn">Q31</span>로그·감사는 남나?</summary><div class="a">수집 이력, 분류 근거, 산출물 생성 기록이 DB에 남습니다. 기관 도입 시 감사 로그 정책에 맞춰 확장 가능합니다.</div></details>
+
+<h2>D. 업무적합성·실무 <small>25점 — 정책기획단장·사무관</small></h2>
+
+<details class="star"><summary><span class="qn">Q32</span><span class="st">★</span>'1시간 → 5분' 근거가 있나?</summary><div class="a">제 담당 시절 실측 경험 기준입니다. 포털 검색 수십 회·수기 분류·문서 정리로 매일 1시간 이상 걸리던 흐름이, 대시보드 확인 → Top10·지도 파악 → 브리핑 생성의 3단계로 5분 내외가 됩니다. 다만 개인 경험 기반이므로, 시범 운영으로 복수 담당자 실측치를 확보하는 것이 다음 단계입니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q33</span><span class="st">★</span>실제로 다른 검사·직원이 써봤나?</summary><div class="a">현재는 제가 실사용하며 다듬은 단계입니다. 본선 이후 소속청 기획·공보 담당자 시범 사용으로 피드백을 받는 계획이며, 설치가 필요 없는 웹 방식이라 시범 확대에 비용이 들지 않습니다.</div></details>
+
+<details><summary><span class="qn">Q34</span>담당자가 이 시스템 결과만 믿고 놓치면 누가 책임지나?</summary><div class="a">시스템은 '누락 방지 보조'입니다. 기존 수작업 대비 수집 범위가 훨씬 넓고(전국 단위 자동 수집), 그럼에도 최종 확인 책임은 지금과 동일하게 담당자에게 있습니다. 도구가 책임 구조를 바꾸지 않습니다.</div></details>
+
+<details><summary><span class="qn">Q35</span>브리핑 품질이 실제 보고서 수준이 되나?</summary><div class="a">핵심 이슈 TOP5·주요 검찰청·유형 통계를 표준 목차로 정리한 '초안'입니다. 그대로 제출용이 아니라, 백지에서 시작하지 않게 하는 용도이고 다운로드 후 편집합니다.</div></details>
+
+<details><summary><span class="qn">Q36</span>보도자료 초안이 공보 규정(형사사건 공개금지 규정 등)에 맞나?</summary><div class="a">실제 배포된 공개 보도자료의 구조(유의문구·공보관 연락처·공개요건·목차)를 따르고, 단정 표현 대신 혐의 단계 표현을 쓰도록 설계했습니다. 다만 공개 가능 여부 판단 자체는 규정에 따라 공보 담당자·공보관이 하는 영역으로 남겨두었습니다.</div></details>
+
+<details><summary><span class="qn">Q37</span>왜 기획·공안·공보 업무인가? 수사 지원은?</summary><div class="a">세 업무는 '공개 정보'만으로 자동화 효과가 큰 영역이라 첫 대상으로 잡았습니다. 수사 지원은 비공개 정보를 다뤄 보안·법적 검토가 선행돼야 하므로 이번 범위에서 의도적으로 제외했습니다.</div></details>
+
+<details><summary><span class="qn">Q38</span>지청 단위 소규모 청에도 필요한가?</summary><div class="a">오히려 소규모 청일수록 전담 인력이 없어 효과가 큽니다. 저 역시 지청에서 겸무하며 개발 동기를 얻었고, 화면에서 '우리 청'만 검색해 보는 데 10초면 됩니다.</div></details>
+
+<details><summary><span class="qn">Q39</span>언론보도가 놓치는 사건은 못 잡지 않나?</summary><div class="a">맞습니다. 이 시스템의 범위는 '공개 보도 동향'입니다. 보도되지 않은 사건 관리는 KICS 등 내부 시스템의 영역이고, 본 시스템은 그것을 대체하는 것이 아니라 언론 대응·동향 파악이라는 별도 업무를 자동화합니다.</div></details>
+
+<details><summary><span class="qn">Q40</span>집회 정보가 13/18개 지방청만 수집되는데?</summary><div class="a">5개 지방청은 게시판 형식이 달라 미수집이며 화면에 수집 현황을 투명하게 표시합니다. 형식 대응은 기술적으로 가능하고, 근본적으로는 경찰청과의 기관 간 협조로 표준화되면 완전해집니다 — 오히려 기관 도입의 필요성을 보여주는 대목입니다.</div></details>
+
+<h2>E. 운영·유지보수 <small>형사사법공통시스템운영단장</small></h2>
+
+<details class="star"><summary><span class="qn">Q41</span><span class="st">★</span>개발자가 검사 한 명인데, 인사이동 나면 유지보수는 누가 하나?</summary><div class="a">표준 스택(TypeScript·Next.js·PostgreSQL)과 GitHub 전체 이력, 문서화 덕분에 어느 개발 조직이든 인수 가능합니다. 정식 도입 시에는 법무부 정보화 조직이나 유지보수 사업자에게 이관하는 것이 당연한 수순이고, 저는 도메인 지식 전수로 지원하겠습니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q42</span><span class="st">★</span>Claude Code가 있어야 수집·운영이 되는 것 아닌가? 공직 도입이 어려운데 대안은?</summary><div class="a">아닙니다. Claude Code는 <b>집을 지을 때 쓴 건축 도구</b>였고, 완성된 집에 사는 데는 필요 없습니다. 수집·분류·집계·초안 생성은 완성된 코드가 자체 실행되는 것이라 <b>운영에는 Claude Code가 전혀 필요 없고</b>, 지금 이 순간도 Claude Code 없이 자동으로 돌고 있습니다. 운영 중 쓰이는 AI는 분류 보조·초안 생성용 LLM인데 이것도 별개 문제로 ① AI 없이 규칙만 ② 상용 API ③ 기관 내부망 AI 중 선택할 수 있습니다. 향후 기능 추가·유지보수도 표준 기술 스택이라 일반 개발 인력이 AI 코딩 도구 없이 수행할 수 있습니다 — Claude Code는 '개발을 빠르게 한 수단'이었지 '시스템의 부품'이 아닙니다.</div></details>
+
+<details><summary><span class="qn">Q43</span>운영 비용은 얼마나 드나?</summary><div class="a">현재 월 수만 원 수준(관리형 DB·호스팅)입니다. AI를 안 쓰면 LLM 비용이 0이고, 쓰더라도 분류 보조에 한정해 호출을 최소화한 구조입니다. 기관 도입 시 내부 인프라를 쓰면 별도 클라우드 비용도 없습니다.</div></details>
+
+<details><summary><span class="qn">Q44</span>분류 기준(예: 검찰청 관할 개편)이 바뀌면?</summary><div class="a">관할·조직 구조가 코드가 아닌 데이터(관할 사전·조직 테이블)로 분리돼 있어, 개편 시 사전만 갱신하면 됩니다. 실제로 이번에 광주 관할 이슈를 사전 보완으로 하루 안에 반영했습니다.</div></details>
+
+<details><summary><span class="qn">Q45</span>새 범죄유형(예: 신종 사기)이 나오면?</summary><div class="a">유형 키워드 사전에 항목을 추가하면 신규 수집분부터 즉시 적용되고, 기존 데이터도 일괄 재분류 스크립트로 소급 반영됩니다.</div></details>
+
+<details><summary><span class="qn">Q46</span>이런 개인 개발 시스템을 공공이 도입한 선례·절차 문제는?</summary><div class="a">공모전 수상작의 소스 기증·고도화 사업화는 공공에서 일반적인 경로입니다. 저는 소스와 문서를 전부 제공할 의사가 있고, 이후 정식 감리·보안성 검토를 거쳐 기관 표준 절차로 도입되는 것이 바람직하다고 생각합니다.</div></details>
+
+<h2>F. 확산·정책 <small>15점 — 정책기획단장</small></h2>
+
+<details class="star"><summary><span class="qn">Q47</span><span class="st">★</span>타 기관 확산에 실제로 뭘 바꿔야 하나? 말처럼 쉬운가?</summary><div class="a">바꾸는 것은 세 가지 '설정'입니다 — ① 분류 기준(범죄유형 → 기관 관심 주제 키워드) ② 기관 구조(검찰청 67곳 → 해당 기관 조직표) ③ 문서 양식(보도자료 → 기관 표준 서식). 수집·분류·집계·초안 엔진 코드는 그대로입니다. 예컨대 교정본부용이면 유형 사전을 교정시설·수용자 관련 주제로 바꾸는 수준이라, 기관당 수 주 내 적용을 예상합니다.</div></details>
+
+<details class="star"><summary><span class="qn">Q48</span><span class="st">★</span>법무부 차원에서 도입한다면 어떤 순서를 제안하나?</summary><div class="a">3단계를 제안드립니다. ① 검찰 1~2개 청 시범(현재 상태로 즉시 가능) ② 법무부 대변인실·교정본부 등 실·국 확산(설정 교체) ③ 망분리 정식 도입(내부 인프라 이전 + 보안성 검토). 각 단계가 다음 단계의 검증 자료가 됩니다.</div></details>
+
+<details><summary><span class="qn">Q49</span>대변인실·타 부처에 이미 유사 모니터링 용역이 있는데 중복 아닌가?</summary><div class="a">기존 용역은 대부분 '키워드 스크랩 전달'입니다. 본 시스템은 기관 조직 구조로 자동 분류하고 통계를 축적하며 산출물 초안까지 이어지는 점이 다르고, 무엇보다 기관이 소스를 보유해 용역비 없이 내재화할 수 있습니다.</div></details>
+
+<details><summary><span class="qn">Q50</span>예산이 필요하다면 어디에 얼마나?</summary><div class="a">크게 세 항목입니다 — 내부 인프라 이전·보안성 검토(초기), 유지보수 인력(경상), 선택 시 내부망 AI 도입(선택). 엔진 신규 개발비가 들지 않는 것이 일반 정보화 사업과의 가장 큰 차이입니다.</div></details>
+
+<details><summary><span class="qn">Q51</span>이 대회가 끝나면 이 시스템은 어떻게 되나? (마무리용)</summary><div class="a">수상 여부와 무관하게 제 업무에 계속 쓰면서 다듬겠습니다. 다만 한 사람의 도구로 남기보다, 법무부의 검토를 거쳐 전국 기획·공안·공보 담당자의 아침을 바꾸는 공용 도구가 되기를 바랍니다. 그 첫 검증을 이 자리에서 받고 싶습니다.</div></details>
+
+<h2>부록 — 답변 운영 전략 (5분)</h2>
+<div class="rule"><b>문항당 30초 이내</b> — 결론(10초)→근거(15초)→마무리(5초). 길어질 것 같으면 "핵심만 말씀드리면"으로 압축</div>
+<div class="rule"><b>모르는 세부 기술 질문</b>(외부 AI 위원) — 아는 범위 + "세부 구현은 서면 보완드리겠습니다". 아는 척 금지</div>
+<div class="rule"><b>보안 질문 방어선 고정</b> — "공개자료만 · 단방향 · 세부는 기관 IT·보안 부서 협의"</div>
+<div class="rule"><b>수치 암기</b> — 기사 약 8,700건 · 이슈 약 2,600건 · 화면 15개 · 검찰청 67곳 · 유형 16개 · 지방청 13/18 수집 · 관할 미상 0 · 1시간→5분</div>
+<div class="rule"><b>불리한 질문일수록 원칙으로 회귀</b> — "정확도가 기사 수보다 중요합니다"(Q12) · "판단은 사람의 몫입니다"(Q20)</div>
+
+</div>
+</body>
+</html>

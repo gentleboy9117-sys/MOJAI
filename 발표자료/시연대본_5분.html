@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>시연 대본 (5분) — 클릭 단위</title>
+<style>
+  :root { --pt:#256EF4; --pt-dk:#0B50D0; --pt-bg:#EFF5FF; --ink:#1D1D1D; --sub:#464C53; --muted:#8A949E; --border:#E6E8EA; --bg:#F4F5F6; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Pretendard','Malgun Gothic',-apple-system,sans-serif; background:var(--bg); color:var(--ink); line-height:1.8; }
+  .wrap { max-width:860px; margin:0 auto; padding:32px 22px 80px; }
+  .nav { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .nav a { font-size:13px; font-weight:600; color:var(--sub); background:#fff; border:1px solid var(--border); border-radius:999px; padding:6px 14px; text-decoration:none; }
+  .nav a.on { background:var(--pt); border-color:var(--pt); color:#fff; }
+  h1 { font-size:28px; letter-spacing:-1px; margin:8px 0 6px; }
+  h2 { font-size:20px; margin:40px 0 12px; padding-left:12px; border-left:5px solid var(--pt); }
+  .lead { color:var(--sub); font-size:15px; }
+  .tag { display:inline-block; background:var(--pt); color:#fff; font-size:12px; font-weight:700; border-radius:999px; padding:3px 12px; margin-bottom:10px; }
+  .meta { background:#fff; border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:16px 0 8px; font-size:14px; }
+  .check { background:#fff; border:1px solid var(--border); border-radius:10px; padding:14px 20px; margin:10px 0; font-size:14.5px; }
+  .check li { margin:5px 0; }
+  .step { background:#fff; border:1px solid var(--border); border-radius:10px; padding:16px 20px; margin:12px 0; }
+  .step .head { display:flex; align-items:center; gap:10px; margin-bottom:8px; flex-wrap:wrap; }
+  .time { background:var(--ink); color:#fff; font-size:12.5px; font-weight:700; border-radius:6px; padding:3px 9px; font-variant-numeric:tabular-nums; }
+  .tab { background:var(--pt-bg); color:var(--pt-dk); font-size:13px; font-weight:700; border-radius:6px; padding:3px 10px; }
+  .hl { background:#C0641F; color:#fff; font-size:12px; font-weight:700; border-radius:6px; padding:3px 9px; }
+  .click { display:block; background:var(--pt-bg); border-left:4px solid var(--pt); border-radius:0 6px 6px 0; padding:6px 12px; margin:8px 0 4px; font-size:14px; font-weight:600; color:var(--pt-dk); }
+  .say { font-size:15px; margin:4px 0; }
+  .say b { color:var(--pt-dk); }
+  table { width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; font-size:14px; }
+  th, td { padding:10px 14px; border-bottom:1px solid var(--border); text-align:left; vertical-align:top; }
+  th { background:var(--pt-bg); color:var(--pt-dk); font-size:13.5px; }
+  tr:last-child td { border-bottom:none; }
+  .tip { background:#fff; border-left:5px solid var(--pt); border-radius:0 10px 10px 0; padding:11px 16px; margin:8px 0; font-size:14px; }
+  .note { font-size:13px; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="nav">
+  <a href="발표대본_5분.html">① 발표대본</a>
+  <a class="on" href="시연대본_5분.html">② 시연대본</a>
+  <a href="예상QA_51문항.html">③ 예상 Q&A 51</a>
+  <a href="QA공부_가이드북.html">④ 개념 가이드북</a>
+</div>
+
+<span class="tag">본선 2부 · 라이브 시연</span>
+<h1>시연 대본 — 5분 (클릭 단위)</h1>
+<p class="lead">시연 주소: <b>steady-pudding-700503.netlify.app</b> (백업: localhost:3000)<br>
+원칙: 말보다 화면이 먼저 움직인다 — <b>클릭하면서 말하기</b>. 한 화면 30초 안팎, 스크롤은 천천히.</p>
+
+<h2>발표 30분 전 체크리스트</h2>
+<div class="check"><ul style="margin:0;padding-left:18px;">
+  <li>시연 PC에서 라이브 주소 접속 확인 + <b>전 화면 한 번씩 열어 캐시 워밍</b></li>
+  <li>브라우저 탭 5개 미리 열기: <b>① 대시보드 ② 이슈 모니터링 ③ 공안 모니터링 ④ 브리핑 ⑤ 보도자료 초안</b></li>
+  <li>브라우저 확대율 110~125%(뒷자리 가독), 즐겨찾기바·확장프로그램 숨김</li>
+  <li>알림·팝업 차단(윈도우 집중 지원), 와이파이+핫스팟 이중화</li>
+  <li>백업 3종: 시연 영상 파일(오프라인) · PDF · 전체 화면 스크린샷 폴더</li>
+  <li>당일 아침 자동수집 정상 반영 확인(대시보드 날짜·오늘 집회 수)</li>
+</ul></div>
+
+<div class="step"><div class="head"><span class="time">0:00</span><span class="tab">탭① 대시보드</span></div>
+<p class="say">"방금 보신 화면들을, 지금 <b>실제로 운영 중인 시스템</b>에서 그대로 보여드리겠습니다. 지금 보시는 것은 오늘 아침 자동 수집된 실데이터입니다."</p>
+<span class="click">【상단 요약 카드 4개를 마우스로 훑기】</span>
+<p class="say">"출근 직후 이 한 화면입니다 — 오늘 공개 집회 몇 건, 관할 검찰청 몇 곳, 관련 보도까지 숫자로 바로 확인됩니다."</p>
+<span class="click">【이슈·공판·공안 TOP 5 영역으로 스크롤】</span>
+<p class="say">"이슈·공판·공안 각 영역의 TOP 5가 파급도 순으로 정리돼 있습니다." <span class="note">(~0:40)</span></p></div>
+
+<div class="step"><div class="head"><span class="time">0:40</span><span class="tab">탭② 이슈 모니터링</span></div>
+<span class="click">【탭② 클릭 → 주요 이슈 Top 10】</span>
+<p class="say">"이슈 모니터링입니다. 밤사이 수백 건의 기사가 자동 수집·분류돼, <b>파급도 순 Top 10</b>으로 정렬됩니다. 각 이슈에 관할 검찰청과 범죄유형이 자동으로 붙습니다."</p>
+<span class="click">【Top 1~2번 이슈의 파급도 숫자를 가리키며】</span>
+<p class="say">"이 파급도는 보도량·출처 수·확산 속도로 산정한 0~100 수치입니다. '감'이 아니라 숫자로 판단을 뒷받침합니다."</p>
+<span class="click">【이슈 하나의 제목 클릭 → 기사 원문 새 탭 → 바로 닫기】</span>
+<p class="say">"제목을 누르면 기사 원문으로 바로 이동합니다."</p>
+<span class="click">【기간 토글: 금일 → 금주 클릭 → 다시 금일】</span>
+<p class="say">"버튼 하나로 금일에서 금주 누적으로 — 지도·통계가 즉시 전환됩니다." <span class="note">(~1:40)</span></p></div>
+
+<div class="step"><div class="head"><span class="time">1:40</span><span class="tab">전국 지도 + 검찰청별</span></div>
+<span class="click">【같은 화면에서 전국 지도로 스크롤】</span>
+<p class="say">"전국 검찰청별 이슈 분포입니다. 색이 진할수록 이슈가 많은 지역이고, 실제 검찰청 위치가 지도에 표시됩니다."</p>
+<span class="click">【상단 탭 '검찰청별 보기' 클릭】</span>
+<p class="say">"조직도에서 고검을 펼치면 산하 지검·지청까지 내려가고 —"</p>
+<span class="click">【검색창에 '성남' 입력】</span>
+<p class="say">"우리 청 이름만 검색하면, 전국 순위와 전일 대비 증감이 바로 나옵니다. 지청 단위 담당자에게 가장 요긴한 기능입니다." <span class="note">(~2:30)</span></p></div>
+
+<div class="step"><div class="head"><span class="time">2:30</span><span class="tab">공판 모니터링</span></div>
+<span class="click">【좌측 메뉴 '공판 모니터링' 클릭】</span>
+<p class="say">"공판입니다. 법원 선고 보도만 정밀 선별해 주요 선고사건 Top 10으로 모읍니다 — 주요 선고를 놓쳐서 보고가 누락되는 일을 막아줍니다." <span class="note">(~2:50)</span></p></div>
+
+<div class="step"><div class="head"><span class="time">2:50</span><span class="tab">탭③ 공안 모니터링</span></div>
+<span class="click">【탭③ 클릭 → 개요 잠깐 → '집회·시위 일정' 탭 클릭】</span>
+<p class="say">"공안입니다. 전국 지방경찰청 공개 게시판에서 집회 신고를 자동 수집하고, <b>집회 장소 기준으로 관할 검찰청을 자동 분류</b>합니다."</p>
+<span class="click">【오늘/내일 버튼 클릭 한 번】</span>
+<p class="say">"오늘과 내일 일정을 날짜별·관할별로 봅니다."</p>
+<span class="click">【'노동·중대재해 보도' 탭 클릭】</span>
+<p class="say">"노동·중대재해, 집회·시위, 선거 보도는 분야별 전용 화면에서 조직도·순위로 집계됩니다." <span class="note">(~3:30)</span></p></div>
+
+<div class="step"><div class="head"><span class="time">3:30</span><span class="tab">탭④ 브리핑</span><span class="hl">★ 하이라이트 — 절대 사수</span></div>
+<span class="click">【탭④ 클릭 → 기간·검찰청·범죄유형 드롭다운 선택】</span>
+<p class="say">"이제 산출물입니다. 기간, 검찰청, 범죄유형 — 조건만 고르고,"</p>
+<span class="click">【'브리핑 생성' 클릭】</span>
+<p class="say">"클릭 두 번이면… 보고용 1페이지 브리핑 초안이 완성됩니다."</p>
+<span class="click">【결과를 위→아래로 천천히 스크롤】</span>
+<p class="say">"핵심 이슈 TOP 5, 주요 검찰청, 유형 통계가 표준 목차로 정리되고, 파일로 바로 다운로드됩니다. 매일 아침 보고 초안이 이렇게 나옵니다." <span class="note">(~4:10)</span></p></div>
+
+<div class="step"><div class="head"><span class="time">4:10</span><span class="tab">탭⑤ 보도자료 · 문자풀</span></div>
+<span class="click">【탭⑤ 클릭 → '샘플 입력 불러오기' 클릭】</span>
+<p class="say">"보도자료 초안입니다. 발표기관·담당부서·죄명·처분 — 기초 정보만 입력하면,"</p>
+<span class="click">【'생성' 클릭 → 결과 상단만 보여주기】</span>
+<p class="say">"실제 배포 양식 그대로 — 유의문구, 공보관 연락처, 공개요건, 목차까지 자동 구성됩니다. 사실관계는 입력값만 사용하고, 없는 내용은 지어내지 않습니다."</p>
+<span class="click">【좌측 메뉴 '문자풀 초안' 클릭, 화면만 잠깐】</span>
+<p class="say">"기자단 문자풀도 같은 방식입니다 — 서술식·개조식 전환까지 지원합니다." <span class="note">(~4:50)</span></p></div>
+
+<div class="step"><div class="head"><span class="time">4:50</span><span class="tab">탭① 복귀 · 마무리</span></div>
+<p class="say">"수집부터 산출물까지 하나의 흐름 — 방금 보신 전부가 지금 이 순간에도 자동으로 돌아가고 있습니다. 이상 시연을 마치고 질문 받겠습니다. 감사합니다." <span class="note">(5:00)</span></p></div>
+
+<h2>돌발 대응</h2>
+<table>
+  <tr><th style="width:32%;">상황</th><th>대응</th></tr>
+  <tr><td>페이지 로딩 지연</td><td>"라이브 서비스라 잠시 지연될 수 있습니다" → 새로고침 1회 → 안 되면 다음 화면 진행, 말미 재시도</td></tr>
+  <tr><td>인터넷 단절</td><td>핫스팟 전환(30초) → localhost:3000 → 그것도 안 되면 시연 영상 재생으로 전환</td></tr>
+  <tr><td>생성 지연(브리핑·보도자료)</td><td>"생성되는 동안 설명드리면 —" 하고 기능 설명 이어가기(무음 공백 금지)</td></tr>
+  <tr><td>원문 링크가 이상한 기사로 연결</td><td>바로 탭 닫고 "원문 연결 기능입니다" 한 줄로 통과(재클릭 금지)</td></tr>
+  <tr><td>예상 못 한 데이터 표시</td><td>그 자리 수정 시도 절대 금지 — "실데이터 특성입니다" 후 진행</td></tr>
+</table>
+
+<h2>시간 조절</h2>
+<div class="tip"><b>밀릴 때 스킵 순서</b>: 공판(20초) → 문자풀(15초) → 지도 스크롤(15초)</div>
+<div class="tip"><b>남을 때 추가</b>: 키워드 통합검색 1회('성남' 검색 → 제목·내용·검찰청 통합 결과), 제도/정책 이슈 탭 한 컷</div>
+<div class="tip"><b>브리핑 생성(3:30)은 반드시 사수</b> — 심사기준 '완성도'를 증명하는 단일 최강 장면</div>
+
+</div>
+</body>
+</html>
