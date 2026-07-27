@@ -7,7 +7,7 @@
   {
     "url": "/api/articles?period=all&limit=300&sort=score",
     "file": "s1u58xgg.json",
-    "bytes": 319621
+    "bytes": 319593
   },
   {
     "url": "/api/articles?crimeType=%EA%B3%B5%ED%8C%90&period=all&limit=300&sort=score",
@@ -17,7 +17,7 @@
   {
     "url": "/api/articles?keyword=%EC%A7%91%ED%9A%8C&period=all&limit=300&sort=score",
     "file": "s1dp8au0.json",
-    "bytes": 307566
+    "bytes": 307480
   },
   {
     "url": "/api/issues?period=30d",
@@ -72,7 +72,7 @@
   {
     "url": "/api/articles?keyword=집회&period=all&limit=300&sort=score",
     "file": "s1f3f5i3.json",
-    "bytes": 307566
+    "bytes": 307480
   },
   {
     "url": "/api/articles?crimeType=선거범죄&period=all&limit=300&sort=score",
@@ -117,7 +117,7 @@
   {
     "url": "/api/articles?keyword=집회&limit=3000&startDate=2026-06-30T15:00:00.000Z&endDate=2026-07-27T14:59:59.999Z",
     "file": "s12aujel.json",
-    "bytes": 138591
+    "bytes": 130244
   },
   {
     "url": "/api/articles?keyword=집회&limit=3000&startDate=2026-05-31T15:00:00.000Z&endDate=2026-06-27T14:59:59.999Z",

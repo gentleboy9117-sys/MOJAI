@@ -59,6 +59,7 @@ export function OfficeCrimeBoard({ officeId, officeName, subOffices, onBack }: {
     const byType = new Map<string, ArticleRow[]>();
     for (const r of data ?? []) {
       const t = r.crimeType || "기타";
+      if (t === "기타") continue; // '기타' 유형은 화면 미노출(미분류 0 정책)
       if (!byType.has(t)) byType.set(t, []);
       byType.get(t)!.push(r);
     }

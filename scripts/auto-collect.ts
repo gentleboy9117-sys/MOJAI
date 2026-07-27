@@ -64,6 +64,7 @@ async function saveRaw(a: any, offices: any[]): Promise<boolean> {
     offices,
   );
   if (!r.primaryOffice?.officeId) return false; // 관할 분류 불가 기사는 저장하지 않음(관할 미상 0 정책)
+  if (!r.crime?.crimeType) return false; // 범죄유형 분류 불가 기사도 저장하지 않음(미분류 0 정책, 2026-07-27)
   await prisma.article.create({
     data: {
       title: a.title, sourceName: a.sourceName, publishedAt: a.publishedAt, originalUrl: a.originalUrl,

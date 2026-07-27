@@ -70,7 +70,7 @@ export default function CrimeTypesPage() {
     const order = [...ALL_CRIME_TYPES, ...[...byType.keys()].filter((t) => !ALL_CRIME_TYPES.includes(t))];
     return order
       .filter((t) => byType.has(t))
-      .filter((t) => t !== "공판" && t !== "형사사법제도/정책")
+      .filter((t) => t !== "공판" && t !== "형사사법제도/정책" && t !== "기타")
       .map((t) => {
         const list = byType.get(t)!;
         const sorted = [...list].sort((a, b) => b.issueScore - a.issueScore);

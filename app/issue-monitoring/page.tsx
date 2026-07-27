@@ -63,8 +63,8 @@ export default function IssueMonitoringPage() {
   );
   const crimeRows = useMemo(() => {
     const counts = new Map<string, number>();
-    for (const it of issues) { const t = it.crimeType || "기타"; if (t === "공판" || t === "형사사법제도/정책") continue; counts.set(t, (counts.get(t) ?? 0) + 1); }
-    const base = ALL_CRIME_TYPES.filter((t) => t !== "공판" && t !== "형사사법제도/정책");
+    for (const it of issues) { const t = it.crimeType || "기타"; if (t === "공판" || t === "형사사법제도/정책" || t === "기타") continue; counts.set(t, (counts.get(t) ?? 0) + 1); }
+    const base = ALL_CRIME_TYPES.filter((t) => t !== "공판" && t !== "형사사법제도/정책" && t !== "기타");
     const names = Array.from(new Set([...base, ...counts.keys()]));
     return names.map((n) => ({ name: n, count: counts.get(n) ?? 0 })).sort((a, b) => b.count - a.count);
   }, [issues]);
