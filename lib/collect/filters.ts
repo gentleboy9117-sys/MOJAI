@@ -100,7 +100,7 @@ const KOREA_HARD_NEXUS_RE = new RegExp(
   ].join("|"),
 );
 // 외국 사법·국가기관이 주어인 기사(예: "우크라이나 검찰", "대만 검찰", "美 의회") — 한국 관할 무관
-const FOREIGN_JUSTICE_RE = /(미국|美|중국|일본|日|독일|영국|프랑스|러시아|대만|우크라이나|우크라|이란|인도|태국|베트남|필리핀|캄보디아|튀르키예|이스라엘|EU|유럽연합|홍콩|싱가포르)\s*(검찰|검사|법원|대법원|경찰|법무부|의회|국세청|당국)/;
+const FOREIGN_JUSTICE_RE = /(미국|美|중국|일본|日|독일|영국|프랑스|러시아|대만|우크라이나|우크라|이란|인도|태국|베트남|필리핀|캄보디아|튀르키예|이스라엘|EU|유럽연합|홍콩|싱가포르)\s*(검찰|검사|항소법원|연방법원|연방대법원|고등법원|법원|대법원|경찰|법무부|의회|국세청|당국)/;
 // 제목에 외국 국가·도시·정상이 명시된 경우(외국발 사건일 강한 신호)
 const FOREIGN_TITLE_RE = new RegExp(
   [
@@ -126,6 +126,17 @@ export function isElectionPolitics(title: string, summary?: string | null): bool
   if (!ELECTION_CONTEXT_RE.test(t)) return false; // 선거 무관 기사는 이 필터 대상 아님
   if (ELECTION_CASE_RE.test(title || "")) return false; // 제목에 사건 요소 → 사건 보도
   return !ELECTION_STRONG_RE.test(summary || "");
+}
+
+// ── 민사·가사·행정 사건: 형사 관할 무관 → 수집 제외 (2026-07-27) ──
+const CIVIL_SIGNAL_RE = /재산\s*분할|이혼\s*소송|위자료|양육권|친권|상속\s*분쟁|집단\s*소송|집단소송|민사\s*소송|민사소송|민사\s*판결|손해배상\s*청구|부당이득\s*반환|전세금\s*반환|채무\s*부존재|가처분|가압류|계약\s*위반/;
+const CRIMINAL_SIGNAL_RE = /기소|구속|송치|입건|압수수색|검거|체포|구형|피의자|피고인|형사|횡령|배임|사기\s*혐의|혐의로|고발|수사/;
+
+/** 민사·가사 사건 기사(형사 신호 없음)면 true → 수집 제외 */
+export function isCivilCase(title: string, summary?: string | null): boolean {
+  const t = `${title || ""} ${summary || ""}`;
+  if (!CIVIL_SIGNAL_RE.test(t)) return false;
+  return !CRIMINAL_SIGNAL_RE.test(t);
 }
 
 export function isForeignTopic(title: string, summary?: string | null): boolean {

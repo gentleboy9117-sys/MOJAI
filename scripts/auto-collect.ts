@@ -9,7 +9,7 @@ import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
 import { getNewsProviders } from "@/lib/providers/news";
 import { NaverNewsProvider } from "@/lib/providers/news/NaverNewsProvider";
-import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip, isNonLegalNoise, isPromoNoise, isElectionPolitics } from "@/lib/collect/filters";
+import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip, isNonLegalNoise, isPromoNoise, isElectionPolitics, isCivilCase } from "@/lib/collect/filters";
 import { classifyArticle, contentHashOf } from "@/lib/classifiers";
 import { getOfficeLites, rebuildClusters, persistTrendAlerts } from "@/lib/pipeline/runPipeline";
 import {
@@ -57,6 +57,7 @@ async function saveRaw(a: any, offices: any[]): Promise<boolean> {
   if (isNonLegalNoise(a.title, a.summary)) return false; // 형사사법 무관(정치·경제·스포츠) 제외
   if (isForeignTopic(a.title, a.summary)) return false; // 해외토픽(외국인·외국 사건) 제외
   if (isElectionPolitics(a.title, a.summary)) return false; // 선거 일반 정치기사(수사·기소·재판 없음) 제외
+  if (isCivilCase(a.title, a.summary)) return false; // 민사·가사 사건(형사 무관) 제외
   const hash = contentHashOf(a.title, a.originalUrl);
   if (await prisma.article.findUnique({ where: { contentHash: hash }, select: { id: true } })) return false;
   const r = classifyArticle(
@@ -65,6 +66,10 @@ async function saveRaw(a: any, offices: any[]): Promise<boolean> {
   );
   if (!r.primaryOffice?.officeId) return false; // 관할 분류 불가 기사는 저장하지 않음(관할 미상 0 정책)
   if (!r.crime?.crimeType) return false; // 범죄유형 분류 불가 기사도 저장하지 않음(미분류 0 정책, 2026-07-27)
+  // 정확도 우선 원칙(2026-07-27): 헷갈리면 수집하지 않는다 — 오분류 방지가 기사 수보다 중요
+  if ((r.primaryOffice?.confidence ?? 0) < 0.6) return false; // 관할 추정 신뢰도 낮음(약한 지역/경찰서 추정) → 제외
+  const isAssemblyNews = /집회|시위/.test(a.title) || /집회|시위/.test(a.summary ?? "");
+  if (r.crime.crimeType === "기타" && !isAssemblyNews) return false; // 유형 특정 불가('기타')는 집회·시위 보도만 유지
   await prisma.article.create({
     data: {
       title: a.title, sourceName: a.sourceName, publishedAt: a.publishedAt, originalUrl: a.originalUrl,

@@ -223,9 +223,18 @@ export function classifyOffices(input: ClassifyInput, offices: OfficeLite[]): Of
     }
   }
 
+  // '광주' 모호성 해소: 경기 광주(성남지청) vs 광주광역시(광주지검) — 본문에 호남 신호가 있으면
+  //  '광주' 지역 히트만으로 잡힌 성남지청 후보를 배제한다(전남도청·통합시 기사 오분류 방지, 2026-07-27)
+  const HONAM_RE = /전남|전라남도|전라도|호남|무안|나주|목포|여수|순천|담양|화순|장성|영광|함평|광산구|전남도청|빛고을|광주광역시|광주시청|광주고등법원|광주지방법원/;
+  const filtered = HONAM_RE.test(text)
+    ? results.filter(
+        (r) => !(r.officeName.includes("성남") && r.matchType === "REGION_INFERRED" && r.evidence.every((e) => e.includes("광주"))),
+      )
+    : results;
+
   // 신뢰도 내림차순, 동률이면 지청>지검>고검>대검 (구체적 관할 우선)
   const typeRank: Record<string, number> = { 지청: 4, 지방검찰청: 3, 고등검찰청: 2, 대검찰청: 1 };
-  return results.sort(
+  return filtered.sort(
     (a, b) => b.confidence - a.confidence || (typeRank[b.officeType] ?? 0) - (typeRank[a.officeType] ?? 0),
   );
 }
