@@ -24,7 +24,8 @@ export const CRIME_TAXONOMY: CrimeCategory[] = [
   },
   {
     type: "경제범죄",
-    typeKeywords: ["피해액", "피해자", "투자금", "편취", "수익금", "환수"],
+    // '피해자·수익금·환수'는 모든 사건 기사에 흔해 유형을 잘못 확정시킴 → 제거(2026-07-29 감사)
+    typeKeywords: ["투자금", "편취", "피해액"],
     subtypes: [
       { name: "사기", keywords: ["사기", "투자사기", "투자리딩", "리딩방", "편취", "기망", "다단계", "유사수신", "전세사기", "보험사기"] },
       { name: "횡령", keywords: ["횡령", "공금횡령", "회삿돈", "법인자금", "유용"] },
@@ -45,7 +46,8 @@ export const CRIME_TAXONOMY: CrimeCategory[] = [
   },
   {
     type: "마약범죄",
-    typeKeywords: ["마약", "투약", "밀반입", "밀수", "유통"],
+    // '마약'이 typeKeywords·subtype에 중복 등록돼 1회 언급만으로 3점 → 살인 등과 동점 유발. 중복 제거(2026-07-29 감사)
+    typeKeywords: ["투약", "밀반입", "밀수"],
     subtypes: [
       { name: "마약류", keywords: ["마약", "필로폰", "대마", "코카인", "케타민", "엑스터시", "프로포폴", "투약", "마약류관리법", "던지기", "텔레그램 마약"] },
     ],
@@ -54,7 +56,8 @@ export const CRIME_TAXONOMY: CrimeCategory[] = [
     type: "강력범죄",
     typeKeywords: ["살인", "강도", "방화", "폭행", "흉기", "강간"],
     subtypes: [
-      { name: "살인", keywords: ["살인", "살해", "시신", "치사", "존속살해", "영아살해"] },
+      // '치사' 단독은 '업무상과실치사'(중대재해)를 살인으로 끌어와 제거 — 결합형만 인정(2026-07-29 감사)
+      { name: "살인", keywords: ["살인", "살해", "시신", "존속살해", "영아살해", "상해치사", "폭행치사", "유기치사"] },
       { name: "강도", keywords: ["강도", "강취", "특수강도", "강도상해", "강도살인"] },
       { name: "방화", keywords: ["방화", "불을 질러", "불을 지른", "연쇄방화", "현주건조물방화"] },
       { name: "폭력", keywords: ["폭행", "상해", "집단폭행", "흉기", "특수폭행", "특수상해", "보복폭행"] },
@@ -68,7 +71,8 @@ export const CRIME_TAXONOMY: CrimeCategory[] = [
     typeKeywords: ["피해아동", "미성년", "청소년", "성착취"],
     subtypes: [
       // '강간' 죄명은 강력범죄로 분류. 여기는 추행·성착취·촬영물 등.
-      { name: "성범죄", keywords: ["강제추행", "준강제추행", "성착취", "불법촬영", "카메라등이용촬영", "통신매체이용음란", "성매매", "공중밀집장소추행"] },
+      // '성폭력'은 정책·단체명(성폭력상담소 등) 오탐이 커 의도적으로 제외(2026-07-29 감사)
+      { name: "성범죄", keywords: ["강제추행", "준강제추행", "성추행", "성착취", "불법촬영", "몰카", "몰래카메라", "카메라등이용촬영", "통신매체이용음란", "성매매", "성매수", "공중밀집장소추행", "성희롱", "스토킹처벌법"] },
       { name: "아동청소년", keywords: ["아동청소년", "아청법", "아동학대", "미성년자", "그루밍"] },
     ],
   },
@@ -131,7 +135,7 @@ export const CRIME_TAXONOMY: CrimeCategory[] = [
     type: "노동/중대재해범죄",
     typeKeywords: ["사업장", "근로자", "작업", "노동", "임금", "산업안전"],
     subtypes: [
-      { name: "중대재해", keywords: ["중대재해처벌법", "산업재해", "산업안전보건법", "사망사고", "안전조치", "추락", "끼임", "건설현장", "원청", "작업중 사망"] },
+      { name: "중대재해", keywords: ["중대재해", "중대재해처벌법", "중대재해법", "중처법", "산업재해", "산업안전보건법", "업무상과실치사", "업무상 과실치사", "업무상과실치사상", "사망사고", "안전조치", "안전보건조치", "추락", "끼임", "건설현장", "원청", "작업중 사망"] },
       { name: "노동", keywords: ["임금체불", "부당해고", "노동조합", "노동조합법", "근로기준법", "파업", "직장내괴롭힘", "노조", "최저임금", "체불임금", "부당노동행위", "화물연대", "민주노총", "한국노총", "총파업", "단체행동", "임단협", "노사 교섭", "쟁의행위"] },
     ],
   },
@@ -196,12 +200,18 @@ const HANGUL_RE = /[가-힣]/;
  *  예: '부정선거' 안의 '정선'(정선군) 오탐 차단. '정선군'·'정선에서'(앞이 공백/문두)는 인정. */
 export function countHitsBounded(text: string, keywords: string[]): { count: number; hits: string[] } {
   const hits: string[] = [];
+  // 뒤 경계도 검사 — '음성'이 '음성 판정', '달성'이 '달성했다'에 걸리는 오탐 차단(2026-07-29 감사)
+  const OK_NEXT_RE = /^(시|군|구|읍|면|동|리|청|서|역|발|산|만|경찰|지청|지역|일대|앞|에서|에|의|은|는|이|가|서|으로|로)/;
   for (const k of keywords) {
     if (!k) continue;
     let idx = text.indexOf(k);
     while (idx !== -1) {
       const prev = idx > 0 ? text[idx - 1] : "";
-      if (!prev || !HANGUL_RE.test(prev)) { hits.push(k); break; }
+      const rest = text.slice(idx + k.length);
+      const next = rest[0] ?? "";
+      const okPrev = !prev || !HANGUL_RE.test(prev);
+      const okNext = !next || !HANGUL_RE.test(next) || OK_NEXT_RE.test(rest);
+      if (okPrev && okNext) { hits.push(k); break; }
       idx = text.indexOf(k, idx + 1);
     }
   }

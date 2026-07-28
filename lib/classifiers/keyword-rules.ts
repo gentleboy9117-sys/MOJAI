@@ -33,10 +33,23 @@ const COURT_RE = /법원|지법|고법|대법원|고등법원|지방법원|재�
 const VERDICT_RE = /선고|징역|금고|벌금|집행유예|실형|무죄|유죄|법정구속|선고유예|원심|파기|기각|형\s*확정/;
 const STRONG_VERDICT_RE = /(징역|금고)\s*\d|집행유예|법정구속|선고유예|실형\s*선고|무죄\s*선고|유죄\s*선고|벌금형\s*선고|(항소|상고)\s*기각|원심\s*(확정|파기)|파기환송/;
 // 범죄가 아닌 형사사법제도·정책(검찰개혁·보완수사권·공소청·입법/법개정·치안 인프라 등)
-const POLICY_RE = /보완수사권|검찰\s*개혁|공소청|기소청|수사청|검찰\s*폐지|수사권\s*조정|검경\s*수사권|검수완박|검수원복|중수청|중대범죄수사청|검찰청법|형사소송법\s*개정|형소법\s*개정|공수처법|검찰\s*직제|검찰\s*분리|기소\s*분리|수사[·\s]*기소\s*분리|사법\s*개혁|검찰\s*조직\s*개편|공소청법|기소청법|경찰서\s*(신설|증설|설치|부재|신축)|경찰서[는가이]?\s*(왜\s*)?(아직\s*)?없|파출소\s*(신설|설치)|치안센터|치안\s*공백|형사\s*정책|사법\s*제도|수사\s*인력|법관\s*증원|검사\s*증원|자치경찰/;
+// 정책 판정은 '제목' 기준 — 요약에 연관기사 제목이 섞여 정치 일반기사가 정책으로 흡수된다
+//  (2026-07-29 실측: 요약 포함 시 1,346건 중 620건이 제목에 정책어 없음)
+const POLICY_TITLE_RE = /보완\s*수사(권)?|[검檢]\s*?개혁|검찰\s*개혁|공소청|기소청|수사청|검찰\s*폐지|검찰청\s*폐지|수사권\s*(조정|폐지|박탈|이관)|검경\s*수사권|검수완박|검수원복|중수청|중대범죄수사청|검찰청법|형사소송법\s*(개정|상정)|형소법\s*(개정|상정)|공수처법|검찰\s*직제|검찰\s*분리|기소\s*분리|수사[·\s]*기소\s*분리|사법\s*개혁|검찰\s*조직\s*개편|공소청법|기소청법|법관\s*증원|검사\s*증원|자치경찰제|경찰서\s*(신설|증설|설치|신축)|파출소\s*(신설|설치)/;
+// 요약에서까지 인정할 '강한' 정책 신호 — 제도 고유명사만(일반 정치어 배제)
+const POLICY_STRONG_RE = /공소청법|기소청법|검수완박|검수원복|중대범죄수사청|보완수사권\s*(폐지|존치)|검찰청법\s*개정/;
 
 // 키워드 스코어링에서 제외(오버라이드 전용 유형)
 const OVERRIDE_ONLY_TYPES = new Set(["공판", "형사사법제도/정책", "기타"]);
+
+// 동점 시 죄질 우선순위 — 기존에는 CRIME_TAXONOMY 선언 순서가 승자를 정해
+//  '살인 + 마약류 발견' 기사가 마약범죄로 분류됐다(2026-07-29 감사 확인).
+const TYPE_PRIORITY: Record<string, number> = {
+  "강력범죄": 9, "성범죄/아동청소년범죄": 8, "노동/중대재해범죄": 7, "마약범죄": 6,
+  "부패/공직범죄": 5, "선거범죄": 5, "교통범죄": 4, "경제범죄": 4,
+  "디지털범죄": 3, "조세/관세범죄": 3, "환경/식품/안전범죄": 2,
+  "지식재산권범죄": 2, "출입국/외국인범죄": 2,
+};
 
 /** 키워드 스코어로 (기저) 범죄유형 1개 선택 — 공판/정책/기타 제외 */
 export function scoreCrimeCategory(text: string): { cat: string; sub: string; hits: string[]; score: number } | null {
@@ -47,7 +60,11 @@ export function scoreCrimeCategory(text: string): { cat: string; sub: string; hi
     for (const sub of cat.subtypes) {
       const subHit = countHits(text, sub.keywords);
       const score = subHit.count * 2 + typeHit.count;
-      if (score > 0 && (!best || score > best.score)) {
+      const wins =
+        !best ||
+        score > best.score ||
+        (score === best.score && (TYPE_PRIORITY[cat.type] ?? 0) > (TYPE_PRIORITY[best.cat] ?? 0));
+      if (score > 0 && wins) {
         best = { cat: cat.type, sub: sub.name, hits: Array.from(new Set([...subHit.hits, ...typeHit.hits])), score };
       }
     }
@@ -113,7 +130,7 @@ export function classifyCrime(input: ClassifyInput, opts: { skipTitleTrial?: boo
   const underlying = scoreCrimeCategory(text); // 기저 범죄유형(공판일 때 살인/사기 등)
 
   // 형사사법제도·정책 우선 판정 — 사건(판결)을 배경으로 인용한 정책 기사가 공판으로 오분류되지 않게
-  const policyHit = text.match(POLICY_RE);
+  const policyHit = (input.title ?? "").match(POLICY_TITLE_RE) ?? (input.summary ?? "").match(POLICY_STRONG_RE);
   if (policyHit) {
     return {
       crimeType: "형사사법제도/정책",
@@ -172,6 +189,23 @@ const COURT_TO_OFFICE: [RegExp, string][] = [
   [/서울서부지법|서울서부지방법원/, "서울서부지방검찰청"],
   [/서울행정법원|서울가정법원/, "서울중앙지방검찰청"],
   [/의정부지법\s*고양지원|고양지원/, "고양지청"],
+  [/의정부지법\s*남양주지원|남양주지원/, "남양주지청"],
+  [/춘천지법\s*속초지원|속초지원/, "속초지청"],
+  [/춘천지법\s*영월지원|영월지원/, "영월지청"],
+  [/대전지법\s*공주지원|공주지원/, "공주지청"],
+  [/대전지법\s*논산지원|논산지원/, "논산지청"],
+  [/대전지법\s*서산지원|서산지원/, "서산지청"],
+  [/청주지법\s*제천지원|제천지원/, "제천지청"],
+  [/청주지법\s*영동지원|영동지원/, "영동지청"],
+  [/대구지법\s*상주지원|상주지원/, "상주지청"],
+  [/대구지법\s*의성지원|의성지원/, "의성지청"],
+  [/대구지법\s*영덕지원|영덕지원/, "영덕지청"],
+  [/창원지법\s*밀양지원|밀양지원/, "밀양지청"],
+  [/창원지법\s*거창지원|거창지원/, "거창지청"],
+  [/광주지법\s*장흥지원|장흥지원/, "장흥지청"],
+  [/광주지법\s*해남지원|해남지원/, "해남지청"],
+  [/전주지법\s*정읍지원|정읍지원/, "정읍지청"],
+  [/전주지법\s*남원지원|남원지원/, "남원지청"],
   [/의정부지법|의정부지방법원/, "의정부지방검찰청"],
   [/인천지법\s*부천지원|부천지원/, "부천지청"],
   [/인천지법|인천지방법원/, "인천지방검찰청"],
@@ -219,11 +253,13 @@ const COURT_TO_OFFICE: [RegExp, string][] = [
 
 /** 본문에 언급된 법원명으로 대응 검찰청을 찾는다(판결·선고 기사의 강한 관할 신호) */
 export function courtOfficeName(text: string): { office: string; court: string } | null {
+  // 가장 긴 매칭 우선 — 배열 순서에 의존하지 않도록('창원지법 거창지원'이 '창원지법'을 이긴다)
+  let best: { office: string; court: string } | null = null;
   for (const [re, office] of COURT_TO_OFFICE) {
     const m = text.match(re);
-    if (m) return { office, court: m[0] };
+    if (m && (!best || m[0].length > best.court.length)) best = { office, court: m[0] };
   }
-  return null;
+  return best;
 }
 
 /** 검찰청 1차 분류 (5단계 추정 로직) */
