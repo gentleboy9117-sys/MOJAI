@@ -162,10 +162,91 @@ export function classifyCrime(input: ClassifyInput, opts: { skipTitleTrial?: boo
   };
 }
 
+// 법원명 → 대응 검찰청 (판결·선고 기사에서 가장 강한 관할 신호, 2026-07-28 신설)
+//  지법↔지검, 지원↔지청 대응. 긴 이름부터 검사해야 '서울중앙지법'이 '서울지법'보다 먼저 잡힌다.
+const COURT_TO_OFFICE: [RegExp, string][] = [
+  [/서울중앙지법|서울중앙지방법원/, "서울중앙지방검찰청"],
+  [/서울동부지법|서울동부지방법원/, "서울동부지방검찰청"],
+  [/서울남부지법|서울남부지방법원/, "서울남부지방검찰청"],
+  [/서울북부지법|서울북부지방법원/, "서울북부지방검찰청"],
+  [/서울서부지법|서울서부지방법원/, "서울서부지방검찰청"],
+  [/서울행정법원|서울가정법원/, "서울중앙지방검찰청"],
+  [/의정부지법\s*고양지원|고양지원/, "고양지청"],
+  [/의정부지법|의정부지방법원/, "의정부지방검찰청"],
+  [/인천지법\s*부천지원|부천지원/, "부천지청"],
+  [/인천지법|인천지방법원/, "인천지방검찰청"],
+  [/수원지법\s*성남지원|성남지원/, "성남지청"],
+  [/수원지법\s*안양지원|안양지원/, "안양지청"],
+  [/수원지법\s*안산지원|안산지원/, "안산지청"],
+  [/수원지법\s*평택지원|평택지원/, "평택지청"],
+  [/수원지법\s*여주지원|여주지원/, "여주지청"],
+  [/수원지법|수원지방법원/, "수원지방검찰청"],
+  [/춘천지법\s*강릉지원|강릉지원/, "강릉지청"],
+  [/춘천지법\s*원주지원|원주지원/, "원주지청"],
+  [/춘천지법|춘천지방법원/, "춘천지방검찰청"],
+  [/대전지법\s*천안지원|천안지원/, "천안지청"],
+  [/대전지법\s*홍성지원|홍성지원/, "홍성지청"],
+  [/대전지법|대전지방법원/, "대전지방검찰청"],
+  [/청주지법\s*충주지원|충주지원/, "충주지청"],
+  [/청주지법|청주지방법원/, "청주지방검찰청"],
+  [/대구지법\s*서부지원|대구서부지원/, "대구서부지청"],
+  [/대구지법\s*포항지원|포항지원/, "포항지청"],
+  [/대구지법\s*경주지원|경주지원/, "경주지청"],
+  [/대구지법\s*안동지원|안동지원/, "안동지청"],
+  [/대구지법\s*김천지원|김천지원/, "김천지청"],
+  [/대구지법|대구지방법원/, "대구지방검찰청"],
+  [/부산지법\s*동부지원|부산동부지원/, "부산동부지청"],
+  [/부산지법\s*서부지원|부산서부지원/, "부산서부지청"],
+  [/부산지법|부산지방법원/, "부산지방검찰청"],
+  [/울산지법|울산지방법원/, "울산지방검찰청"],
+  [/창원지법\s*진주지원|진주지원/, "진주지청"],
+  [/창원지법\s*통영지원|통영지원/, "통영지청"],
+  [/창원지법\s*마산지원|마산지원/, "마산지청"],
+  [/창원지법|창원지방법원/, "창원지방검찰청"],
+  [/광주지법\s*목포지원|목포지원/, "목포지청"],
+  [/광주지법\s*순천지원|순천지원/, "순천지청"],
+  [/광주지법|광주지방법원/, "광주지방검찰청"],
+  [/전주지법\s*군산지원|군산지원/, "군산지청"],
+  [/전주지법|전주지방법원/, "전주지방검찰청"],
+  [/제주지법|제주지방법원/, "제주지방검찰청"],
+  [/광주고법|광주고등법원/, "광주고등검찰청"],
+  [/대전고법|대전고등법원/, "대전고등검찰청"],
+  [/대구고법|대구고등법원/, "대구고등검찰청"],
+  [/부산고법|부산고등법원/, "부산고등검찰청"],
+  [/수원고법|수원고등법원/, "수원고등검찰청"],
+  [/서울고법|서울고등법원/, "서울고등검찰청"],
+];
+
+/** 본문에 언급된 법원명으로 대응 검찰청을 찾는다(판결·선고 기사의 강한 관할 신호) */
+export function courtOfficeName(text: string): { office: string; court: string } | null {
+  for (const [re, office] of COURT_TO_OFFICE) {
+    const m = text.match(re);
+    if (m) return { office, court: m[0] };
+  }
+  return null;
+}
+
 /** 검찰청 1차 분류 (5단계 추정 로직) */
 export function classifyOffices(input: ClassifyInput, offices: OfficeLite[]): OfficeMatchResult[] {
   const text = buildHaystack(input);
   const results: OfficeMatchResult[] = [];
+
+  // 0단계: 법원명 직접 언급(서울중앙지법 등) → 대응 검찰청을 최우선 후보로 (2026-07-28)
+  //  제목 우선, 없으면 본문. 판결·선고 기사에서 우연한 지명 언급보다 훨씬 신뢰도가 높다.
+  const courtHit = courtOfficeName(input.title ?? "") ?? courtOfficeName(text);
+  const courtOffice = courtHit ? offices.find((o) => o.name === courtHit.office) : undefined;
+  if (courtOffice) {
+    results.push({
+      officeId: courtOffice.id,
+      officeName: courtOffice.name,
+      officeType: courtOffice.type,
+      region: courtOffice.region,
+      confidence: 0.92,
+      matchType: "DIRECT_MENTION",
+      reason: `'${courtHit!.court}' 언급 → 대응 검찰청(${courtOffice.name})`,
+      evidence: [courtHit!.court],
+    });
+  }
 
   for (const office of offices) {
     const nameKw = office.searchKeywords.filter(isOfficeNameKeyword);
@@ -226,9 +307,10 @@ export function classifyOffices(input: ClassifyInput, offices: OfficeLite[]): Of
   // '광주' 모호성 해소: 경기 광주(성남지청) vs 광주광역시(광주지검) — 본문에 호남 신호가 있으면
   //  '광주' 지역 히트만으로 잡힌 성남지청 후보를 배제한다(전남도청·통합시 기사 오분류 방지, 2026-07-27)
   const HONAM_RE = /전남|전라남도|전라도|호남|무안|나주|목포|여수|순천|담양|화순|장성|영광|함평|광산구|전남도청|빛고을|광주광역시|광주시청|광주고등법원|광주지방법원/;
+  //  성남지청 후보가 '광주' 지역 히트로만 잡힌 경우 배제(경기 광주 vs 광주광역시). evidence에 광주가 하나라도 있으면 적용.
   const filtered = HONAM_RE.test(text)
     ? results.filter(
-        (r) => !(r.officeName.includes("성남") && r.matchType === "REGION_INFERRED" && r.evidence.every((e) => e.includes("광주"))),
+        (r) => !(r.officeName.includes("성남") && r.matchType !== "DIRECT_MENTION" && r.evidence.some((e) => e.includes("광주"))),
       )
     : results;
 

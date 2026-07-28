@@ -77,7 +77,8 @@ const FOREIGN_RE = new RegExp(
   ].join("|"),
 );
 // 한미/방한 등 한국 관련 외교·해외 표기(한국인이 외국에서, 한국 관련 해외사건 → 포함)
-const KOREA_FOREIGN_NEXUS = /한미|한중|한일|한·미|한·중|한·일|방한|순방|정상회담|특파원\s*한국|동포|교민|한인|유학생|관광객|국적|재외/;
+//  '국적'은 '전국적·외국적' 부분 문자열 오탐이 있어 앞경계 검사(2026-07-28)
+const KOREA_FOREIGN_NEXUS = /한미|한중|한일|한·미|한·중|한·일|방한|순방|정상회담|특파원\s*한국|동포|교민|한인|유학생|관광객|(?<![가-힣])국적|재외/;
 // 한국 형사절차 용어 — 있으면 한국에서 수사·재판한 사건(한국 관할)이므로 포함
 const KR_LEGAL_ACTION = /檢|구속기소|불구속|기소|구속영장|체포영장|실형|집행유예|징역|벌금형|재판부|[123]심|항소심|상고심|선고|판결|법정구속|양형|무죄|유죄|공소|검거|입건|송치|덜미|압수수색|영장|피의자|피고인|구형|적발|혐의/;
 
@@ -92,7 +93,7 @@ const NK_FOREIGN_RE = /인민검찰청|인민재판|인민법원|로동신문|�
 // 한국 '고유' 단서(지명·고유기관·정당 등) — 검찰/법원/대통령 같은 일반 기관어는 외국 기사에도 나오므로 제외
 const KOREA_HARD_NEXUS_RE = new RegExp(
   [
-    "한국|대한민국|국내|한인|교민|교포|재외|내국인|우리\\s?국민|국적|한국인",
+    "한국|대한민국|국내|한인|교민|교포|재외|내국인|우리\\s?국민|(?<![가-힣])국적|한국인",
     "지검|고검|대검|공수처|선관위|국정원|국세청|관세청|공정거래위|법무부|검찰청",
     "민주노총|한국노총|전교조|국민의힘|더불어민주당|민주당|조국혁신당",
     "서울|부산|대구|인천|광주|대전|울산|세종|경기|강원|충청|충북|충남|전라|전북|전남|경상|경북|경남|제주",
@@ -112,6 +113,38 @@ const FOREIGN_TITLE_RE = new RegExp(
 // 한국 제도·정책 논의 맥락(외국 사례 인용 기사 보호 — 예: "검찰개혁 모델 영국도…")
 const KR_POLICY_CONTEXT_RE = /검찰개혁|수사권|기소독점|공소청|기소청|중수청|검수완박|형사소송법|공수처|사법개혁/;
 
+// ── 강한 해외 신호(2026-07-28 보강) ──
+//  '경찰·법원·대통령·장관' 같은 일반 기관어는 외국 기사에도 나오므로 한국 단서로 인정하지 않는다.
+//  아래 신호가 잡히면 KOREA_HARD_NEXUS(한국인·교민·한국 지명·한국 고유기관 등)가 없는 한 무조건 제외.
+const FOREIGN_COUNTRIES =
+  "미국|美|중국|中|일본|日|영국|英|프랑스|佛|독일|獨|러시아|露|이탈리아|스페인|캐나다|호주|뉴질랜드|인도|印|파키스탄|방글라데시|스리랑카|네팔|미얀마|라오스|캄보디아|태국|베트남|越|필리핀|인도네시아|말레이시아|싱가포르|대만|臺|홍콩|몽골|카자흐|우즈베크|우크라이나|우크라|폴란드|체코|헝가리|스웨덴|노르웨이|핀란드|덴마크|네덜란드|벨기에|스위스|오스트리아|그리스|포르투갈|아일랜드|튀르키예|터키|이스라엘|이란|이라크|시리아|레바논|사우디|아랍에미리트|카타르|쿠웨이트|이집트|리비아|모로코|나이지리아|남아공|케냐|에티오피아|브라질|아르헨티나|칠레|페루|콜롬비아|베네수엘라|멕시코|쿠바|北韓|북한";
+const FOREIGN_CITIES =
+  "뉴욕|워싱턴|로스앤젤레스|시카고|보스턴|샌프란시스코|런던|파리|베를린|뮌헨|로마|밀라노|마드리드|바르셀로나|암스테르담|브뤼셀|비엔나|취리히|스톡홀름|오슬로|코펜하겐|헬싱키|바르샤바|프라하|부다페스트|모스크바|상트페테르부르크|키이우|키예프|이스탄불|앙카라|텔아비브|예루살렘|테헤란|바그다드|리야드|두바이|카이로|델리|뉴델리|뭄바이|콜카타|첸나이|방콕|하노이|호찌민|마닐라|자카르타|쿠알라룸푸르|프놈펜|양곤|카트만두|다카|이슬라마바드|베이징|北京|상하이|上海|광저우|선전|충칭|청두|우한|시안|홍콩|타이베이|도쿄|東京|오사카|교토|나고야|후쿠오카|삿포로|시드니|멜버른|토론토|밴쿠버|상파울루|리우|부에노스아이레스|멕시코시티|평양";
+const FOREIGN_LEADERS =
+  "트럼프|바이든|오바마|해리스|밴스|머스크|젤렌스키|푸틴|메드베데프|시진핑|리창|왕이|기시다|이시바|다카이치|아베|스가|마크롱|메르켈|숄츠|메로니|스타머|수낵|존슨|네타냐후|하마스|헤즈볼라|모디|룰라|밀레이|에르도안|김정은|김여정";
+// 외국 군·기관 표기(우크라軍, 美軍, 中 외교부, 델리 경찰 등)
+const FOREIGN_ORG_RE = new RegExp(`(${FOREIGN_COUNTRIES}|${FOREIGN_CITIES})\\s*(軍|군|경찰|검찰|법원|대법원|연방|의회|정부|외교부|국방부|내무부|당국|대통령실|총리실|중앙은행|증권거래위)`);
+// 제목 첫머리 등에서 "인도, ~" "우크라이나서 ~" "美 ~" 처럼 국가가 주어로 오는 형태
+const FOREIGN_SUBJECT_RE = new RegExp(`(^|[\\s"'\\[(])(${FOREIGN_COUNTRIES})\\s*[,·]|(${FOREIGN_COUNTRIES})(서|에서|의|는|은|이|가)\\s`);
+const FOREIGN_LEADER_RE = new RegExp(FOREIGN_LEADERS);
+const FOREIGN_CITY_RE = new RegExp(FOREIGN_CITIES);
+const FOREIGN_WIRE_RE = /외신|해외토픽|현지시간|로이터|AFP|AP통신|블룸버그|신화통신|교도통신|CNN|BBC|NHK|타스통신|AFP통신/;
+
+/** 강한 해외 신호 — **제목 기준**으로만 판정한다.
+ *  구글뉴스 RSS 요약에는 연관기사 제목이 섞여 들어와(예: 한국 사건 기사 요약에 해외 기사 제목),
+ *  요약까지 보면 한국 형사 기사가 해외로 오탐된다(2026-07-28 확인).
+ */
+function hasHardForeignSignal(title: string, _summary?: string | null): boolean {
+  const t = title || "";
+  return (
+    FOREIGN_ORG_RE.test(t) ||
+    FOREIGN_LEADER_RE.test(t) ||
+    FOREIGN_CITY_RE.test(t) ||
+    FOREIGN_WIRE_RE.test(t) ||
+    FOREIGN_SUBJECT_RE.test(t)
+  );
+}
+
 // ── 선거 기사: '선거범죄 사건'(수사·기소·재판)만 수집, 일반 정치부 기사 제외 ──
 // 선거 맥락 신호(선거·투표·개표·선관위·부정선거·공천 등)
 const ELECTION_CONTEXT_RE = /선거|투표|개표|선관위|공천|출마|낙선|당선|경선|표심|지지율|여론조사|재선거|보궐/;
@@ -129,24 +162,31 @@ export function isElectionPolitics(title: string, summary?: string | null): bool
 }
 
 // ── 민사·가사·행정 사건: 형사 관할 무관 → 수집 제외 (2026-07-27) ──
-const CIVIL_SIGNAL_RE = /재산\s*분할|이혼\s*소송|위자료|양육권|친권|상속\s*분쟁|집단\s*소송|집단소송|민사\s*소송|민사소송|민사\s*판결|손해배상\s*청구|부당이득\s*반환|전세금\s*반환|채무\s*부존재|가처분|가압류|계약\s*위반/;
+const CIVIL_SIGNAL_RE = /재산\s*분할|이혼\s*소송|위자료|양육권|친권|상속\s*분쟁|집단\s*소송|집단소송|민사\s*소송|민사소송|민사\s*판결|손해배상\s*청구|부당이득\s*반환|전세금\s*반환|채무\s*부존재|가처분|가압류|계약\s*위반|행정\s*법원|행정법원|행정\s*소송|행정소송|취소\s*소송|처분\s*취소|집행\s*정지|집행정지\s*신청|무효\s*확인\s*소송|심판\s*청구|행정\s*심판/;
 const CRIMINAL_SIGNAL_RE = /기소|구속|송치|입건|압수수색|검거|체포|구형|피의자|피고인|형사|횡령|배임|사기\s*혐의|혐의로|고발|수사/;
 
-/** 민사·가사 사건 기사(형사 신호 없음)면 true → 수집 제외 */
+/** 민사·가사·행정 사건 기사(형사 신호 없음)면 true → 수집 제외.
+ *  판정은 **제목 기준** — 구글뉴스 요약에는 연관기사 제목이 섞여 오탐이 생긴다(2026-07-28).
+ *  형사 신호(보호)는 제목+요약 전체에서 폭넓게 확인한다.
+ */
 export function isCivilCase(title: string, summary?: string | null): boolean {
-  const t = `${title || ""} ${summary || ""}`;
-  if (!CIVIL_SIGNAL_RE.test(t)) return false;
-  return !CRIMINAL_SIGNAL_RE.test(t);
+  if (!CIVIL_SIGNAL_RE.test(title || "")) return false;
+  return !CRIMINAL_SIGNAL_RE.test(`${title || ""} ${summary || ""}`);
 }
 
 export function isForeignTopic(title: string, summary?: string | null): boolean {
   const t = `${title || ""} ${summary || ""}`;
   if (NK_FOREIGN_RE.test(t)) return true; // 북한·외국 검찰 소식
+  // 한국 '하드' 단서만 인정 — '경찰·법원·대통령·장관' 같은 일반 기관어는 외국 기사에도 나오므로 불인정(2026-07-28)
   const koreaNexus = KOREA_HARD_NEXUS_RE.test(t) || KOREA_FOREIGN_NEXUS.test(t) || KR_POLICY_CONTEXT_RE.test(t);
-  // ① 외국 사법기관이 주어(우크라이나 검찰 등)이고 한국 단서가 없으면 제외
+  // 제목에 한국 형사절차 용어(구형·송치·기소·체포 등)가 있으면 한국 수사기관 사건 → 해외 판정하지 않음
+  const krTitleAction = KR_LEGAL_ACTION.test(title || "");
+  // ① 강한 해외 신호(제목의 외국 군·기관·정상·도시·외신 크레딧, 국가가 주어) → 한국 단서 없을 때만 제외
+  if (hasHardForeignSignal(title, summary) && !koreaNexus && !krTitleAction) return true;
+  // ② 외국 사법기관이 주어(우크라이나 검찰 등)이고 한국 단서가 없으면 제외
   if (FOREIGN_JUSTICE_RE.test(title || "") && !koreaNexus) return true;
-  // ② 제목이 강한 외국 신호(분쟁국·외국 정상·외국 도시)이고 한국 단서·한국 형사절차 용어가 없으면 제외
+  // ③ 제목이 강한 외국 신호(분쟁국·외국 정상·외국 도시)이고 한국 단서·한국 형사절차 용어가 없으면 제외
   if (FOREIGN_TITLE_RE.test(title || "") && !koreaNexus && !KR_LEGAL_ACTION.test(title || "")) return true;
-  if (KOREA_NEXUS_RE.test(t) || KOREA_FOREIGN_NEXUS.test(t) || KR_LEGAL_ACTION.test(t)) return false;
+  if (koreaNexus || KR_LEGAL_ACTION.test(t)) return false;
   return FOREIGN_RE.test(t);
 }
