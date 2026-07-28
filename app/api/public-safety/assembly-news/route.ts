@@ -8,6 +8,7 @@ import {
   OFFICE_TO_HIGH,
 } from "@/lib/publicSafety/assemblyJurisdictionClassifier";
 import { appToday } from "@/lib/appToday";
+import { isHistoricalAssemblyOnly } from "@/lib/publicSafety/assemblyNewsFilter";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -70,6 +71,7 @@ export async function GET(req: NextRequest) {
     const isRealAssembly = (a: { title: string; summary: string | null }) => {
       const full = `${a.title} ${a.summary ?? ""}`;
       if (IRRELEVANT_RE.test(full)) return false; // 스포츠·문화·오피니언 기사 제외
+      if (isHistoricalAssemblyOnly(a.title, a.summary)) return false; // 과거·역사적 집회 회고(5·18 당시 등)만 언급 → 제외
       // 건물/시설 의미('문화·집회시설' 등) 제거 후 실제 집회·시위 언급만 인정
       const s = full.replace(/문화[·\s]*집회\s*시설|집회\s*시설|집회장|집회공간|집회실/g, " ");
       return /집회|시위/.test(s);

@@ -12,4 +12,4 @@ export function snapName(url: string): string {
 
 export const SNAP_DIR = "/_snap";
 // 스냅샷을 다시 생성할 때마다 올려 캐시를 무효화(브라우저가 옛 데이터를 재사용하지 않도록).
-export const SNAP_VERSION = "2026-07-27c";
+export const SNAP_VERSION = "2026-07-28a";
