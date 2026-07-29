@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { appToday } from "@/lib/appToday";
 import { ok, handle } from "@/lib/api/response";
 import { getAssemblyByOffice, type DashboardPeriod } from "@/lib/publicSafety/publicSafetyDashboard";
 
@@ -11,7 +12,7 @@ export async function GET(req: NextRequest) {
   return handle(async () => {
     const period = (req.nextUrl.searchParams.get("period") || "7d") as DashboardPeriod;
     const date = req.nextUrl.searchParams.get("date") || undefined;
-    const rows = await getAssemblyByOffice(prisma, period, new Date(), date);
+    const rows = await getAssemblyByOffice(prisma, period, appToday(), date);
     return ok(rows, { count: rows.length });
   });
 }

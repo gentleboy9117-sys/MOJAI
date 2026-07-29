@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { appToday } from "@/lib/appToday";
 import { ok, handle } from "@/lib/api/response";
 import { getRelatedNews, type DashboardPeriod } from "@/lib/publicSafety/publicSafetyDashboard";
 
@@ -10,7 +11,7 @@ export const runtime = "nodejs";
 export async function GET(req: NextRequest) {
   return handle(async () => {
     const period = (req.nextUrl.searchParams.get("period") || "7d") as DashboardPeriod;
-    const rows = await getRelatedNews(prisma, period, new Date());
+    const rows = await getRelatedNews(prisma, period, appToday());
     return ok(rows, { count: rows.length });
   });
 }

@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { appToday } from "@/lib/appToday";
 import { ok, handle } from "@/lib/api/response";
 import { asArray } from "@/lib/utils";
 
@@ -18,7 +19,7 @@ export async function GET(req: NextRequest) {
     const needsReview = sp.get("needsReview");
     const limit = Math.min(300, Number(sp.get("limit") || 200));
 
-    const now = new Date();
+    const now = appToday();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const where: any = {};
     const dateParam = sp.get("date");

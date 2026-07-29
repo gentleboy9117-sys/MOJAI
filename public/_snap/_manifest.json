@@ -2,7 +2,7 @@
   {
     "url": "/api/public-safety/dashboard/summary",
     "file": "sndu08n.json",
-    "bytes": 131
+    "bytes": 132
   },
   {
     "url": "/api/articles?period=all&limit=300&sort=score",
@@ -47,22 +47,22 @@
   {
     "url": "/api/dashboard/office-heatmap?period=month",
     "file": "s1sp3ra.json",
-    "bytes": 12449
+    "bytes": 12443
   },
   {
     "url": "/api/dashboard/office-heatmap?period=today",
     "file": "s1yrz7eh.json",
-    "bytes": 8049
+    "bytes": 8255
   },
   {
     "url": "/api/dashboard/office-heatmap?period=week",
     "file": "s1ygkts4.json",
-    "bytes": 10966
+    "bytes": 11164
   },
   {
     "url": "/api/dashboard/office-heatmap?period=7d",
     "file": "sloyktn.json",
-    "bytes": 12449
+    "bytes": 12443
   },
   {
     "url": "/api/public-safety/sources",
