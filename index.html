@@ -985,7 +985,80 @@ body {
     <div class="divider-label">SECTION 04</div>
     <div class="divider-title">구현 방법</div>
     <div style="width:56px;height:4px;background:var(--pt);border-radius:2px;"></div>
-    <div class="divider-desc" style="margin-top:28px;">시스템 아키텍처 · 안전 설계 · 망분리 환경 대응</div>
+    <div class="divider-desc" style="margin-top:28px;">설계 원칙 · 시스템 아키텍처 · 안전 설계 · 망분리 환경 대응</div>
+  </div>
+</section>
+
+<!-- ══════════════ 설계 원칙 ══════════════ -->
+<section class="slide">
+  <div class="sh">
+    <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
+    <div class="sh-line"></div>
+    <span class="sh-cat">04 구현 방법 · 설계 원칙</span>
+    <span class="sh-num">26</span>
+  </div>
+
+  <div class="hl">가장 어려운 기술이 아니라, <span class="em">가장 확실히 쓰일 구조</span>를 택했습니다</div>
+  <div class="sub-hl">현업에 실제로 정착하는 것을 목표로, 네 가지 원칙을 먼저 정하고 기술을 선택했습니다.</div>
+
+  <div class="visual" style="justify-content:center;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:16px;flex:1;min-height:0;">
+
+      <div class="box" style="display:flex;gap:18px;padding:24px 28px;align-items:stretch;">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px;">
+          <rect x="2.5" y="4" width="19" height="16" rx="2.5" stroke="#256EF4" stroke-width="1.6"/>
+          <path d="M2.5 8.5h19" stroke="#256EF4" stroke-width="1.6"/>
+          <rect x="5.5" y="11.5" width="6" height="2.6" rx="1.3" fill="#256EF4"/>
+          <rect x="13" y="11.5" width="5.5" height="2.6" rx="1.3" fill="#A6C3F5"/>
+          <rect x="5.5" y="16" width="9" height="2" rx="1" fill="#D6E2F8"/>
+        </svg>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px;">업무 언어로만 조작합니다</div>
+          <div style="font-size:15.5px;color:var(--sub);line-height:1.62;">담당자가 조정할 <b style="color:var(--pt-dk);">기술 설정값이 없습니다.</b> 기간 · 검찰청 · 범죄유형만 고르면 되고, 임계값 같은 내부 수치는 화면에 나오지 않습니다.</div>
+          <div style="margin-top:auto;padding-top:15px;border-top:1px solid var(--border);font-size:15px;font-weight:700;color:var(--pt-dk);">별도 교육 없이 첫 사용부터 결과가 나옵니다</div>
+        </div>
+      </div>
+
+      <div class="box" style="display:flex;gap:18px;padding:24px 28px;align-items:stretch;">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px;">
+          <path d="M5 3.5h9l5 5v12a1.5 1.5 0 0 1-1.5 1.5h-12A1.5 1.5 0 0 1 4 20.5v-15A2 2 0 0 1 5 3.5z" stroke="#256EF4" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M14 3.5v5h5" stroke="#256EF4" stroke-width="1.6" stroke-linejoin="round"/>
+          <path d="M8 13.5l2.2 2.2L16 10" stroke="#256EF4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px;">판단 근거가 남습니다</div>
+          <div style="font-size:15.5px;color:var(--sub);line-height:1.62;">규칙 기반 분류라 <b style="color:var(--pt-dk);">같은 기사는 언제나 같은 결과</b>가 나오고, 왜 그렇게 분류됐는지 근거가 저장됩니다. 기준을 바꾸면 전체에 소급 적용됩니다.</div>
+          <div style="margin-top:auto;padding-top:15px;border-top:1px solid var(--border);font-size:15px;font-weight:700;color:var(--pt-dk);">9,161건 전수에서 관할 미분류 0건 · 유형 미분류 0건</div>
+        </div>
+      </div>
+
+      <div class="box" style="display:flex;gap:18px;padding:24px 28px;align-items:stretch;">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px;">
+          <rect x="2.5" y="4.5" width="19" height="13" rx="2" stroke="#256EF4" stroke-width="1.6"/>
+          <path d="M8 20.5h8M12 17.5v3" stroke="#256EF4" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M7.5 11l2.5 2.5 5-5.5" stroke="#256EF4" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px;">설치 없이 바로 씁니다</div>
+          <div style="font-size:15.5px;color:var(--sub);line-height:1.62;">별도 장비 · 프로그램 설치 · 사전 교육이 <b style="color:var(--pt-dk);">모두 필요 없습니다.</b> 브라우저 주소만 알면 되고, 운영비는 월 수만 원 수준입니다.</div>
+          <div style="margin-top:auto;padding-top:15px;border-top:1px solid var(--border);font-size:15px;font-weight:700;color:var(--pt-dk);">전국 67개 검찰청으로 넓혀도 추가 장비가 필요 없습니다</div>
+        </div>
+      </div>
+
+      <div class="box" style="display:flex;gap:18px;padding:24px 28px;align-items:stretch;">
+        <svg width="38" height="38" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;margin-top:2px;">
+          <circle cx="12" cy="7.5" r="3.6" stroke="#256EF4" stroke-width="1.6"/>
+          <path d="M4.5 20.5c0-3.9 3.4-6.4 7.5-6.4s7.5 2.5 7.5 6.4" stroke="#256EF4" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+        <div style="flex:1;display:flex;flex-direction:column;">
+          <div style="font-size:20px;font-weight:800;color:var(--ink);margin-bottom:8px;">최종 판단은 사람이 합니다</div>
+          <div style="font-size:15.5px;color:var(--sub);line-height:1.62;">AI는 <b style="color:var(--pt-dk);">초안까지만</b> 만듭니다. 수정 · 확정 · 배포는 담당자 몫이며, 시스템은 판단에 쓸 시간을 확보해 주는 역할을 합니다.</div>
+          <div style="margin-top:auto;padding-top:15px;border-top:1px solid var(--border);font-size:15px;font-weight:700;color:var(--pt-dk);">책임 소재가 분명해 공직 도입 부담이 적습니다</div>
+        </div>
+      </div>
+
+    </div>
+    <div class="note" style="font-size:14px;text-align:center;">기술 난이도가 아니라 <b>도입 난이도</b>를 기준으로 설계했습니다 — 그래서 지금 이 자리에서 접속해 바로 쓸 수 있는 상태입니다.</div>
   </div>
 </section>
 
@@ -995,7 +1068,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법 · 시스템 아키텍처</span>
-    <span class="sh-num">26</span>
+    <span class="sh-num">27</span>
   </div>
 
   <div class="hl">전체 <span class="em">시스템 아키텍쳐</span></div>
@@ -1083,7 +1156,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법 · 안전 설계</span>
-    <span class="sh-num">27</span>
+    <span class="sh-num">28</span>
   </div>
 
   <div class="hl">기관 상황에 맞춰 <span class="em">분리·연동을 선택</span>하는 안전한 구조입니다</div>
@@ -1148,11 +1221,11 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">04 구현 방법 · 폐쇄망 도입</span>
-    <span class="sh-num">28</span>
+    <span class="sh-num">29</span>
   </div>
 
   <div class="hl">망분리 환경에서도 <span class="em">운영할 수 있도록</span> 설계했습니다</div>
-  <div class="sub-hl">외부망에서 모은 공개정보를 내부망으로 들여와 처리하고, 내부망 정보는 밖으로 나가지 않도록 설계했습니다.</div>
+  <div class="sub-hl">외부망에서 모은 공개정보를 내부망으로 들여와 처리하고, 내부망 정보는 밖으로 나가지 않도록 설계했습니다. <b style="color:var(--pt-dk);">지금 인터넷망에서 실제로 운영 중이므로, 검증된 상태 그대로 내부망으로 옮기는 방식</b>입니다.</div>
 
   <div class="visual">
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;flex:1;">
@@ -1212,7 +1285,7 @@ body {
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-num">29</span>
+    <span class="sh-num">30</span>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
     <div class="divider-label">SECTION 05</div>
@@ -1228,7 +1301,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">05 적용 효과</span>
-    <span class="sh-num">30</span>
+    <span class="sh-num">31</span>
   </div>
 
   <div class="hl">절감한 시간을 <span class="em">본연의 업무</span>에 재투입합니다</div>
@@ -1267,7 +1340,7 @@ body {
   <div class="sh">
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
-    <span class="sh-num">31</span>
+    <span class="sh-num">32</span>
   </div>
   <div style="flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:40px;">
     <div class="divider-label">SECTION 06</div>
@@ -1283,7 +1356,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 개요</span>
-    <span class="sh-num">32</span>
+    <span class="sh-num">33</span>
   </div>
 
   <div class="hl"><span class="em">수직</span>과 <span class="em">수평</span>, 두 방향으로 확산됩니다</div>
@@ -1373,7 +1446,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 적용 예시</span>
-    <span class="sh-num">33</span>
+    <span class="sh-num">34</span>
   </div>
 
   <div class="hl">기관별 기준, 양식만 맞추면 <span class="em">확장 가능</span>합니다</div>
@@ -1445,7 +1518,7 @@ body {
     <img src="assets/moj-logo.png"><span class="sh-gov">법무부 AI 경진대회 · 개발 부문</span>
     <div class="sh-line"></div>
     <span class="sh-cat">06 확산 가능성 · 적용 화면 예시</span>
-    <span class="sh-num">34</span>
+    <span class="sh-num">35</span>
   </div>
 
   <div class="hl">교정·출입국에 적용하면 <span class="em">이런 화면</span>이 됩니다</div>
