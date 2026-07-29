@@ -22,7 +22,7 @@
   {
     "url": "/api/issues?period=30d",
     "file": "s1av592h.json",
-    "bytes": 71517
+    "bytes": 71515
   },
   {
     "url": "/api/articles?crimeType=공판&period=all&limit=300",
@@ -47,22 +47,22 @@
   {
     "url": "/api/dashboard/office-heatmap?period=month",
     "file": "s1sp3ra.json",
-    "bytes": 12459
+    "bytes": 12449
   },
   {
     "url": "/api/dashboard/office-heatmap?period=today",
     "file": "s1yrz7eh.json",
-    "bytes": 3041
+    "bytes": 8049
   },
   {
     "url": "/api/dashboard/office-heatmap?period=week",
     "file": "s1ygkts4.json",
-    "bytes": 11000
+    "bytes": 10966
   },
   {
     "url": "/api/dashboard/office-heatmap?period=7d",
     "file": "sloyktn.json",
-    "bytes": 12459
+    "bytes": 12449
   },
   {
     "url": "/api/public-safety/sources",
