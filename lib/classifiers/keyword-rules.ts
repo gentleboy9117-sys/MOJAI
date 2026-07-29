@@ -22,9 +22,22 @@ function isOfficeNameKeyword(k: string): boolean {
   return OFFICE_NAME_TOKENS.some((t) => k.includes(t));
 }
 
+// 제목 말미 언론사명 제거 — '- 강원도민일보'의 '강원도', '- 울산저널i'의 '울산'이
+//  지역 히트로 잡혀 관할이 통째로 틀어진다(2026-07-29 감사: critical 5건 포함).
+const OUTLET_SUFFIX_RE =
+  /\s*[-–—|]\s*[가-힣A-Za-z0-9·\s]{2,14}(일보|신문|뉴스|저널|타임스|투데이|경제|매일|방송|미디어|프레스|헤럴드|위클리|데일리|TV|넷|닷컴|i)\s*$/;
+
+/** 분류용 텍스트에서 쓸 '정제된 제목'(언론사 꼬리표 제거) */
+export function cleanTitle(title?: string | null): string {
+  let t = (title ?? "").trim();
+  for (let i = 0; i < 2; i++) t = t.replace(OUTLET_SUFFIX_RE, "").trim(); // '… - 조선일보 - 네이버뉴스' 이중 꼬리표 대응
+  return t;
+}
+
 /** 분류용 텍스트(제목 가중 2회 + 요약 + 본문) */
 export function buildHaystack(input: ClassifyInput): string {
-  return [input.title, input.title, input.summary ?? "", input.fullText ?? ""].join(" \n ");
+  const t = cleanTitle(input.title);
+  return [t, t, input.summary ?? "", input.fullText ?? ""].join(" \n ");
 }
 
 // 공판 = 실제 '재판 결과'(법원이 형을 선고)가 있는 기사만.

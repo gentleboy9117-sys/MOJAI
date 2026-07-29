@@ -9,7 +9,7 @@ import "dotenv/config";
 import { prisma } from "@/lib/db/prisma";
 import { getNewsProviders } from "@/lib/providers/news";
 import { NaverNewsProvider } from "@/lib/providers/news/NaverNewsProvider";
-import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip, isNonLegalNoise, isPromoNoise, isElectionPolitics, isCivilCase } from "@/lib/collect/filters";
+import { isPhotoOnlyTitle, isForeignTopic, isOpinionColumn, isCelebGossip, isNonLegalNoise, isPromoNoise, isElectionPolitics, isCivilCase, isDisplayNoise } from "@/lib/collect/filters";
 import { classifyArticle, contentHashOf } from "@/lib/classifiers";
 import { getOfficeLites, rebuildClusters, persistTrendAlerts } from "@/lib/pipeline/runPipeline";
 import {
@@ -58,6 +58,7 @@ async function saveRaw(a: any, offices: any[]): Promise<boolean> {
   if (isForeignTopic(a.title, a.summary)) return false; // 해외토픽(외국인·외국 사건) 제외
   if (isElectionPolitics(a.title, a.summary)) return false; // 선거 일반 정치기사(수사·기소·재판 없음) 제외
   if (isCivilCase(a.title, a.summary)) return false; // 민사·가사 사건(형사 무관) 제외
+  if (isDisplayNoise(a.title, a.summary)) return false; // 시황·편집물·연예 등 노출 부적합 제외
   const hash = contentHashOf(a.title, a.originalUrl);
   if (await prisma.article.findUnique({ where: { contentHash: hash }, select: { id: true } })) return false;
   const r = classifyArticle(

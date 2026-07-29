@@ -72,7 +72,12 @@ export function classifyArticle(input: ClassifyInput, offices: OfficeLite[]): Ar
 
   // 형사사법제도/정책은 특정 지검 사건이 아니라 제도 사안 → 관할을 항상 법무부/대검찰청으로
   //  (국회가 여의도에 있어 서울남부 등으로 오분류되는 것 방지)
-  if (crime.crimeType === "형사사법제도/정책") {
+  //  단, 특정 지검·지청이 직접 언급된 사건 기사는 그 관할을 유지한다
+  //  (예: '강남서 수사 무마 의혹' 기사가 요약의 '보완수사권' 한 구절로 대검으로 흡수되던 문제, 2026-07-29 감사)
+  const hasDirectOffice = officeMatches.some(
+    (o) => o.matchType === "DIRECT_MENTION" && (o.officeType === "지방검찰청" || o.officeType === "지청"),
+  );
+  if (crime.crimeType === "형사사법제도/정책" && !hasDirectOffice) {
     const moj = offices.find((o) => o.name === "법무부/대검찰청" || o.type === "법무부/대검찰청");
     if (moj) {
       primary = {
