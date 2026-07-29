@@ -63,13 +63,16 @@ export async function getAssemblySummary(
       prisma.assemblyEvent.count({
         where: { eventDate: { gte: startOfTomorrow, lt: startOfDayAfter } },
       }),
+      // 관할 검찰청 수는 '오늘 집회' 기준 — 전체 기간으로 세면 오늘 집회 건수보다 커지는 모순이 생긴다(2026-07-29)
       prisma.assemblyEvent.findMany({
-        where: { prosecutionOfficeId: { not: null } },
+        where: { prosecutionOfficeId: { not: null }, eventDate: { gte: startOfToday, lt: startOfTomorrow } },
         select: { prosecutionOfficeId: true },
         distinct: ["prosecutionOfficeId"],
       }),
       prisma.assemblyEvent.count({ where: { needsHumanReview: true } }),
+      // 관련 보도 있는 일정도 '오늘' 기준으로 집계(카드 간 기준 일관성)
       prisma.assemblyArticleLink.findMany({
+        where: { assemblyEvent: { eventDate: { gte: startOfToday, lt: startOfTomorrow } } },
         select: { assemblyEventId: true, hasLegalIssueMention: true },
       }),
     ]);

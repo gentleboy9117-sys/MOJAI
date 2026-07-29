@@ -24,7 +24,9 @@ export async function buildReportData(opts: {
 
   const [articles, topIssuesRaw, officeRowsRaw, trendAlertsRaw] = await Promise.all([
     prisma.article.findMany({ where: { publishedAt: { gte: start, lte: end }, ...(opts.articleWhere ?? {}) }, orderBy: { publishedAt: "desc" } }),
-    getTopIssues({ periodStart: start, periodEnd: end, limit: 20 }),
+    // 유형·검찰청 필터는 조회 후(사후) 적용되므로 넉넉히 가져와야 한다.
+    //  limit 20 이면 '공판 브리핑'처럼 특정 유형이 전체 상위권에 없을 때 결과가 비어버린다(2026-07-29).
+    getTopIssues({ periodStart: start, periodEnd: end, limit: 500 }),
     getOfficeHeatmap({ periodStart: start, periodEnd: end }),
     computeTrendAlerts({ now }),
   ]);

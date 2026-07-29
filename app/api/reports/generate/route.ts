@@ -1,5 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/db/prisma";
+import { appToday } from "@/lib/appToday";
 import { ok, fail, handle, ERROR } from "@/lib/api/response";
 import { getRequestContext } from "@/lib/api/context";
 import { writeAudit, AUDIT_ACTIONS } from "@/lib/security/audit";
@@ -14,7 +15,7 @@ export const runtime = "nodejs";
 
 const DAY = 86400000;
 function periodFromBody(b: any): { start: Date; end: Date } {
-  const end = b.endDate ? new Date(b.endDate) : new Date();
+  const end = b.endDate ? new Date(b.endDate) : new Date(appToday().getTime() + 86400000 - 1); // 기준일 말일까지
   if (b.startDate) return { start: new Date(b.startDate), end };
   if (b.period === "all") return { start: new Date(0), end };
   const days = b.period === "today" ? 1 : b.period === "30d" ? 30 : b.period === "7d" ? 7 : 7;
