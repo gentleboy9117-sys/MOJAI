@@ -39,8 +39,13 @@ export async function POST(req: NextRequest) {
       const me = all.find((o) => o.name === f.officeName);
       if (me) {
         const ids = new Set<string>([me.id]);
-        let grew = true;
-        while (grew) { grew = false; for (const o of all) if (o.parentId && ids.has(o.parentId) && !ids.has(o.id)) { ids.add(o.id); grew = true; } }
+        // 법무부/대검찰청은 조직도 최상위라 자손을 포함하면 전국 67개 청이 모두 딸려온다.
+        //  해당 청(특검·제도 사안 등)으로 분류된 기사만 보여야 하므로 롤업하지 않는다(2026-07-29).
+        const isRoot = me.parentId === null;
+        if (!isRoot) {
+          let grew = true;
+          while (grew) { grew = false; for (const o of all) if (o.parentId && ids.has(o.parentId) && !ids.has(o.id)) { ids.add(o.id); grew = true; } }
+        }
         articleWhere.primaryOfficeId = { in: [...ids] };
         officeNames = all.filter((o) => ids.has(o.id)).map((o) => o.name);
       }
@@ -60,7 +65,19 @@ export async function POST(req: NextRequest) {
     // 이슈(클러스터) 사후 필터용 상위 유형 라벨 — 기저유형(crimeSubtype)은 기사 필터에만 적용
     const crimeTypeLabel = f.crimeType ?? (f.safetyScope === "election" ? "선거범죄" : f.safetyScope === "labor" ? "노동/중대재해범죄" : undefined);
 
-    const data = await buildReportData({ start, end, generatedBy: ctx.user.name, articleWhere, officeNames, crimeTypeLabel });
+    // 공안 브리핑은 집회·시위 / 선거 / 노동·중대재해만 — 이슈 TOP에도 같은 범위를 적용(2026-07-29)
+    const issueScope =
+      f.safetyScope === "all"
+        ? { crimeTypes: ["선거범죄", "노동/중대재해범죄"], titleKeywords: ["집회", "시위", "파업", "농성"] }
+        : f.safetyScope === "assembly"
+          ? { titleKeywords: ["집회", "시위", "파업", "농성"] }
+          : f.safetyScope === "election"
+            ? { crimeTypes: ["선거범죄"] }
+            : f.safetyScope === "labor"
+              ? { crimeTypes: ["노동/중대재해범죄"] }
+              : undefined;
+
+    const data = await buildReportData({ start, end, generatedBy: ctx.user.name, articleWhere, officeNames, crimeTypeLabel, issueScope });
     const { title, markdown } = generateReportMarkdown(data, reportType);
     const safety = checkText(markdown);
 

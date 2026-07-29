@@ -18,6 +18,8 @@ export async function buildReportData(opts: {
   officeNames?: string[];
   /** 필터 범죄유형(이슈 Top·트렌드 사후 필터용) */
   crimeTypeLabel?: string;
+  /** 공안 등 복합 영역용 — 이슈가 이 유형 중 하나이거나 제목에 키워드가 있으면 통과(2026-07-29) */
+  issueScope?: { crimeTypes?: string[]; titleKeywords?: string[] };
 }): Promise<ReportData> {
   const { start, end, generatedBy } = opts;
   const now = opts.now ?? new Date();
@@ -33,20 +35,29 @@ export async function buildReportData(opts: {
 
   // 필터 사후 적용(이슈 Top·검찰청 표·트렌드)
   const officeNameSet = opts.officeNames?.length ? new Set(opts.officeNames) : null;
+  const scope = opts.issueScope;
+  const inScope = (crimeType?: string | null, title?: string | null) => {
+    if (!scope) return true;
+    if (scope.crimeTypes?.length && crimeType && scope.crimeTypes.includes(crimeType)) return true;
+    if (scope.titleKeywords?.length && title && scope.titleKeywords.some((k) => title.includes(k))) return true;
+    return false;
+  };
   const topIssues = topIssuesRaw
     .filter((t) => (officeNameSet ? (t.officeName ? officeNameSet.has(t.officeName) : false) : true))
     .filter((t) => (opts.crimeTypeLabel ? t.crimeType === opts.crimeTypeLabel : true))
+    .filter((t) => inScope(t.crimeType, t.title))
     .slice(0, 5);
   const officeRows = officeNameSet ? officeRowsRaw.filter((o) => officeNameSet.has(o.officeName)) : officeRowsRaw;
   const trendAlerts = opts.crimeTypeLabel ? trendAlertsRaw.filter((t) => t.crimeType === opts.crimeTypeLabel) : trendAlertsRaw;
 
   const clustersForCount = await prisma.issueCluster.findMany({
     where: { lastPublishedAt: { gte: start, lte: end } },
-    select: { mainCrimeType: true, mainOfficeName: true },
+    select: { mainCrimeType: true, mainOfficeName: true, title: true },
   });
   const issueCount = clustersForCount
     .filter((c) => (officeNameSet ? (c.mainOfficeName ? officeNameSet.has(c.mainOfficeName) : false) : true))
-    .filter((c) => (opts.crimeTypeLabel ? c.mainCrimeType === opts.crimeTypeLabel : true)).length;
+    .filter((c) => (opts.crimeTypeLabel ? c.mainCrimeType === opts.crimeTypeLabel : true))
+    .filter((c) => inScope(c.mainCrimeType, c.title)).length;
 
   // 검찰청명 맵
   const officeMap = new Map(officeRows.map((o) => [o.officeName, o]));
