@@ -72,12 +72,31 @@ export function classifyArticle(input: ClassifyInput, offices: OfficeLite[]): Ar
 
   // 형사사법제도/정책은 특정 지검 사건이 아니라 제도 사안 → 관할을 항상 법무부/대검찰청으로
   //  (국회가 여의도에 있어 서울남부 등으로 오분류되는 것 방지)
+  // 특별검사(특검) 사건은 검찰과 별도 조직 → 개별 지검이 아니라 법무부/대검찰청으로 집계(2026-07-29 지시)
+  //  특검 재판이 서울중앙지법에서 열려 서울중앙지검으로 잡히던 것을 상위기관으로 통일한다.
+  const SPECIAL_COUNSEL_RE =
+    /특별검사|특검(팀|팀장|보|법|이|은|을|과|의|에|,|\s|$)|내란\s*특검|김건희\s*특검|채\s*해병\s*특검|채해병\s*특검|순직해병\s*특검|민중기\s*특검|조은석\s*특검|이명현\s*특검|특별검사보/;
+  const scHit = SPECIAL_COUNSEL_RE.test(`${input.title ?? ""} ${input.summary ?? ""}`);
+  if (scHit) {
+    const moj = offices.find((o) => o.name === "법무부/대검찰청" || o.type === "법무부/대검찰청");
+    if (moj) {
+      primary = {
+        officeId: moj.id, officeName: moj.name, officeType: moj.type, region: moj.region,
+        confidence: 0.9, matchType: "INSTITUTION",
+        reason: "특별검사 사건(검찰과 별도 조직) → 법무부/대검찰청으로 집계",
+        evidence: ["특검"],
+      };
+      officeMatches.length = 0;
+      officeMatches.push(primary);
+    }
+  }
+
   //  단, 특정 지검·지청이 직접 언급된 사건 기사는 그 관할을 유지한다
   //  (예: '강남서 수사 무마 의혹' 기사가 요약의 '보완수사권' 한 구절로 대검으로 흡수되던 문제, 2026-07-29 감사)
   const hasDirectOffice = officeMatches.some(
     (o) => o.matchType === "DIRECT_MENTION" && (o.officeType === "지방검찰청" || o.officeType === "지청"),
   );
-  if (crime.crimeType === "형사사법제도/정책" && !hasDirectOffice) {
+  if (!scHit && crime.crimeType === "형사사법제도/정책" && !hasDirectOffice) {
     const moj = offices.find((o) => o.name === "법무부/대검찰청" || o.type === "법무부/대검찰청");
     if (moj) {
       primary = {
