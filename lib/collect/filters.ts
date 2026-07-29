@@ -36,11 +36,15 @@ const CORP_BIZ_RE =
 // 형사 절차가 '제목'에 있으면 사건 기사로 보호
 const CRIMINAL_TITLE_RE = /기소|구속|불구속|송치|압수수색|입건|검거|체포|영장|구형|선고|판결|징역|고발|수사\s*착수|혐의로/;
 
-/** 기업 경영·M&A·실적 홍보 기사면 true → 수집 제외 */
+// 기업 기술·설비·안전관리 홍보(로봇 도입, 스마트 안전, 무재해, 시스템 구축 등) — 사건 아님(2026-07-29)
+const CORP_TECH_PR_RE =
+  /로봇|드론|AI\s*(도입|적용|시스템)|스마트\s*(안전|건설|공장|팩토리|시스템)|디지털\s*전환|무인화|자동화\s*(시스템|설비)|상시\s*운용|시범\s*도입|도입\s*(시작|확대|검토)|安全\s*관리|안전\s*(관리\s*시스템|점검\s*로봇|기술)|무재해|안전보건\s*(경영|시스템|인증)|ISO\s*\d+|인증\s*(획득|취득)|기술\s*(개발|협력|이전)|특허\s*(출원|등록)|연구\s*(개발|성과)|시연회|실증\s*사업/;
+
+/** 기업 경영·M&A·실적·기술 홍보 기사면 true → 수집 제외 */
 export function isCorporateBiz(title: string, _summary?: string | null): boolean {
   const t = title || "";
   if (CRIMINAL_TITLE_RE.test(t)) return false;
-  return CORP_BIZ_RE.test(t);
+  return CORP_BIZ_RE.test(t) || CORP_TECH_PR_RE.test(t);
 }
 
 // 지자체·기관 정책 홍보·교육 기사 — '전세사기·보이스피싱' 같은 범죄어가 나와도
